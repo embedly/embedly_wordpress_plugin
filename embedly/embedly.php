@@ -4,8 +4,9 @@ Plugin Name: Embedly
 Plugin URI: http://api.embed.ly
 Description: The Embedly Plugin extends Wordpress's Embeds allowing bloggers to Embed from 73 services and counting.
 Author: Embed.ly Inc
-Version: 1.0
+Version: 1.2
 Author URI: http://embed.ly
+License: GPL2
 
 Copyright 2010  Embedly  (email : developer@embed.ly)
 
@@ -23,6 +24,17 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
+
+if (!defined('PLUGINDIR')) {
+	define('PLUGINDIR','wp-content/plugins');
+}
+
+if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'embedly.php')) {
+	define('EMBEDLY_FILE', trailingslashit(ABSPATH.PLUGINDIR).'embedly.php');
+}
+else if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'embedly/embedly.php')) {
+	define('EMBEDLY_FILE', trailingslashit(ABSPATH.PLUGINDIR).'embedly/embedly.php');
+}
 
 /* DB CRUD Methods
  */
@@ -93,7 +105,7 @@ function get_embedly_selected_services(){
 /**
  * Activation Hooks
  */
-function embedly_activate(){
+function embedly_Activate(){
   global $wpdb;
   add_option('embedly_active', true);
   $table_name = $wpdb->prefix . "embedly_providers";
@@ -111,7 +123,6 @@ function embedly_activate(){
             about TEXT NULL,
             UNIQUE KEY id (id)
      );";
-    echo $sql;
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta($sql);
   } else {
@@ -124,7 +135,7 @@ function embedly_activate(){
   	insert_provider($service);
   }
 }
-register_activation_hook( __FILE__, 'embedly_activate' );
+register_activation_hook( EMBEDLY_FILE, 'embedly_Activate' );
 
 function embedly_deactivate(){
   delete_option('embedly_active');
