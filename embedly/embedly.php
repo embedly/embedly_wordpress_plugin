@@ -91,14 +91,21 @@ function delete_provider($name){
 function get_embedly_services(){
   global $wpdb;
   $table_name = $wpdb->prefix . "embedly_providers";
-  $results = $wpdb->get_results( "SELECT * FROM ".$table_name.";");
+  $results = $wpdb->get_results( "SELECT * FROM ".$table_name." WHERE name<>'proembedly';");
+  return $results;
+}
+
+function get_pro_details() {
+  global $wpdb;
+  $table_name = $wpdb->prefix . "embedly_providers";
+  $results = $wpdb->get_results( "SELECT * FROM ".$table_name." WHERE name='proembedly';");
   return $results;
 }
 
 function get_embedly_selected_services(){
   global $wpdb;
   $table_name = $wpdb->prefix . "embedly_providers";
-  $results = $wpdb->get_results( "SELECT * FROM ".$table_name." WHERE selected=true;");
+  $results = $wpdb->get_results( "SELECT * FROM ".$table_name." WHERE selected=true and name<>'proembedly';");
   return $results;
 }
 
@@ -135,15 +142,22 @@ function embedly_Activate(){
   foreach($services as $service){
   	insert_provider($service);
   }
+  //Also insert pro.embed.ly's things
+  //minor alterations descripton field stores the pro key
+  $pro_regex = '#(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)#i'; 
+  $sql = 'INSERT INTO ' . $table_name . " (name, selected, displayname, domain, type, favicon, regex, about) VALUES "
+	 . "('proembedly', true, 'Pro.Embed.ly', 'pro.embed.ly', 'all', 'something', '" . json_encode('[' . $pro_regex . ']') . "', 'b5dfb9ca03b011e084894040444cdc60')";
+  require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+  dbDelta($sql);
 }
 register_activation_hook( EMBEDLY_FILE, 'embedly_Activate' );
 
 function embedly_deactivate(){
   global $wpdb;
   $table_name = $wpdb->prefix . "embedly_providers";
-	$sql = $wpdb->prepare("TRUNCATE TABLE ".$table_name.";");
+  $sql = $wpdb->prepare("TRUNCATE TABLE ".$table_name.";");
   $results = $wpdb->query($sql);
-	delete_option('embedly_active');
+  delete_option('embedly_active');
 }
 register_deactivation_hook( EMBEDLY_FILE, 'embedly_deactivate' );
 
@@ -232,19 +246,65 @@ function update_embedly_service($selected){
 /**
  * Does the work of adding the Embedly providers to wp_oembed
  */
+
+function update_pro_embedly($disable=False){
+  if($disable) {
+	global $wpdb;
+	$selected = 0;
+	$table_name = $wpdb->prefix . "embedly_providers";
+	$update = "UPDATE " . $table_name . " ".
+            "SET selected=". $wpdb->escape($selected) . " ".
+            "WHERE name='proembedly'";
+	$wpdb->query( $update );
+	return TRUE;	
+  } else {
+	global $wpdb;
+	$selected = 1;
+	$table_name = $wpdb->prefix . "embedly_providers";
+	$update = "UPDATE " . $table_name . " ".
+            "SET selected=". $wpdb->escape($selected) . " ".
+            "WHERE name='proembedly'";
+	$wpdb->query( $update );
+	$update = "UPDATE " . $table_name . " ".
+            "SET about='". $wpdb->escape($_POST['pro_key']) . "' ".
+            "WHERE name='proembedly'";
+	$wpdb->query( $update );
+	
+	$services = array();
+	$result = update_embedly_service(array());
+	if($result == null){
+	  
+	  echo json_encode(array('error'=>true));
+	} else {
+	  echo json_encode(array('error'=>false));
+	}
+  }
+  die();
+}
+add_action('wp_ajax_pro_embedly_update', 'update_pro_embedly');
+
 function add_embedly_providers($the_content){
-  $services = get_embedly_selected_services();
+  
 	require_once( ABSPATH . WPINC . '/class-oembed.php' );
 	$oembed = _wp_oembed_get_object();
-	$oembed->providers = array(); 
-  if ($services && get_option('embedly_active')) {
-    foreach($services as $service) {
-      foreach(json_decode($service->regex) as $sre) {
-        wp_oembed_add_provider($sre, 'http://api.embed.ly/v1/api/oembed', true );
-      }
-    }
-  }	
+	$oembed->providers = array();
+		
+	$pro = get_pro_details();
+	$pro = $pro[0];
+	if($pro->selected == '1') {
+		wp_oembed_add_provider('#(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)#i', 'http://localhost:8000/v1/api/oembed?strict=false&oembed_html=1&key=' . $pro->about , true );
+	} else {
+	$services = get_embedly_selected_services();
+	if ($services && get_option('embedly_active')) {
+	  foreach($services as $service) {
+	    foreach(json_decode($service->regex) as $sre) {
+	        wp_oembed_add_provider($sre, 'http://api.embed.ly/v1/api/oembed', true );
+	    }
+	  }
+	}
+  }
 }
+
 //add all the providers on init.
 add_action('init', 'add_embedly_providers');
 
@@ -252,6 +312,7 @@ add_action('init', 'add_embedly_providers');
  * Ajax function that updates the selected state of providers
  */
 function embedly_ajax_update(){
+  update_pro_embedly($disable=True);
   $providers = $_POST['providers'];
   $services = explode(',', $providers);
   $result = update_embedly_service($services);
@@ -269,6 +330,7 @@ add_action('wp_ajax_embedly_update', 'embedly_ajax_update');
  */
 function embedly_ajax_update_providers(){
   $services = embedly_services_download();
+  
   if ($services == null){
     echo json_encode(array('error'=>true));
   } else {
@@ -308,7 +370,7 @@ you wish to embed in your blog.
 </ul>
 <div style="clear:both;"></div>
 <ul class="generator">
-<?php  foreach($services as $service) { ?>
+<?php foreach($services as $service) { ?>
 <li class="<?php echo $service->type?>" id="<?php echo $service->name ?>">
 <input type="checkbox" name="<?php echo $service->name ?>" <?php if($service->selected == 1){ echo "checked=checked"; }?>>
 <a href="#<?php echo $service->name ?>" class="info ">
@@ -321,6 +383,29 @@ you wish to embed in your blog.
 <?php } ?>
 <form id="embedly_update_providers_form"  method="POST" action="." >
 <input class="button-secondary embedly_submit" type="submit" name="submit" value="Update Provider List"/>
+</form>
+</div>
+<br/>
+<br/>
+
+<?php $pro = get_pro_details(); $pro=$pro[0];?>
+<div>
+<div class="wrap">
+<h2 id="pro">OR Go</h2>
+
+<div id="pro-embedly-logo"><br/><br/>&nbsp;&nbsp;&nbsp;&nbsp;</div>
+<h4>Supply in a Pro.Embed.ly Key and embed anything on web.</h4>
+</div>
+<form id="pro_embedly_form" method="POST" action=".">
+	<div>
+	<input id="pro_embedly_check" type="checkbox" name="proembedly" value="yes" <?php if($pro->selected == 1){ echo "checked=checked"; }?> />Use Pro.Embed.ly</br>
+	</div>
+	<br/>
+	<div>
+	<label for='pro_key'>Your Pro Embed.ly Key</label>
+	<input id="pro_embedly_key" name="proembedly_key" type="text" style="width:400px;" <?php if($pro->about != ''){ echo "value=" . $pro->about ; }?> />
+	</div>
+	<input class="button-primary embedly_submit" name="submit" type="submit" value="Get on with Pro.Embed.ly"/>
 </form>
 </div>
 <?php } ?>

@@ -3,4 +3,5 @@ UL.generator A {color:#000000;padding:0 0 0 18px;position:relative;text-decorati
 UL.generator A IMG {height:16px;left:0;position:absolute;top:0;width:16px;}
 UL.actions LI {background-color:#EFEFEF;border:1px solid #DDDDDD;float:left;margin:0 4px;padding:5px;}
 #embedly-logo{background:transparent url(../img/embedly_wordpress_logo.png) no-repeat scroll 0 0;}
+#pro-embedly-logo{background:transparent url('https://pro.embed.ly/media/images/portal/pro.png') no-repeat scroll 0 0;}
 INPUT.embedly_submit{float:left; margin:10px 5px;}

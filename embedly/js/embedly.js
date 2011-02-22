@@ -42,6 +42,33 @@ jQuery(document).ready(function($){
         $('li.audio input').attr("checked", "checked");
         $('li.audio input').trigger('change');
     });
+    
+    $('#pro_embedly_form').bind("submit", function(e){
+        e.preventDefault();
+	$('#message').remove();
+        $('#pro_message').remove();
+        var providers = [];
+
+	if ($('#pro_embedly_check').is(':checked')) {
+	    if( $("#pro_embedly_key").val().length > 0 ) {
+		providers.push($("#pro_embedly_key").attr('value'))
+	        var data = {
+	            action: 'pro_embedly_update',
+	            pro_key: providers.join(',')
+	        };
+	        jQuery.post(ajaxurl, data, function(json) {
+	            if (json.error){
+		        $('h2#pro').after('<div class="error" id="message"><p><strong>Something went wrong. Try again later.</strong></p></div>');
+		    } else {
+        		$('h2#pro').after('<div class="updated" id="message"><p><strong>Pro Embedly settings saved successfully!</strong></p></div>');
+		    }
+		}, 'json');	
+	    } else $('h2#pro').after('<div class="error" id="pro_message"><p><strong>That can\'t be a Pro Embedly Key. Plese enter a proper key before proceeding.</strong></p></div>');
+	} else {
+	$('h2#pro').after('<div class="error" id="pro_message"><p><strong>Please check the checkbox first before proceeding.</strong></p></div>');
+	}
+	
+    });
     $('#embedly_providers_form').bind("submit", function(e){
         e.preventDefault();
         $('#message').remove();
@@ -50,7 +77,7 @@ jQuery(document).ready(function($){
             providers.push($(elem).attr('name'))
         });
         var data = {
-             action: 'embedly_update',
+            action: 'embedly_update',
             providers: providers.join(',')
         };
         jQuery.post(ajaxurl, data, function(json) {
