@@ -146,7 +146,8 @@ function embedly_Activate(){
   //minor alterations descripton field stores the pro key
   $pro_regex = '#(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)#i'; 
   $sql = 'INSERT INTO ' . $table_name . " (name, selected, displayname, domain, type, favicon, regex, about) VALUES "
-	 . "('proembedly', true, 'Pro.Embed.ly', 'pro.embed.ly', 'all', 'something', '" . json_encode('[' . $pro_regex . ']') . "', 'b5dfb9ca03b011e084894040444cdc60')";
+	 . "('proembedly', false, 'Pro.Embed.ly', 'pro.embed.ly', 'all', 'something', '" . json_encode('[' . $pro_regex . ']') . "', 'Embeds any url')";
+  add_option('pro_embedly_key', '');
   require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
   dbDelta($sql);
 }
@@ -158,6 +159,7 @@ function embedly_deactivate(){
   $sql = $wpdb->prepare("TRUNCATE TABLE ".$table_name.";");
   $results = $wpdb->query($sql);
   delete_option('embedly_active');
+  delete_option('pro_embedly_key');
 }
 register_deactivation_hook( EMBEDLY_FILE, 'embedly_deactivate' );
 
@@ -265,15 +267,11 @@ function update_pro_embedly($disable=False){
             "SET selected=". $wpdb->escape($selected) . " ".
             "WHERE name='proembedly'";
 	$wpdb->query( $update );
-	$update = "UPDATE " . $table_name . " ".
-            "SET about='". $wpdb->escape($_POST['pro_key']) . "' ".
-            "WHERE name='proembedly'";
-	$wpdb->query( $update );
+	update_option('pro_embedly_key', $_POST['pro_key']);
 	
 	$services = array();
 	$result = update_embedly_service(array());
-	if($result == null){
-	  
+	if($result == null){  
 	  echo json_encode(array('error'=>true));
 	} else {
 	  echo json_encode(array('error'=>false));
@@ -291,8 +289,9 @@ function add_embedly_providers($the_content){
 		
 	$pro = get_pro_details();
 	$pro = $pro[0];
-	if($pro->selected == '1') {
-		wp_oembed_add_provider('#(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)#i', 'http://localhost:8000/v1/api/oembed?strict=false&oembed_html=1&key=' . $pro->about , true );
+	$pro_key = get_option('pro_embedly_key');
+	if($pro->selected == '1' && $pro_key) {
+		wp_oembed_add_provider('#(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)#i', 'http://localhost:8000/v1/api/oembed?strict=false&oembed_html=1&key=' . $pro_key , true );
 	} else {
 	$services = get_embedly_selected_services();
 	if ($services && get_option('embedly_active')) {
@@ -403,7 +402,7 @@ you wish to embed in your blog.
 	<br/>
 	<div>
 	<label for='pro_key'>Your Pro Embed.ly Key</label>
-	<input id="pro_embedly_key" name="proembedly_key" type="text" style="width:400px;" <?php if($pro->about != ''){ echo "value=" . $pro->about ; }?> />
+	<input id="pro_embedly_key" name="proembedly_key" type="text" style="width:400px;" <?php $k = get_option('pro_embedly_key'); if($k){ echo "value=" . $k ; }?> />
 	</div>
 	<input class="button-primary embedly_submit" name="submit" type="submit" value="Get on with Pro.Embed.ly"/>
 </form>
