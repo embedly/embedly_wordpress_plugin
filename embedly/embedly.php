@@ -278,6 +278,55 @@ function embedly_ajax_update_providers(){
 }
 add_action('wp_ajax_embedly_update_providers', 'embedly_ajax_update_providers');
 
+
+// Add TinyMCE Functionality
+function embedly_footer_widgets(){
+  $url = get_bloginfo('url').'/wp-content/plugins/embedly/tinymce';
+  echo '<script type="text/javascript">EMBEDLY_TINYMCE = "'.$url.'";';
+  echo 'embedly_key = "internal"; embedly_endpoint = "preview";';
+  echo '</script>';
+}
+function embedly_addbuttons(){
+  if (! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
+    return;
+  
+  if (get_user_option('rich_editing') == 'true'){
+    add_filter('mce_external_plugins', 'add_embedly_tinymce_plugin');
+    add_filter('mce_buttons', 'register_embedly_button');
+  }
+}
+
+function register_embedly_button($buttons){
+  array_push($buttons, "|", "embedly");
+  return $buttons;
+}
+
+function add_embedly_tinymce_plugin($plugin_array){
+  $url = get_bloginfo('url');
+  $url.= "/wp-content/plugins/embedly/tinymce/editor_plugin.js";
+  $plugin_array['embedly'] = $url;
+  return $plugin_array;
+}
+
+add_action('admin_head', 'embedly_footer_widgets');
+add_action('init', 'embedly_addbuttons');
+
+function embedly_change_mce_options($init){
+  $ext = 'div[id|class|data-mce-style|style|data-ajax]';
+  $ext.= ',p[id|class|style]';
+  $ext.= ',img[id|class|style|data-mce-style|data-ajax]';
+  
+  if ( isset ($init['extended_valid_elements'] ) ) {
+    $init['extended_valid_elements'] .= ',' . $ext;
+  } else {
+    $init['extended_valid_elements'] = $ext;
+  }
+  
+  return $init;
+}
+
+add_filter('tiny_mce_before_init', 'embedly_change_mce_options');
+
 /**
  * The Admin Page.
  */

@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>{#embedly_dlg.title}</title>
+  <script type="text/javascript" src="tiny_mce_popup.js"></script>
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+  <script type="text/javascript" src="js/mustache.js"></script>
+  <script type="text/javascript" src="js/embedly.js"></script>
+  <link href="css/embedly.css" rel="stylesheet" type="text/css" />
+</head>
+<body style="display: none" role="application" aria-labelledby="app_title">
+  <div id="embedly_error" style="display:none">
+    <fieldset>
+      <h2>We're Sorry</h2>
+      <p>An Embedly Key is required. You can sign up for a key <a target="_blank" href="http://embed.ly/pricing">here</a>.</p>
+      <p>If you already have an Embedly Key, please add it to the Embedly Plugin Settings.</p>
+    </fieldset>
+    <div class="embedly_button_row">
+      <button onclick="javascript:EmbedlyDialog.cancel()">Close</button>
+    </div>
+  </div>
+  <div id="embedly_main">
+    <span style="display:none;" id="app_title">{#embedly_dlg.title}</span>
+    <form action="." method="get" class="embedly_form">
+            <fieldset>
+              <p>
+                <label for="embedly_url_field">{#embedly_dlg.url_field}</label>
+                <input type="url" class="embedly_field" id="embedly_url_field" name="embedly_url" />
+              </p>
+            </fieldset>
+            <fieldset>
+              <legend>Optional</legend>
+              <p class="third first">
+                <label for="embedly_width_field">{#embedly_dlg.width_field}</label>
+                <input type="text" class="embedly_field" id="embedly_width_field" name="embedly_width" >
+              </p>
+              <p class="third">
+                <label for="embedly_height_field">{#embedly_dlg.height_field}</label>
+                <input type="text" class="embedly_field" id="embedly_height_field" name="embedly_height" >
+              </p>
+              <p class="third last">
+                <label for="embedly_words_field">{#embedly_dlg.words_field}</label>
+                <input type="text" class="embedly_field" id="embedly_words_field" name="embedly_words" >
+              </p>
+              <div style='clear:both'></div>
+            </fieldset>
+            <fieldset>
+              <img src="img/ajax.gif" id="embedly_ajax_load" />
+            
+              <legend>Preview Embed</legend>
+              <div id="embedly-preview-results">
+                
+              </div>
+            </fieldset>
+    </form>
+    <div class="embedly_button_row">
+      <button id="embedly_form_lookup" class="primary">Generate Embed</button><button id="embedly_form_submit" class="primary" onclick="javascript:EmbedlyDialog.insert()">Embed this URL</button><button onclick="javascript:EmbedlyDialog.cancel()">Cancel</button>
+    </div>
+  </div>
+</body>
+</html>

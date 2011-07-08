@@ -1,0 +1,7 @@
+img.mceItemEmbedly {
+  background-color:#dbf2fa;
+  border:1px dotted #0095da;
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-image:url(../img/embed.gif);
+}
