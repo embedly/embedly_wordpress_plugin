@@ -57,9 +57,9 @@ jQuery(document).ready(function($){
         };
         jQuery.post(ajaxurl, data, function(json) {
         	if (json.error){
-                $('h2').after('<div class="error" id="message"><p><strong>Something went wrong. Try again later.</strong></p></div>');
+                $('h2:first').after('<div class="error" id="message"><p><strong>Something went wrong. Try again later.</strong></p></div>');
         	} else {
-        		$('h2').after('<div class="updated" id="message"><p><strong>Providers Updated</strong></p></div>');
+        		$('h2:first').after('<div class="updated" id="message"><p><strong>Embedly Settings Updated</strong></p></div>');
         	}
         }, 'json');
     });
@@ -81,7 +81,7 @@ jQuery(document).ready(function($){
         };
         jQuery.post(ajaxurl, data, function(json) {
             if (json.hasOwnProperty('error')){
-                $('h2').after('<div class="error" id="message"><p><strong>Something went wrong. Try again later.</strong></div>');
+                $('h2.providers').after('<div class="error" id="message"><p><strong>Something went wrong. Try again later.</strong></div>');
             } else {
             	//If something went wrong before there might not be a ul. Reload the page.
             	if($('UL.generator').length != 1){
@@ -91,7 +91,7 @@ jQuery(document).ready(function($){
                 $.each(json, function(index, obj){
                     $('UL.generator').append(create_provider(obj));
                 });
-                $('h2').after('<div class="updated" id="message"><p><strong>Providers Updated.</strong></p></div>');
+                $('h2.providers').after('<div class="updated" id="message"><p><strong>Providers Updated.</strong></p></div>');
             }
         }, 'json');
     });

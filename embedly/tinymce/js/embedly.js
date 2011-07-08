@@ -22,6 +22,7 @@ var EmbedlyDialog = {
     tinyMCEPopup.resizeToInnerSize();
     this.data = tinyMCEPopup.getWindowArg('data');
     this.key = this.data.key;
+    this.endpoint = this.data.endpoint ? this.data.endpoint : 'oembed';
     if(typeof this.key == "undefined" || this.key == '' ){
       $j('#embedly_main').hide();
       $j('#embedly_error').show();
@@ -315,22 +316,15 @@ var EmbedlyDialog = {
     tinyMCEPopup.close()
   },
   insert : function(file, title) {
-    if(EmbedlyDialog.data.endpoint == 'oembed'){
-      EmbedlyDialog.data.embed = this.generateOembed(EmbedlyDialog.embed);
+    if(EmbedlyDialog.data.endpoint == 'preview'){
+      EmbedlyDialog.data.embed = EmbedlyDialog.generateEmbed(EmbedlyDialog.embed);
     } else{
-      EmbedlyDialog.data.embed = this.generateEmbed(EmbedlyDialog.embed);
+      EmbedlyDialog.data.embed = EmbedlyDialog.generateOembed(EmbedlyDialog.embed);
     }
     var ed = tinyMCEPopup.editor, dom = ed.dom;
     ed.execCommand('mceRepaint');
     tinyMCEPopup.restoreSelection();
     ed.selection.setNode(ed.plugins.embedly.dataToImg(this.data));
-                      
-    /*ed.execCommand('mceRepaint');
-    tinyMCEPopup.restoreSelection();
-    ed.selection.setNode(dom.createHTML('div', {
-      class: 'embedly-container',
-      style: 'display:block;max-width:'+EmbedlyDialog.width+'px'
-    }, display));*/
     
     tinyMCEPopup.close();
   }

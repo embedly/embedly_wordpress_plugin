@@ -8,3 +8,12 @@ div.embedly div.embedly-clear { clear:both; height:0; }
 div.embedly img { width:100%; height:100%; }
 div.embedly .embedly-powered img { width:auto; height:auto; }
 div.embedly img.embedly-favicon { position:relative; top:3px; padding:0 3px; width:auto; height:auto; }
+
+#embedly_providers_form { margin-left:45px;}
+div.embedly_key_form { margin:1em 0 2em 0px; width:75%; }
+div.embedly_key_form fieldset { border:1px solid #dadada; padding:5px 10px; }
+div.embedly_key_form p { font-style:italic; margin:0 0 5px; clear:both; }
+div.embedly_key_form input.embedly_submit { float:none; clear:left;}
+div.embedly_key_form label { clear:both; display:block; font-weight:bold;}
+div.embedly_key_form input#embedly_key { font-size:18px; padding:0.25em; border:1px solid #dadada; outline:none; width:60%; margin-right:10px; }
+div.embedly_key_form span { line-height:28px;}

@@ -351,12 +351,24 @@ function embedly_provider_options(){
 <p><strong>Hmmmm, there where no providers found. Try updating?</strong></p>
 </div>
 <?php } else { ?>
-<p>
-The <a href="http://embed.ly" >Embedly</a> plugin allows you to embed content
-from the following services using the <a href="http://embed.ly">Embedly API</a>. Select the services
-you wish to embed in your blog.
-</p>
 <form id="embedly_providers_form" method="POST" action=".">
+  <div class="embedly_key_form">
+    <fieldset>
+      <label for='embedly_key'>Embedly Key</label>
+      <input id="embedly_key" placeholder="enter your key..." name="embedly_key" type="text" style="width:75%;" <?php $k = get_option('embedly_key'); if($k){ echo "value=" . $k ; }?> />
+      <span><a href="//embed.ly/pricing" target="_new">Don't have a key?</a></span>
+      <p>Add your Embedly Key to embed any URL</p>
+      <input class="button-primary embedly_submit" name="submit" type="submit" value="Save"/>
+    </fieldset>
+  </div>
+  <div style="clear:both;"></div>
+  <hr />
+  <h2 class="providers">Providers</h2>
+  <p>
+  The <a href="http://embed.ly" >Embedly</a> plugin allows you to embed content
+  from the following services using the <a href="http://embed.ly">Embedly API</a>. Select the services
+  you wish to embed in your blog.
+  </p>
 <ul class="actions">
   <li><a class="all" href="#">All</a></li>
   <li><a class="clearselection" href="#">Clear</a></li>
@@ -374,15 +386,9 @@ you wish to embed in your blog.
 <img src="<?php echo $service->favicon; ?>" title="<?php echo $service->name; ?>" alt="<?php echo $service->displayname; ?>"><?php echo $service->displayname; ?></a></li>
 <?php }?>
 </ul>
-<div>
-<div style="clear:both;"></div>
-<label for='embedly_key'>Add your key to embed any URL:</label>
-<input id="embedly_key" name="embedly_key" type="text" style="width:400px;" <?php $k = get_option('embedly_key'); if($k){ echo "value=" . $k ; }?> />
-<span><a href="//embed.ly/pricing" target="_new">Don't have a key?</a></span>
-</div>
+</form>
 <div style="clear:both;"></div>
 <input class="button-primary embedly_submit" name="submit" type="submit" value="Save"/>
-</form>
 <?php } ?>
 <form id="embedly_update_providers_form"  method="POST" action="." >
 <input class="button-secondary embedly_submit" type="submit" name="submit" value="Update Provider List"/>
