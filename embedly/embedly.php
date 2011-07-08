@@ -53,16 +53,17 @@ function insert_provider($obj){
             . $wpdb->escape($obj->about) . "')";
   $results = $wpdb->query( $insert );  
 }
+
 function update_provider($obj){
   global $wpdb;
   $table_name = $wpdb->prefix . "embedly_providers";
   $update = "UPDATE " . $table_name . " ".
             "SET displayname='". $wpdb->escape($obj->displayname) . "', ".
-            "SET domain='". $wpdb->escape($obj->displayname) . "', ".
-            "SET type='". $wpdb->escape($obj->displayname) . "', ".
-            "SET favicon='". $wpdb->escape($obj->displayname) . "', ".
-            "SET regex='". $wpdb->escape(json_encode($obj->regex)) . "', ".
-            "SET about='". $wpdb->escape($obj->about) . "', ".
+            "domain='". $wpdb->escape($obj->domain) . "', ".
+            "type='". $wpdb->escape($obj->type) . "', ".
+            "favicon='". $wpdb->escape($obj->favicon) . "', ".
+            "regex='". $wpdb->escape(json_encode($obj->regex)) . "', ".
+            "about='". $wpdb->escape($obj->about) . "' ".
             "WHERE name='".$wpdb->escape($obj->name)."'";
   $results = $wpdb->query( $update );
 }
