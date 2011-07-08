@@ -14,6 +14,7 @@ function embedly(){
   var JSON = tinymce.util.JSON;
   var Node = tinymce.html.Node;
   var s = tinymce.settings;
+  var t = this;
   
   function toArray(obj){
     var un, arr, i;
@@ -31,7 +32,7 @@ function embedly(){
   tinymce.create('tinymce.plugins.embedly', {
     init: function(ed, url){
       var self = this;
-      self.editor = ed;
+      self.editor = t.editor = ed;
       self.schema = new tinymce.html.Schema(s);
       
       function isEmbedlyImg(node){
@@ -51,10 +52,10 @@ function embedly(){
         // convert our embed to an Image tag for manipulation
         self.schema.addValidElements('img[src|class|*],div[id|class|*],iframe[src|*],object[id|style|width|height|classid|codebase|*],param[name|value],embed[id|style|width|height|type|src|*],video[*],audio[*],source[*]');
         ed.parser = ed.parser || new tinymce.html.DomParser(s, self.schema);
-        ed.parser.addNodeFilter('div,p,span', function(nodes, name){
+        ed.parser.addNodeFilter('div', function(nodes, name){
           var i = nodes.length;
           while(i--){
-            if(ed.dom.hasClass(nodes[i], 'mceItemEmbedly'))
+            if(nodes[i].attr('data-ajax'))
               self.embedToImg(nodes[i]);
           }
         });
@@ -70,10 +71,10 @@ function embedly(){
       });
       
       
+      
       ed.onInit.add(function(){
         // add embedly css file to TinyMCE editor window
         ed.dom.loadCSS(EMBEDLY_TINYMCE+'/css/embedly_editor.css');
-        ed.parser.parse(ed.getContent());
         // Display "embedly" instead of "img" in element path
         if (ed.theme && ed.theme.onResolveName) {
           ed.theme.onResolveName.add(function(theme, path_object){
@@ -208,7 +209,7 @@ function embedly(){
     },
     
     embedToImg : function(node) {
-      console.log('embedToImg');
+      console.log('fired');
       var embed, img, width, height, style, words, url, data;
       function getInnerHTML(node) {
         return new tinymce.html.Serializer({
@@ -226,8 +227,6 @@ function embedly(){
       } else {
         return;
       }
-      console.log("Data Found:");
-      console.log(data);
         
       data = JSON.parse(data) || {
         url: null,
@@ -243,19 +242,21 @@ function embedly(){
         src : EMBEDLY_TINYMCE + '/img/trans.gif'
       });
       
-      id = embed.attr('id');
-      style = embed.attr('style');
+      //console.log(node);
+      node.replace(img);
+      //node.remove();
+      
+      id = node.attr('id');
+      style = node.attr('style');
       
       img.attr({
-        //id : id,
+        id : id,
         'class' : 'mceItemEmbedly',
-        //style : style,
+        style : style,
         width : data.width || "320",
         height : data.height || "240",
         "data-ajax" : JSON.serialize(data, "'")
       });
-      node.replace(img);
-      
     }
     
     
