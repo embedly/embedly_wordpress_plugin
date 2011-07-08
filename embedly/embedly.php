@@ -386,9 +386,10 @@ function embedly_provider_options(){
 <img src="<?php echo $service->favicon; ?>" title="<?php echo $service->name; ?>" alt="<?php echo $service->displayname; ?>"><?php echo $service->displayname; ?></a></li>
 <?php }?>
 </ul>
-</form>
 <div style="clear:both;"></div>
 <input class="button-primary embedly_submit" name="submit" type="submit" value="Save"/>
+
+</form>
 <?php } ?>
 <form id="embedly_update_providers_form"  method="POST" action="." >
 <input class="button-secondary embedly_submit" type="submit" name="submit" value="Update Provider List"/>
