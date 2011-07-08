@@ -14,13 +14,7 @@ var EmbedlyDialog = {
   imageIndex : 0,
   embed : null,
   data : {},
-  embedTemplate: '<div class="embedly" style="position:relative; {{style}}"> \
-     {{>content}}{{#safe}}<div style="float:left;"><span>via </span>{{#favicon}}         \
-     <img class="embedly-favicon" width="16px" height="16px" src="{{favicon_url}}">{{/favicon}}   \
-     <a href="{{provider_url}}" class="media-attribution-link"            \
-      target="_blank">{{provider_name}}</a>        \
-     {{#author}}<span>by <a target="_blank" href="{{author_url}}">        \
-     {{author_name}}</a></span>{{/author}}</div>{{/safe}}',
+  embedTemplate: '<div class="embedly" style="position:relative; {{style}}">{{>content}}',
   embedlyPowered: '<span class="embedly-powered" style="text-align:right;display:block"><a target="_blank" href="http://embed.ly?src=anywhere" title="Powered by Embedly"><img src="//static.embed.ly/images/logos/embedly-powered-small-light.png" alt="Embedly Powered" /></a></span>',
   templateCap: '<div class="embedly-clear"></div></div>',
   
@@ -127,32 +121,7 @@ var EmbedlyDialog = {
       pr += '</div>'; // /embedly-preview
       
     } else {
-      title = resp.title || data.url;
-      style = '';
-      if(typeof data.width != "undefined" && data.width != '')
-        style += 'max-width:'+data.width+'px';
-      if(typeof data.height != "undefined" && data.height != '')
-        style += 'max-height:'+data.height+'px';
-      console.log("Object Type: %s", resp.type);
-      
-      // show a preview of what oEmbed returns, no image editing
-      if (resp.type === 'photo'){
-        code = '<a href="'+data.url+'" target="_blank"><img style="width:100%" src="'+resp.url+'" title="'+title+'" /></a>';
-      } else if (resp.type === 'video'){
-        code = resp.html;
-      } else if (resp.type === 'rich'){
-        code = resp.html;
-      } else {
-        thumb = resp.thumbnail_url ? '<img src="'+resp.thumbnail_url+'" class="thumb" />' : '';
-        description = resp.description;
-        code = thumb+"<a href='" + data.url + "'>" + title + "</a>";
-        code += description;
-      }
-      // Wrap the embed in our class for manipulation
-      pr = '<div class="embedly" style="'+style+'">'+code;
-      pr += '<div style="float:left;"><span>via </span><a href="'+resp.provider_url+'" class="media-attribution-link" target="_blank">'+resp.provider_name+'</a></span></div>'
-      pr += EmbedlyDialog.embedlyPowered;
-      pr += '<div class="embedly-clear"></div></div>';
+      pr = EmbedlyDialog.generateOembed(resp);
     }
     
     $j('#embedly_ajax_load').hide();
@@ -182,6 +151,37 @@ var EmbedlyDialog = {
     }
     $j(im).removeClass('selected').eq(EmbedlyDialog.imageIndex).addClass('selected');
     $j(this).blur();
+  },
+  
+  generateOembed: function(resp){
+    var title,style, pr, code;
+    data = EmbedlyDialog.data;
+    title = resp.title || data.url;
+    style = '';
+    if(typeof data.width != "undefined" && data.width != '')
+      style += 'max-width:'+data.width+'px';
+    if(typeof data.height != "undefined" && data.height != '')
+      style += 'max-height:'+data.height+'px';
+    
+    // show a preview of what oEmbed returns, no image editing
+    if (resp.type === 'photo'){
+      code = '<a href="'+data.url+'" target="_blank"><img style="width:100%" src="'+resp.url+'" title="'+title+'" /></a>';
+    } else if (resp.type === 'video'){
+      code = resp.html;
+    } else if (resp.type === 'rich'){
+      code = resp.html;
+    } else {
+      thumb = resp.thumbnail_url ? '<img src="'+resp.thumbnail_url+'" class="thumb" />' : '';
+      description = resp.description;
+      code = thumb+"<a href='" + data.url + "'>" + title + "</a>";
+      code += description;
+    }
+    // Wrap the embed in our class for manipulation
+    pr = '<div class="embedly" style="'+style+'">'+code;
+    pr += '<div style="float:left;"><span>via </span><a href="'+resp.provider_url+'" class="media-attribution-link" target="_blank">'+resp.provider_name+'</a></span></div>'
+    pr += EmbedlyDialog.embedlyPowered;
+    pr += '<div class="embedly-clear"></div></div>';
+    return pr;
   },
     
   generateEmbed: function(preview){
@@ -315,7 +315,11 @@ var EmbedlyDialog = {
     tinyMCEPopup.close()
   },
   insert : function(file, title) {
-    EmbedlyDialog.data.embed = this.generateEmbed(EmbedlyDialog.embed);
+    if(EmbedlyDialog.data.endpoint == 'oembed'){
+      EmbedlyDialog.data.embed = this.generateOembed(EmbedlyDialog.embed);
+    } else{
+      EmbedlyDialog.data.embed = this.generateEmbed(EmbedlyDialog.embed);
+    }
     var ed = tinyMCEPopup.editor, dom = ed.dom;
     ed.execCommand('mceRepaint');
     tinyMCEPopup.restoreSelection();
