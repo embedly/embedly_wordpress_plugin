@@ -282,8 +282,9 @@ add_action('wp_ajax_embedly_update_providers', 'embedly_ajax_update_providers');
 // Add TinyMCE Functionality
 function embedly_footer_widgets(){
   $url = get_bloginfo('url').'/wp-content/plugins/embedly/tinymce';
-  echo '<script type="text/javascript">EMBEDLY_TINYMCE = "'.$url.'";';
-  echo 'embedly_key = "internal"; embedly_endpoint = "preview";';
+  echo '<script type="text/javascript">EMBEDLY_TINYMCE = "'.$url.'";'.\n;
+  echo 'embedly_key = "";'.\n;
+  echo 'embedly_endpoint = "";'.\n;
   echo '</script>';
 }
 function embedly_addbuttons(){
