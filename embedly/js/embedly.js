@@ -49,9 +49,11 @@ jQuery(document).ready(function($){
         $('UL.generator LI INPUT:checked').each(function(index, elem){
             providers.push($(elem).attr('name'))
         });
+        var embedly_key = $('#embedly_key').val();
         var data = {
              action: 'embedly_update',
-            providers: providers.join(',')
+            providers: providers.join(','),
+            embedly_key: embedly_key
         };
         jQuery.post(ajaxurl, data, function(json) {
         	if (json.error){

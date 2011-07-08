@@ -136,6 +136,10 @@ function embedly_Activate(){
   foreach($services as $service){
   	insert_provider($service);
   }
+
+  //Embedly Account Setting
+  add_option('embedly_key', '');
+
 }
 register_activation_hook( EMBEDLY_FILE, 'embedly_Activate' );
 
@@ -145,6 +149,7 @@ function embedly_deactivate(){
 	$sql = $wpdb->prepare("TRUNCATE TABLE ".$table_name.";");
   $results = $wpdb->query($sql);
 	delete_option('embedly_active');
+  delete_option('embedly_key');
 }
 register_deactivation_hook( EMBEDLY_FILE, 'embedly_deactivate' );
 
@@ -254,6 +259,8 @@ add_action('init', 'add_embedly_providers');
  */
 function embedly_ajax_update(){
   $providers = $_POST['providers'];
+  $embedly_key = $_POST['embedly_key'];
+  update_option('embedly_key', $embedly_key);
   $services = explode(',', $providers);
   $result = update_embedly_service($services);
   if($result == null){
@@ -283,8 +290,9 @@ add_action('wp_ajax_embedly_update_providers', 'embedly_ajax_update_providers');
 // Add TinyMCE Functionality
 function embedly_footer_widgets(){
   $url = get_bloginfo('url').'/wp-content/plugins/embedly/tinymce';
+  $embedly_key = get_option('embedly_key');
   echo '<script type="text/javascript">EMBEDLY_TINYMCE = "'.$url.'";';
-  echo 'embedly_key = "";';
+  echo 'embedly_key = "' .$embedly_key. '";';
   echo 'embedly_endpoint = "";';
   echo '</script>';
 }
@@ -345,7 +353,7 @@ function embedly_provider_options(){
 <?php } else { ?>
 <p>
 The <a href="http://embed.ly" >Embedly</a> plugin allows you to embed content
-from the following services using the Embedly <a href="http://api.embed.ly" >oEmbed API</a>. Select the services
+from the following services using the <a href="http://embed.ly">Embedly API</a>. Select the services
 you wish to embed in your blog.
 </p>
 <form id="embedly_providers_form" method="POST" action=".">
@@ -366,6 +374,12 @@ you wish to embed in your blog.
 <img src="<?php echo $service->favicon; ?>" title="<?php echo $service->name; ?>" alt="<?php echo $service->displayname; ?>"><?php echo $service->displayname; ?></a></li>
 <?php }?>
 </ul>
+<div>
+<div style="clear:both;"></div>
+<label for='embedly_key'>Add your key to embed any URL:</label>
+<input id="embedly_key" name="embedly_key" type="text" style="width:400px;" <?php $k = get_option('embedly_key'); if($k){ echo "value=" . $k ; }?> />
+<span><a href="//embed.ly/pricing" target="_new">Don't have a key?</a></span>
+</div>
 <div style="clear:both;"></div>
 <input class="button-primary embedly_submit" name="submit" type="submit" value="Save"/>
 </form>
