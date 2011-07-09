@@ -131,7 +131,7 @@ function embedly_Activate(){
 		$sql = "TRUNCATE TABLE ".$table_name.";";
 		$results = $wpdb->query($sql);
   }
-  $result = wp_remote_retrieve_body( wp_remote_get('http://api.embed.ly/v1/api/wordpress'));
+  $result = wp_remote_retrieve_body( wp_remote_get('http://api.embed.ly/1/wordpress'));
   $services = json_decode($result);
   foreach($services as $service){
   	insert_provider($service);
@@ -187,7 +187,7 @@ function embedly_services_download(){
   	array_push($os_names, $os->name);
   }
 
-  $result = wp_remote_retrieve_body( wp_remote_get('http://api.embed.ly/v1/api/wordpress'));
+  $result = wp_remote_retrieve_body( wp_remote_get('http://api.embed.ly/1/wordpress'));
   $services = json_decode($result);
   if (!$services){
     return null;
@@ -246,7 +246,7 @@ function add_embedly_providers($the_content){
   if ($services && get_option('embedly_active')) {
     foreach($services as $service) {
       foreach(json_decode($service->regex) as $sre) {
-        wp_oembed_add_provider($sre, 'http://api.embed.ly/v1/api/oembed', true );
+        wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed', true );
       }
     }
   }	
@@ -286,6 +286,14 @@ function embedly_ajax_update_providers(){
 }
 add_action('wp_ajax_embedly_update_providers', 'embedly_ajax_update_providers');
 
+function embedly_acct_has_feature($feature){  
+  $result = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/feature_enabled?feature='.$feature.'&key='.get_option('embedly_key')));
+  $feature_status = json_decode($result);
+  if ($feature_status)
+    return $feature_status->$feature;
+  else
+    return false;
+}
 
 // Add TinyMCE Functionality
 function embedly_footer_widgets(){
@@ -293,7 +301,11 @@ function embedly_footer_widgets(){
   $embedly_key = get_option('embedly_key');
   echo '<script type="text/javascript">EMBEDLY_TINYMCE = "'.$url.'";';
   echo 'embedly_key = "' .$embedly_key. '";';
-  echo 'embedly_endpoint = "";';
+  if (embedly_acct_has_feature('preview'))
+    echo 'embedly_endpoint = "preview";';
+  else
+    echo 'embedly_endpoint = "";';
+
   echo '</script>';
 }
 function embedly_addbuttons(){
@@ -365,8 +377,8 @@ function embedly_provider_options(){
   <hr />
   <h2 class="providers">Providers</h2>
   <p>
-  The <a href="http://embed.ly" >Embedly</a> plugin allows you to embed content
-  from the following services using the <a href="http://embed.ly">Embedly API</a>. Select the services
+  The <a href="//embed.ly" >Embedly</a> plugin allows you to embed content
+  from the following services using the <a href="//embed.ly">Embedly API</a>. Select the services
   you wish to embed in your blog.
   </p>
 <ul class="actions">
