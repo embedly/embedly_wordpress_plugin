@@ -251,13 +251,17 @@ function update_embedly_service($selected){
  */
 function add_embedly_providers($the_content){
   $services = get_embedly_selected_services();
+  $embedly_key = get_option('embedly_key');
 	require_once( ABSPATH . WPINC . '/class-oembed.php' );
 	$oembed = _wp_oembed_get_object();
 	$oembed->providers = array(); 
   if ($services && get_option('embedly_active')) {
     foreach($services as $service) {
       foreach(json_decode($service->regex) as $sre) {
-        wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed', true );
+        if ($embedly_key)
+          wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed?key='.$embedly_key, true );
+        else
+          wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed', true );
       }
     }
   }	
