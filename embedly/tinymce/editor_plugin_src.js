@@ -11,33 +11,14 @@ function embedly(){
 }
 
 (function(){
-  var JSON = tinymce.util.JSON;
-  var Node = tinymce.html.Node;
-  var s = tinymce.settings;
-  var t = this;
-  
-  function toArray(obj){
-    var un, arr, i;
-    if(obj && !obj.splice){
-      arr = [];
-      for(i in obj){
-        if(obj[i])
-          arr[i] = obj[i];
-      }
-      return arr;
-    }
-    return obj;
-  };
+  var JSON = tinymce.util.JSON, Node = tinymce.html.Node, s = tinymce.settings, t = this;
+  function toArray(b){var a,i;if(b && !b.splice){a=[];for(i in b){ if(b[i]) a[i]=b[i];}return a;} return b;};
   
   tinymce.create('tinymce.plugins.embedly', {
     init: function(ed, url){
       var self = this;
-      self.editor = t.editor = ed;
-      self.schema = new tinymce.html.Schema(s);
-      
-      function isEmbedlyImg(node){
-        return node && node.nodeName === 'IMG' && ed.dom.hasClass(node, 'mceItemEmbedly');
-      }
+      self.editor = t.editor = ed, self.schema = new tinymce.html.Schema(s);
+      function isEmbedlyImg(node){ return node && node.nodeName === 'IMG' && ed.dom.hasClass(node, 'mceItemEmbedly');}
       
       ed.parser = ed.parser || new tinymce.html.DomParser(s, self.schema);
       
@@ -104,8 +85,7 @@ function embedly(){
             data = JSON.parse(data);
           }
         } if(!data){
-          data = {
-          }
+          data = {};
         }
         
         data['key'] = self.key;
@@ -155,7 +135,7 @@ function embedly(){
                   align : data.align || 'left',
                     src : EMBEDLY_TINYMCE + '/img/trans.gif',
                 'class' : 'mceItemEmbedly',
-        'data-ajax' : JSON.serialize(data, "'")
+            'data-ajax' : JSON.serialize(data, "'")
       });
       img.width = data.width || 320;
       img.height = data.height || 241;
@@ -199,7 +179,6 @@ function embedly(){
         style += 'max-height:'+ node.attr('height') + 'px;';
       
       
-      console.log(style);
       if(data.embed){
         var ser = JSON.serialize(data, "'");
         embed = new Node('div', 1);
@@ -218,9 +197,8 @@ function embedly(){
     },
     
     embedToImg : function(node) {
-      console.log('fired');
-      var embed, img, width, height, style, words, url, data;
-      function getInnerHTML(node) {
+      var embed, img, width, height, style, words, url, data, getInnerHTML;
+      getInnerHTML = function(node) {
         return new tinymce.html.Serializer({
           inner: true,
           validate: false
@@ -244,16 +222,14 @@ function embedly(){
         words: null,
         embed: null,
         thumbnail: 0
-      }
+      };
       
       img = new Node('img', 1);
       img.attr({
         src : EMBEDLY_TINYMCE + '/img/trans.gif'
       });
       
-      //console.log(node);
       node.replace(img);
-      //node.remove();
       
       id = node.attr('id');
       style = node.attr('style');
@@ -263,7 +239,7 @@ function embedly(){
         'class' : 'mceItemEmbedly',
         style : style,
         width : data.width || "320",
-        height : data.height || "240",
+        height : data.height || "241",
         "data-ajax" : JSON.serialize(data, "'")
       });
     }
