@@ -59,8 +59,12 @@ div.embedly {
       top: 4px;
       height: 16px;
       width: 16px; }
+  div.embedly .media-attribution {
+    font-size:0.9em;
+  }
   div.embedly span.embedly-link {
     margin: 7px 0 0;
+    font-size:0.9em;
     padding: 0;
     display: block;
     text-align: right; }

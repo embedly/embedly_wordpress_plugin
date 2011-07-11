@@ -16,7 +16,12 @@ var EmbedlyDialog = {
   data : {},
   embedTemplate: '<div class="embedly" style="position:relative; {{style}}">{{>content}}',
   embedlyPowered: '<span class="embedly-powered" style="text-align:right;display:block"><a target="_blank" href="http://embed.ly?src=anywhere" title="Powered by Embedly"><img src="//static.embed.ly/images/logos/embedly-powered-small-light.png" alt="Embedly Powered" /></a></span>',
-  templateCap: '<div class="embedly-clear"></div></div>',
+  templateCap: '<div class="media-attribution"><span>via </span>{{#favicon}}         \
+  <img class="embedly-favicon" width="16px" height="16px" src="{{favicon_url}}">{{/favicon}}   \
+  <a href="{{provider_url}}" class="media-attribution-link"            \
+  data-media-type="Plixi" target="_blank">{{provider_name}}</a>        \
+  {{#author}}<span>by <a target="_blank" href="{{author_url}}">        \
+  {{author_name}}</a></span>{{/author}}</div><div style="clear:both;"></div><div class="embedly-clear"></div></div>',
   
   init : function(ed) {
     tinyMCEPopup.resizeToInnerSize();
