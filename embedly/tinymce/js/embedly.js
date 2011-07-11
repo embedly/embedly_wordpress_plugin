@@ -15,7 +15,7 @@ var EmbedlyDialog = {
   embed : null,
   data : {},
   embedTemplate: '<div class="embedly" style="position:relative; {{style}}">{{>content}}',
-  embedlyPowered: '<span class="embedly-powered" style="text-align:right;display:block"><a target="_blank" href="http://embed.ly?src=anywhere" title="Powered by Embedly"><img src="//static.embed.ly/images/logos/embedly-powered-small-light.png" alt="Embedly Powered" /></a></span>',
+  embedlyPowered: '<span class="embedly-powered" style="float:right;display:block"><a target="_blank" href="http://embed.ly?src=anywhere" title="Powered by Embedly"><img src="//static.embed.ly/images/logos/embedly-powered-small-light.png" alt="Embedly Powered" /></a></span>',
   templateCap: '<div class="media-attribution"><span>via </span>{{#favicon}}         \
   <img class="embedly-favicon" width="16px" height="16px" src="{{favicon_url}}">{{/favicon}}   \
   <a href="{{provider_url}}" class="media-attribution-link"            \
@@ -177,15 +177,16 @@ var EmbedlyDialog = {
     } else if (resp.type === 'rich'){
       code = resp.html;
     } else {
-      thumb = resp.thumbnail_url ? '<img src="'+resp.thumbnail_url+'" class="thumb" />' : '';
+      
+      thumb = resp.thumbnail_url ? '<img src="'+resp.thumbnail_url+'" class="thumb embedly-thumbnail-small" />' : '';
       description = resp.description;
-      code = thumb+"<a href='" + data.url + "'>" + title + "</a>";
+      code = thumb+"<a class='embedly-title' href='" + data.url + "'>" + title + "</a>";
       code += description;
     }
     // Wrap the embed in our class for manipulation
-    pr = '<div class="embedly" style="'+style+'">'+code;
-    pr += '<div style="float:left;"><span>via </span><a href="'+resp.provider_url+'" class="media-attribution-link" target="_blank">'+resp.provider_name+'</a></span></div>'
+    pr = '<div class="embedly" style="'+style+'">'+code + '<div class="embedly-clear"></div>';
     pr += EmbedlyDialog.embedlyPowered;
+    pr += '<div class="media-attribution"><span>via </span><a href="'+resp.provider_url+'" class="media-attribution-link" target="_blank">'+resp.provider_name+'</a></span></div>'
     pr += '<div class="embedly-clear"></div></div>';
     return pr;
   },

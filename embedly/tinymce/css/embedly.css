@@ -210,7 +210,6 @@ a.button.primary:active {
   -ms-box-shadow:0px 0px 3px #333;
 }
 
-
 div.embedly {
   margin: 10px 10px 10px 0;
   padding: 5px;
@@ -255,8 +254,13 @@ div.embedly {
       top: 4px;
       height: 16px;
       width: 16px; }
+  div.embedly .media-attribution {
+    font-size:0.9em;
+    clear:left;
+  }
   div.embedly span.embedly-link {
     margin: 7px 0 0;
+    font-size:0.9em;
     padding: 0;
     display: block;
     text-align: right; }
@@ -267,7 +271,7 @@ div.embedly {
       
 div.embedly div.embedly-clear { clear:both; height:0; }
 div.embedly img { max-width:100%; max-height:100%; }
-div.embedly img.thumb { width:auto; height:auto; max-width:50%; }
+div.embedly img.thumb { width:auto; height:auto; max-width:50%; float:left; }
 div.embedly .embedly-powered img { width:auto; height:auto; }
 img.mceItemEmbedly {
   background-color:#dbf2fa;

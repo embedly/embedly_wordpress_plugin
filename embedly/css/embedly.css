@@ -61,6 +61,7 @@ div.embedly {
       width: 16px; }
   div.embedly .media-attribution {
     font-size:0.9em;
+    clear:left;
   }
   div.embedly span.embedly-link {
     margin: 7px 0 0;
