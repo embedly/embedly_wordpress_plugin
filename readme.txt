@@ -71,7 +71,7 @@ In the post editor click the Embedly icon and add your URL.
 You need a key to embed "any" url, otherwise the plugin will
 only be available for these [providers](http://embed.ly/providers).
 
-= What does a paid key give me? ==
+= What does a paid plan give me? ==
 
 The paid [plans](http://embed.ly/pricing) will give you the 
 ability to choose the images for your embed and remove the
