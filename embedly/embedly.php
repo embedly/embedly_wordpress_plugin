@@ -176,6 +176,17 @@ function admin_register_head() {
 }
 add_action('admin_head', 'admin_register_head');
 
+
+/**
+* Add CSS to front end for handling Embedly Embeds
+*/
+function frontend_register_head(){
+  $siteurl = get_option('siteurl');
+  $url = $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__));
+  echo "<link rel='stylesheet' type='text/css' href='$url/css/embedly.css' />\n";
+}
+add_action('wp_head', 'frontend_register_head');
+
 /**
 * The list of providers embedly offers is always growing. This is a dynamic way to
 * pull in new providers.
@@ -335,8 +346,8 @@ add_action('init', 'embedly_addbuttons');
 
 function embedly_change_mce_options($init){
   $ext = 'div[id|class|data-mce-style|style|data-ajax]';
-  $ext.= ',p[id|class|style]';
-  $ext.= ',img[id|class|style|data-mce-style|data-ajax]';
+  $ext.= ',p[id|class|style],a[id|class|style],span[id|class|style]';
+  $ext.= ',img[id|class|style|data-mce-style|data-ajax|width|height]';
   
   if ( isset ($init['extended_valid_elements'] ) ) {
     $init['extended_valid_elements'] .= ',' . $ext;

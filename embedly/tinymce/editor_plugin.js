@@ -158,7 +158,7 @@ function embedly(){
         'data-ajax' : JSON.serialize(data, "'")
       });
       img.width = data.width || 320;
-      img.height = data.height || 240;
+      img.height = data.height || 241;
       
       return img;
     },
@@ -180,7 +180,7 @@ function embedly(){
     },
     
     imgToEmbed : function(node, args) {
-      var self = this, editor = self.editor, embed, data;
+      var self = this, editor = self.editor, embed, data, style;
       data = node.attr('data-ajax');
       if (!data)
         return;
@@ -191,7 +191,15 @@ function embedly(){
         style = node.attr('style');
         if (style)
           style = editor.dom.serializeStyle(editor.dom.parseStyle(style, 'img'));
+        else
+          style = '';
       }
+      style += 'max-width:'+ node.attr('width') + 'px;';
+      if(node.attr('height') != 241)
+        style += 'max-height:'+ node.attr('height') + 'px;';
+      
+      
+      console.log(style);
       if(data.embed){
         var ser = JSON.serialize(data, "'");
         embed = new Node('div', 1);
@@ -200,6 +208,7 @@ function embedly(){
         value.value = data.embed;
         embed.append(value);
         embed.attr('class', 'mceItemEmbedly' );
+        embed.attr('style', style);
         embed.attr('data-ajax', ser);
       }
       if(embed)

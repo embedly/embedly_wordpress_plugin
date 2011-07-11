@@ -4,10 +4,7 @@ UL.generator A IMG {height:16px;left:0;position:absolute;top:0;width:16px;}
 UL.actions LI {background-color:#EFEFEF;border:1px solid #DDDDDD;float:left;margin:0 4px;padding:5px;}
 #embedly-logo{background:transparent url(../img/embedly_wordpress_logo.png) no-repeat scroll 0 0;}
 INPUT.embedly_submit{float:left; margin:10px 5px;}
-div.embedly div.embedly-clear { clear:both; height:0; }
-div.embedly img { width:100%; height:100%; }
-div.embedly .embedly-powered img { width:auto; height:auto; }
-div.embedly img.embedly-favicon { position:relative; top:3px; padding:0 3px; width:auto; height:auto; }
+
 
 #embedly_providers_form { margin-left:45px;}
 div.embedly_key_form { margin:1em 0 2em 0px; width:75%; }
@@ -17,3 +14,62 @@ div.embedly_key_form input.embedly_submit { float:none; clear:left;}
 div.embedly_key_form label { clear:both; display:block; font-weight:bold;}
 div.embedly_key_form input#embedly_key { font-size:18px; padding:0.25em; border:1px solid #dadada; outline:none; width:60%; margin-right:10px; }
 div.embedly_key_form span { line-height:28px;}
+
+div.embedly {
+  margin: 10px 10px 10px 0;
+  padding: 5px;
+  zoom: 1; }
+  div.embedly * {
+    margin: 0;
+    padding: 0; }
+  div.embedly:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0; }
+  div.embedly p {
+    font-size: 1em;
+    line-height: 1.3em;
+    margin-bottom: 1em; }
+  div.embedly blockquote {
+    margin: 0.5em 1.5em;
+    font-weight: normal; }
+  div.embedly .embedly-title {
+    display: block;
+    font-size: 1.2em;
+    font-weight: bold;
+    line-height: 1.1em;
+    margin-bottom: 0.5em; }
+  div.embedly .embedly-thumbnail-small {
+    float: left;
+    max-width: 50%;
+    margin-bottom: 1em;
+    margin-right: 18px; }
+    div.embedly .embedly-thumbnail-small img {
+      max-width: 100%; }
+  div.embedly .embedly-thumbnail img {
+    max-width: 100%; }
+  div.embedly .embedly-video, div.embedly .embedly-audio {
+    max-width: 100%; }
+    div.embedly img.embedly-favicon {
+      margin: 0 3px;
+      position: relative;
+      top: 4px;
+      height: 16px;
+      width: 16px; }
+  div.embedly span.embedly-link {
+    margin: 7px 0 0;
+    padding: 0;
+    display: block;
+    text-align: right; }
+    div.embedly img.embedly-powered {
+      width: 69px;
+      height: 16px;
+      max-width: inherit; }
+      
+div.embedly div.embedly-clear { clear:both; height:0; }
+div.embedly img { max-width:100%; max-height:100%; }
+div.embedly img.thumb { width:auto; height:auto; max-width:50%; float:left; }
+div.embedly .embedly-powered img { width:auto; height:auto; }

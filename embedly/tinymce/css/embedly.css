@@ -210,11 +210,65 @@ a.button.primary:active {
   -ms-box-shadow:0px 0px 3px #333;
 }
 
+
+div.embedly {
+  margin: 10px 10px 10px 0;
+  padding: 5px;
+  zoom: 1; }
+  div.embedly * {
+    margin: 0;
+    padding: 0; }
+  div.embedly:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0; }
+  div.embedly p {
+    font-size: 1em;
+    line-height: 1.3em;
+    margin-bottom: 1em; }
+  div.embedly blockquote {
+    margin: 0.5em 1.5em;
+    font-weight: normal; }
+  div.embedly .embedly-title {
+    display: block;
+    font-size: 1.2em;
+    font-weight: bold;
+    line-height: 1.1em;
+    margin-bottom: 0.5em; }
+  div.embedly .embedly-thumbnail-small {
+    float: left;
+    max-width: 50%;
+    margin-bottom: 1em;
+    margin-right: 18px; }
+    div.embedly .embedly-thumbnail-small img {
+      max-width: 100%; }
+  div.embedly .embedly-thumbnail img {
+    max-width: 100%; }
+  div.embedly .embedly-video, div.embedly .embedly-audio {
+    max-width: 100%; }
+    div.embedly img.embedly-favicon {
+      margin: 0 3px;
+      position: relative;
+      top: 4px;
+      height: 16px;
+      width: 16px; }
+  div.embedly span.embedly-link {
+    margin: 7px 0 0;
+    padding: 0;
+    display: block;
+    text-align: right; }
+    div.embedly img.embedly-powered {
+      width: 69px;
+      height: 16px;
+      max-width: inherit; }
+      
 div.embedly div.embedly-clear { clear:both; height:0; }
-div.embedly img { width:100%; height:100%; }
+div.embedly img { max-width:100%; max-height:100%; }
 div.embedly img.thumb { width:auto; height:auto; max-width:50%; }
 div.embedly .embedly-powered img { width:auto; height:auto; }
-div.embedly img.embedly-favicon { position:relative; top:3px; padding:0 3px; width:auto; height:auto; }
 img.mceItemEmbedly {
   background-color:#dbf2fa;
   border:1px dotted #0095da;
