@@ -137,8 +137,8 @@ function embedly(){
                 'class' : 'mceItemEmbedly',
             'data-ajax' : JSON.serialize(data, "'")
       });
-      img.width = data.width || 320;
-      img.height = data.height || 241;
+      img.width = data.width || 600;
+      img.height = data.height || 600;
       
       return img;
     },
@@ -175,7 +175,7 @@ function embedly(){
           style = '';
       }
       style += 'max-width:'+ node.attr('width') + 'px;';
-      if(node.attr('height') != 241)
+      if(node.attr('height') != 600)
         style += 'max-height:'+ node.attr('height') + 'px;';
       
       
@@ -238,8 +238,8 @@ function embedly(){
         id : id,
         'class' : 'mceItemEmbedly',
         style : style,
-        width : data.width || "320",
-        height : data.height || "241",
+        width : data.width || "600",
+        height : data.height || "600",
         "data-ajax" : JSON.serialize(data, "'")
       });
     }

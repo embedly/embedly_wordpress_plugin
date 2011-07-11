@@ -209,7 +209,7 @@ var EmbedlyDialog = {
     }
     if (preview.type == 'image'){
       return '<a href="{{original_url}}" class="embedly-thumbnail">        \
-      <img style="width:100%" src="{{url}}" /></a>';
+      <img style="max-width:100%" src="{{url}}" /></a>';
     } else if (preview.type == 'video'){
       return '<video src="{{url}}" controls="controls" preload="preload"   \
       class="embedly-video"></video>';
@@ -231,10 +231,10 @@ var EmbedlyDialog = {
       if (preview.images.length != 0) {
         if (preview.images[EmbedlyDialog.imageIndex].width >= EmbedlyDialog.data.width ) {
           r += '<a target="_blank" href="{{original_url}}" title="{{url}}" \
-            class="embedly-thumbnail"><img style="width:100%" src="{{thumbnail_url}}"/></a>';
+            class="embedly-thumbnail"><img style="max-width:100%" src="{{thumbnail_url}}"/></a>';
         } else {
           r += '<a target="_blank" href="{{original_url}}" title="{{url}}" \
-            class="embedly-thumbnail-small" style="width:50%"> \
+            class="embedly-thumbnail-small" style="max-width:50%"> \
             <img src="{{thumbnail_url}}"/></a>';
         }
       }
