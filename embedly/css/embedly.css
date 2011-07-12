@@ -29,6 +29,7 @@ div.embedly {
     visibility: hidden;
     line-height: 0;
     height: 0; }
+  div.embedly a img { border:none; }
   div.embedly p {
     font-size: 1em;
     line-height: 1.3em;
