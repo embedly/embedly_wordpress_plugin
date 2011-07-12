@@ -1,9 +1,9 @@
 === Embedly ===
 Contributors: Embedly
 Tags: embed, oembed, video, image, rich media
-Requires at least: 2.9.1
+Requires at least: 3.1
 Tested up to: 3.2
-Stable tag: 1.4
+Stable tag: 2.0
 
 Embed videos, images and rich media from "any" source with just the URL.
 Just add your [Embedly Key](http://embed.ly/pricing) to the Embedly
