@@ -74,9 +74,9 @@ only be available for these [providers](http://embed.ly/providers).
 = What does a paid plan give me? =
 
 The paid [plans](http://embed.ly/pricing) will give you the 
-ability to choose the images and use RSS in your 
-embed, while also removing the powered by Embedly logo.
-
+ability to choose the images used in your embed, remove the
+powered by Embedly logo, and allow higher levels of usage
+and support.
 
 
 == Screenshots ==
