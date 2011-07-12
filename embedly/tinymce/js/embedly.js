@@ -222,9 +222,9 @@ var EmbedlyDialog = {
     } else if (preview.type == 'audio'){
       return '<audio src="{{url}}" controls="controls" preload="preload"   \
       class="embedly-video"></audio>';
-    } else if (preview.content != null){
-      return '<span class="embedly-title"><a target="_blank"               \
-      href="{{url}}">{{title}}</a></span><p>{{{content}}}<p>';
+    //} else if (preview.content != null){
+    //  return '<span class="embedly-title"><a target="_blank"               \
+    //  href="{{url}}">{{title}}</a></span><p>{{{content}}}<p>';
     } else if (preview.object.type == 'photo'){
       return '<a href="{{original_url}}" class="embedly-thumbnail">        \
       <img src="{{object_url}}" /></a>';
