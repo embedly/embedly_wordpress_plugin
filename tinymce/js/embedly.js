@@ -59,34 +59,39 @@ var EmbedlyDialog = {
       return false;
     }
     EmbedlyDialog.data.url = url;
-    
+    params = {};
     // options
     width = $j('#embedly_width_field').val();
-    if(typeof width != 'undefined' && width != '')
+    if(typeof width != 'undefined' && width != ''){
       EmbedlyDialog.data.width = width;
-    else {
+      params['maxwidth'] = width;
+    }else {
       width = null;
       EmbedlyDialog.data.width = null;
     }
     words = $j('#embedly_words_field').val();
-    if(typeof words != 'undefined' && words != '')
+    if(typeof words != 'undefined' && words != ''){
       EmbedlyDialog.data.words = words;
-    else {
+      params['words'] = words;
+    }else {
       words = null;
       EmbedlyDialog.data.words = null;
     } 
     height = $j('#embedly_height_field').val();
-    if(typeof height != "undefined" && height != '')
+    if(typeof height != "undefined" && height != ''){
       EmbedlyDialog.data.height = height;
-    else {
+      params['maxheight'] = height;
+    } else {
       height = null;
       EmbedlyDialog.data.height = null;
     }
     
+    params['url'] = escape(url);
+    params['key'] = EmbedlyDialog.key;
+    
     $j('#embedly_ajax_load').show();
     EmbedlyDialog.embedlyUrl = EmbedlyDialog.endpoint == 'preview' ? 'http://api.embed.ly/1/preview' : 'http://api.embed.ly/1/oembed'
-    EmbedlyDialog.ajax('get', EmbedlyDialog.embedlyUrl, 
-      {key:EmbedlyDialog.key, url:escape(url), words:words, width:width, height: height });
+    EmbedlyDialog.ajax('get', EmbedlyDialog.embedlyUrl, params);
   },
   
   ajax : function(method, url, params) {
