@@ -2,8 +2,8 @@
 Contributors: Embedly
 Tags: embed, oembed, video, image, rich media
 Requires at least: 3.1
-Tested up to: 3.2
-Stable tag: 2.0
+Tested up to: 3.2.1
+Stable tag: 2.0.1
 
 Embed videos, images and rich media from "any" source with just the URL.
 Just add your [Embedly Key](http://embed.ly/pricing) to the Embedly
@@ -85,6 +85,8 @@ and support.
 2. Sample Embed.
 
 == Changelog ==
+= 2.0.1 =
+* Resolves Rich Editor not showing up.
 = 2.0 =
 * Adds Embedly TinyMCE plugin to Rich Editor.
 * Support for Embedly Key to Embed "any" URL.
