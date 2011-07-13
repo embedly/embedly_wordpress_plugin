@@ -349,8 +349,8 @@ add_action('admin_head', 'embedly_footer_widgets');
 add_action('init', 'embedly_addbuttons');
 
 function embedly_change_mce_options($init){
-  $ext = 'div[id|class|data-mce-style|style|data-ajax]';
-  $ext.= ',p[id|class|style],a[id|class|style],span[id|class|style]';
+  //$ext = 'div[id|class|data-mce-style|style|data-ajax]';
+  //$ext.= ',p[id|class|style],a[id|class|style],span[id|class|style]';
   
   if ( isset ($init['extended_valid_elements'] ) ) {
     $init['extended_valid_elements'] .= ',' . $ext;

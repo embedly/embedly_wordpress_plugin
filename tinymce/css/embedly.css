@@ -209,6 +209,16 @@ a.button.primary:active {
   box-shadow:0px 0px 3px #333;
   -ms-box-shadow:0px 0px 3px #333;
 }
+#embedly-preview .embedly-images .embedly-video,
+#embedly-preview .embedly-images .embedly-noimage {
+  background:#000 url(../img/play.png) no-repeat bottom left;
+  height:100px;
+  width:100%;
+  display:block;
+}
+#embedly-preview .embedly-images .embedly-noimage {
+  background:transparent url(../img/noimage.png) no-repeat top left;
+}
 
 div.embedly {
   margin: 10px 10px 10px 0;

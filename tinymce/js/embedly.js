@@ -117,7 +117,12 @@ var EmbedlyDialog = {
         pr += '<p>Select an image to use with your embed.</p><a href="#" class="button secondary images-prev">&lt;</a><a href="#" class="button secondary images-next">&gt;</a>';
         pr += '</div>';
         pr += '</div>'; // /embedly-images div
+      } else if((resp.object.type == 'video' || resp.type == 'video')){
+        pr += '<div class="embedly-images"><div class="image embedly-video">&nbsp;</div></div>';
+      } else {
+        pr += '<div class="embedly-images"><div class="image embedly-noimage">&nbsp;</div></div>';
       }
+      
       pr += '<div class="embedly-content">';
       if(resp.title)
         pr += '<p><strong>Title:</strong> '+resp.title+'</p>';
