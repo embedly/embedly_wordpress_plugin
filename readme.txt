@@ -85,6 +85,9 @@ and support.
 2. Sample Embed.
 
 == Changelog ==
+= 2.0.3 =
+* Resolve issue with tag attributes getting stripped
+* Resolve quirks with height getting set incorrectly
 = 2.0.2 =
 * Resolve conflict with WordPress image editing
 = 2.0.1 =
