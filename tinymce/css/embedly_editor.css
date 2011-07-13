@@ -5,6 +5,13 @@ img.mceItemEmbedly {
   background-position:center center;
   background-image:url(../img/embed.gif);
 }
+img.mceItemEmbedly:after {
+  clear:both;
+  height:0px;
+  content:".";
+  visibility:hidden;
+  display:block;
+}
 
 div.embedly {
   margin: 10px 10px 10px 0;

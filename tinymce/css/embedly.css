@@ -164,7 +164,10 @@ a.button.primary:active {
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #0078c9), color-stop(14%, #0097d8), color-stop(89%, #4fb6ea));
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0097D8', endColorstr='#4FB6EA',GradientType=0 );
 }
-
+p.error {
+  color:red; padding:0; margin:0;
+  float:right;
+}
 /* Embedly Preview */
 #embedly-preview {
 }
@@ -290,4 +293,11 @@ img.mceItemEmbedly {
   background-repeat:no-repeat;
   background-position:center center;
   background-image:url(tinymce/img/embed.gif);
+}
+img.mceItemEmbedly:after {
+  clear:both;
+  height:0px;
+  content:".";
+  visibility:hidden;
+  display:block;
 }

@@ -107,41 +107,46 @@ var EmbedlyDialog = {
     var pr, code, title, style, data;
     EmbedlyDialog.embed = resp;
     data = EmbedlyDialog.data;
-    if(EmbedlyDialog.endpoint == 'preview'){
-      
-      pr = '<div id="embedly-preview">';
-      if(resp.images.length > 0){
-        pr += '<div class="embedly-images"><div class="embedly-image-scroll">';
-        for(image in resp.images)
-          pr += '<div class="image"><img src="'+resp.images[image].url+'"/></div>';
-        pr += '<p>Select an image to use with your embed.</p><a href="#" class="button secondary images-prev">&lt;</a><a href="#" class="button secondary images-next">&gt;</a>';
-        pr += '</div>';
-        pr += '</div>'; // /embedly-images div
-      } else if((resp.object.type == 'video' || resp.type == 'video')){
-        pr += '<div class="embedly-images"><div class="image embedly-video">&nbsp;</div></div>';
-      } else {
-        pr += '<div class="embedly-images"><div class="image embedly-noimage">&nbsp;</div></div>';
-      }
-      
-      pr += '<div class="embedly-content">';
-      if(resp.title)
-        pr += '<p><strong>Title:</strong> '+resp.title+'</p>';
-      if(resp.description)
-        pr += '<p><strong>Description:</strong> '+resp.description+'</p>';
-      pr += '</div>'; // /embedly-content
-      pr += '</div>'; // /embedly-preview
-      
+    if(resp.type == 'error'){
+      $j('#embedly_ajax_load').hide();
+      $j('#embedly_url_field').siblings('label').before("<p class='error'>We couldn't process this URL. Try again, or email support@embed.ly.</p>");
     } else {
-      pr = EmbedlyDialog.generateOembed(resp);
-    }
+      if(EmbedlyDialog.endpoint == 'preview'){
+      
+        pr = '<div id="embedly-preview">';
+        if(resp.images.length > 0){
+          pr += '<div class="embedly-images"><div class="embedly-image-scroll">';
+          for(image in resp.images)
+            pr += '<div class="image"><img src="'+resp.images[image].url+'"/></div>';
+          pr += '<p>Select an image to use with your embed.</p><a href="#" class="button secondary images-prev">&lt;</a><a href="#" class="button secondary images-next">&gt;</a>';
+          pr += '</div>';
+          pr += '</div>'; // /embedly-images div
+        } else if((resp.object.type == 'video' || resp.type == 'video')){
+          pr += '<div class="embedly-images"><div class="image embedly-video">&nbsp;</div></div>';
+        } else {
+          pr += '<div class="embedly-images"><div class="image embedly-noimage">&nbsp;</div></div>';
+        }
+      
+        pr += '<div class="embedly-content">';
+        if(resp.title)
+          pr += '<p><strong>Title:</strong> '+resp.title+'</p>';
+        if(resp.description)
+          pr += '<p><strong>Description:</strong> '+resp.description+'</p>';
+        pr += '</div>'; // /embedly-content
+        pr += '</div>'; // /embedly-preview
+      
+      } else {
+        pr = EmbedlyDialog.generateOembed(resp);
+      }
     
-    $j('#embedly_ajax_load').hide();
-    $j('#embedly_form_lookup').hide();
-    $j('#embedly_form_submit').show().focus();
-    $j('#embedly-preview-results').html(pr);
-    $j('.embedly-images .images-prev').bind('click', EmbedlyDialog.imagePrev);
-    $j('.embedly-images .images-next').bind('click', EmbedlyDialog.imageNext);
-    $j('.embedly-images').find('.image').eq(0).addClass('selected');
+      $j('#embedly_ajax_load').hide();
+      $j('#embedly_form_lookup').hide();
+      $j('#embedly_form_submit').show().focus();
+      $j('#embedly-preview-results').html(pr);
+      $j('.embedly-images .images-prev').bind('click', EmbedlyDialog.imagePrev);
+      $j('.embedly-images .images-next').bind('click', EmbedlyDialog.imageNext);
+      $j('.embedly-images').find('.image').eq(0).addClass('selected');
+    }
   },
   imageNext: function(e){
     e.preventDefault();
