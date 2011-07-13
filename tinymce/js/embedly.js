@@ -65,19 +65,24 @@ var EmbedlyDialog = {
     width = $j('#embedly_width_field').val();
     if(typeof width != 'undefined' && width != '')
       EmbedlyDialog.data.width = width;
-    else
-      width = 500;
+    else {
+      width = null;
+      EmbedlyDialog.data.width = null;
+    }
     words = $j('#embedly_words_field').val();
     if(typeof words != 'undefined' && words != '')
       EmbedlyDialog.data.words = words;
-    else
+    else {
       words = null;
-      
+      EmbedlyDialog.data.words = null;
+    } 
     height = $j('#embedly_height_field').val();
     if(typeof height != "undefined" && height != '')
       EmbedlyDialog.data.height = height;
-    else
+    else {
       height = null;
+      EmbedlyDialog.data.height = null;
+    }
     
     $j('#embedly_ajax_load').show();
     EmbedlyDialog.embedlyUrl = EmbedlyDialog.endpoint == 'preview' ? 'http://api.embed.ly/1/preview' : 'http://api.embed.ly/1/oembed'

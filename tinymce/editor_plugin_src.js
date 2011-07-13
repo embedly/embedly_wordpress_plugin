@@ -175,8 +175,8 @@ function embedly(){
           style = '';
       }
       style += 'max-width:'+ node.attr('width') + 'px;';
-      if(node.attr('height') != 600)
-        style += 'max-height:'+ node.attr('height') + 'px;';
+      if(data.height && data.height != '')
+        style += 'overflow:hidden;max-height:'+ node.attr('height') + 'px;';
       
       
       if(data.embed){
