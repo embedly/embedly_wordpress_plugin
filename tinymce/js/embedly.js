@@ -346,10 +346,12 @@ var EmbedlyDialog = {
     } else{
       EmbedlyDialog.data.embed = EmbedlyDialog.generateOembed(EmbedlyDialog.embed);
     }
+    delete EmbedlyDialog.data['key'];
+    delete EmbedlyDialog.data['endpoint'];
     var ed = tinyMCEPopup.editor, dom = ed.dom;
     ed.execCommand('mceRepaint');
     tinyMCEPopup.restoreSelection();
-    ed.selection.setNode(ed.plugins.embedly.dataToImg(this.data));
+    ed.selection.setNode(ed.plugins.embedly.dataToImg(EmbedlyDialog.data));
     
     tinyMCEPopup.close();
   }
