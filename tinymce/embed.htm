@@ -38,10 +38,13 @@
                 <label for="embedly_height_field">{#embedly_dlg.height_field}</label>
                 <input type="text" class="embedly_field" id="embedly_height_field" name="embedly_height" >
               </p>
-              <p class="third last">
+              <p class="third">
                 <label for="embedly_words_field">{#embedly_dlg.words_field}</label>
                 <input type="text" class="embedly_field" id="embedly_words_field" name="embedly_words" >
               </p>
+              <p class="third-mini last">
+                 <button id="embedly_form_lookup" class="primary">Preview</button>
+                </p>
               <div style='clear:both'></div>
             </fieldset>
             <fieldset>
@@ -54,7 +57,7 @@
             </fieldset>
     </form>
     <div class="embedly_button_row">
-      <button id="embedly_form_lookup" class="primary">Generate Embed</button><button id="embedly_form_submit" class="primary" onclick="javascript:EmbedlyDialog.insert()">Embed this URL</button><button onclick="javascript:EmbedlyDialog.cancel()">Cancel</button>
+     <button id="embedly_form_submit" class="primary disabled" disabled="disabled" onclick="javascript:EmbedlyDialog.insert()">Embed this URL</button><button onclick="javascript:EmbedlyDialog.cancel()">Cancel</button>
     </div>
   </div>
 </body>

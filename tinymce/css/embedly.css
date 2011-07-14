@@ -25,7 +25,7 @@ input:focus {
 }
 input#embedly_url_field {
   padding-right:30px;
-  width:444px;
+  width:93%;
 }
 label {
   margin:0;
@@ -46,9 +46,14 @@ fieldset input {
   width:444px;
 }
 fieldset p.third {
-  width:152px;
+  width:26%;
   margin-left:10px;
   float:left;
+}
+fieldset p.third-mini {
+  width:15%;
+  float:left;
+  margin:12px 0 0 10px;
 }
 fieldset p.half {
   float:left;
@@ -59,7 +64,7 @@ fieldset p.first {
   margin-left:0;
 }
 fieldset p.third input {
-  width:146px;
+  width:95%;
 }
 fieldset p.half input {
   width:140px;
@@ -78,14 +83,12 @@ fieldset p.half input {
 .embedly_button_row button {
   margin-right:5px;
 }
-#embedly_form_submit {
-  display:none;
-}
+
 #embedly-preview-results {
   background:#fff;
   border:1px solid #dadada;
   height:240px;
-  overflow:auto;
+  overflow-y:scroll;
   padding:10px;
 }
 

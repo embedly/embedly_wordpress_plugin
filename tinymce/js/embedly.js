@@ -51,6 +51,7 @@ var EmbedlyDialog = {
   },
   
   lookupUrl : function(e){
+    e.preventDefault();
     var url, width, words, height;
     $j('#embedly_url_field').removeClass('error');
     url = $j('#embedly_url_field').val();
@@ -88,7 +89,6 @@ var EmbedlyDialog = {
     
     params['url'] = escape(url);
     params['key'] = EmbedlyDialog.key;
-    
     $j('#embedly_ajax_load').show();
     EmbedlyDialog.embedlyUrl = EmbedlyDialog.endpoint == 'preview' ? 'http://api.embed.ly/1/preview' : 'http://api.embed.ly/1/oembed'
     EmbedlyDialog.ajax('get', EmbedlyDialog.embedlyUrl, params);
@@ -121,8 +121,8 @@ var EmbedlyDialog = {
       $j('#embedly_url_field').siblings('label').before("<p class='error'>We couldn't process this URL. Try again, or email support@embed.ly.</p>");
     } else {
       if(EmbedlyDialog.endpoint == 'preview'){
-      
-        pr = '<div id="embedly-preview">';
+        pr = EmbedlyDialog.generatePreview(resp);
+       /* pr = '<div id="embedly-preview">';
         if(resp.images.length > 0){
           pr += '<div class="embedly-images"><div class="embedly-image-scroll">';
           for(image in resp.images)
@@ -142,15 +142,15 @@ var EmbedlyDialog = {
         if(resp.description)
           pr += '<p><strong>Description:</strong> '+resp.description+'</p>';
         pr += '</div>'; // /embedly-content
-        pr += '</div>'; // /embedly-preview
+        pr += '</div>'; // /embedly-preview*/
       
       } else {
         pr = EmbedlyDialog.generateOembed(resp);
       }
     
       $j('#embedly_ajax_load').hide();
-      $j('#embedly_form_lookup').hide();
-      $j('#embedly_form_submit').show().focus();
+      $j('#embedly_form_lookup').text('Update');
+      $j('#embedly_form_submit').attr('disabled', false).removeClass('disabled').focus();
       $j('#embedly-preview-results').html(pr);
       $j('.embedly-images .images-prev').bind('click', EmbedlyDialog.imagePrev);
       $j('.embedly-images .images-next').bind('click', EmbedlyDialog.imageNext);
@@ -209,6 +209,14 @@ var EmbedlyDialog = {
     pr += '<div class="embedly-clear"></div></div>';
     return pr;
   },
+  
+  generatePreview: function(preview){
+    var tpl = EmbedlyDialog.embedTemplate, view, content;
+    tpl += EmbedlyDialog.templateCap;
+    view = EmbedlyDialog.mustacheView(preview);
+    content = EmbedlyDialog.mustachePreview(preview);
+    return '<div id="embedly-preview">'+Mustache.to_html(tpl, view, {'content': content})+'</div>';
+  },
     
   generateEmbed: function(preview){
     var tpl = EmbedlyDialog.embedTemplate, view, content;
@@ -220,7 +228,51 @@ var EmbedlyDialog = {
     content = EmbedlyDialog.mustacheDisplay(EmbedlyDialog.embed);
     return Mustache.to_html(tpl, view, {'content' : content});
   },
-  
+  mustachePreview: function(preview){
+    if (preview.safe != true) {
+      return '<div class="embedly-unsafe"><span class="embedly-title">     \
+        <img src="http://static.embed.ly/images/anywhere/alert.png" />     \
+        <a onclick="if(!confirm(\'We believe this URL is unsafe. Do you    \
+        want to continue?\')) { return false; }" target="_blank"           \
+        href="{{url}}">potential '+preview.safe_type+'</a></span>          \
+        <p>{{{safe_message}}}<p></div>';
+    }
+    if (preview.type == 'image'){
+      return '<a href="{{original_url}}" class="embedly-thumbnail">        \
+      <img style="max-width:100%" src="{{url}}" /></a>';
+    } else if (preview.type == 'video'){
+      return '<video src="{{url}}" controls="controls" preload="preload"   \
+      class="embedly-video"></video>';
+    } else if (preview.type == 'audio'){
+      return '<audio src="{{url}}" controls="controls" preload="preload"   \
+      class="embedly-video"></audio>';
+    } else if (preview.object.type == 'photo'){
+      return '<a href="{{original_url}}" class="embedly-thumbnail">        \
+      <img src="{{object_url}}" /></a>';
+    } else if (preview.object.type == 'video'){
+      return '{{{object_html}}}';
+    } else if (preview.object.type == 'rich'){
+      return '{{{object_html}}}';
+    } else if (preview.type == 'html'){
+      var r = '';
+      if (preview.images.length != 0) {
+        r += '<div class="embedly-images"><div class="embedly-image-scroll">';
+        for(image in preview.images)
+          r += '<div class="image"><img src="'+preview.images[image].url+'"/></div>';
+        r += '<p>Select an image to use with your embed.</p><a href="#" class="button secondary images-prev">&lt;</a><a href="#" class="button secondary images-next">&gt;</a>';
+        r += '</div></div>';
+      }
+      r += '<a class="embedly-title" target="_blank" \
+        href="{{original_url}}" title="{{url}}">{{title}}</a> \
+        <p>{{description}}<p>';
+
+      if (preview.embeds.length != 0)
+         r += '{{{embed_html}}}';
+      return r;
+    } else {
+      return ''; 
+    }
+  },
   mustacheDisplay: function(preview){
     // display the appropriate Mustache template based on preview type
     // or object type

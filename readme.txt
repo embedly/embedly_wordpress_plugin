@@ -3,7 +3,7 @@ Contributors: Embedly
 Tags: embed, oembed, video, image, rich media
 Requires at least: 3.1
 Tested up to: 3.2.1
-Stable tag: 2.0.3
+Stable tag: 2.0.4
 
 Embed videos, images and rich media from "any" source with just the URL.
 Just add your [Embedly Key](http://embed.ly/pricing) to the Embedly
@@ -85,6 +85,9 @@ and support.
 2. Sample Embed.
 
 == Changelog ==
+= 2.0.4 =
+* Improve Previews using the preview endpoint
+* Removed references to Key in the embed code
 = 2.0.3 =
 * Resolve issue with tag attributes getting stripped
 * Resolve quirks with height getting set incorrectly
