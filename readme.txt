@@ -88,6 +88,7 @@ and support.
 = 2.0.4 =
 * Improve Previews using the preview endpoint
 * Removed references to Key in the embed code
+* More JavaScript error handling
 = 2.0.3 =
 * Resolve issue with tag attributes getting stripped
 * Resolve quirks with height getting set incorrectly
