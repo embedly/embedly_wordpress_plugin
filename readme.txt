@@ -86,9 +86,9 @@ and support.
 
 == Changelog ==
 = 2.0.4 =
-* Improve Previews using the preview endpoint
-* Removed references to Key in the embed code
-* More JavaScript error handling
+* Updated flow for previewing and updating embeds.
+* Improved previews for preview endpoint.
+* Better error handling for loading plugin in Post Editor.
 = 2.0.3 =
 * Resolve issue with tag attributes getting stripped
 * Resolve quirks with height getting set incorrectly
