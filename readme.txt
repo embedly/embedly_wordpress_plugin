@@ -3,7 +3,7 @@ Contributors: Embedly
 Tags: embed, oembed, video, image, rich media
 Requires at least: 3.1
 Tested up to: 3.2.1
-Stable tag: 2.0.4
+Stable tag: 2.0.5
 
 Embed videos, images and rich media from "any" source with just the URL.
 Just add your Embedly Key to the Embedly plugin settings.
@@ -84,6 +84,8 @@ and support.
 2. Sample Embed.
 
 == Changelog ==
+= 2.0.5 =
+* Fixing the path to TinyMCE plugin.
 = 2.0.4 =
 * Updated flow for previewing and updating embeds.
 * Improved previews for preview endpoint.

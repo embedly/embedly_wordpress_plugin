@@ -4,7 +4,7 @@ Plugin Name: Embedly
 Plugin URI: http://embed.ly
 Description: The Embedly Plugin extends Wordpress's Embeds allowing bloggers to Embed from 218 services and counting.
 Author: Embed.ly Inc
-Version: 2.0.4
+Version: 2.0.5
 Author URI: http://embed.ly
 License: GPL2
 
