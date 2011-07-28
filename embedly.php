@@ -339,7 +339,7 @@ function register_embedly_button($buttons){
 }
 
 function add_embedly_tinymce_plugin($plugin_array){
-  $url = get_bloginfo('url');
+  $url = get_option('siteurl');
   $url.= "/wp-content/plugins/embedly/tinymce/editor_plugin.js";
   $plugin_array['embedly'] = $url;
   return $plugin_array;
