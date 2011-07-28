@@ -122,28 +122,6 @@ var EmbedlyDialog = {
     } else {
       if(EmbedlyDialog.endpoint == 'preview'){
         pr = EmbedlyDialog.generatePreview(resp);
-       /* pr = '<div id="embedly-preview">';
-        if(resp.images.length > 0){
-          pr += '<div class="embedly-images"><div class="embedly-image-scroll">';
-          for(image in resp.images)
-            pr += '<div class="image"><img src="'+resp.images[image].url+'"/></div>';
-          pr += '<p>Select an image to use with your embed.</p><a href="#" class="button secondary images-prev">&lt;</a><a href="#" class="button secondary images-next">&gt;</a>';
-          pr += '</div>';
-          pr += '</div>'; // /embedly-images div
-        } else if((resp.object.type == 'video' || resp.type == 'video')){
-          pr += '<div class="embedly-images"><div class="image embedly-video">&nbsp;</div></div>';
-        } else {
-          pr += '<div class="embedly-images"><div class="image embedly-noimage">&nbsp;</div></div>';
-        }
-      
-        pr += '<div class="embedly-content">';
-        if(resp.title)
-          pr += '<p><strong>Title:</strong> '+resp.title+'</p>';
-        if(resp.description)
-          pr += '<p><strong>Description:</strong> '+resp.description+'</p>';
-        pr += '</div>'; // /embedly-content
-        pr += '</div>'; // /embedly-preview*/
-      
       } else {
         pr = EmbedlyDialog.generateOembed(resp);
       }
@@ -184,7 +162,7 @@ var EmbedlyDialog = {
     title = resp.title || data.url;
     style = '';
     if(typeof data.width != "undefined" && data.width != '')
-      style += 'max-width:'+data.width+'px';
+      style += 'max-width:'+data.width+'px;';
     if(typeof data.height != "undefined" && data.height != '')
       style += 'max-height:'+data.height+'px';
     
