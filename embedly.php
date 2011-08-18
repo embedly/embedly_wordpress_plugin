@@ -4,14 +4,14 @@ Plugin Name: Embedly
 Plugin URI: http://embed.ly
 Description: The Embedly Plugin extends Wordpress's Embeds allowing bloggers to Embed from 218 services and counting.
 Author: Embed.ly Inc
-Version: 2.0.4
+Version: 2.0.5
 Author URI: http://embed.ly
 License: GPL2
 
 Copyright 2010  Embedly  (email : developer@embed.ly)
 
 This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License, version 2, as 
+it under the terms of the GNU General Public License, version 2, as
 published by the Free Software Foundation.
 
 This program is distributed in the hope that it will be useful,
@@ -25,17 +25,6 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 
-if (!defined('PLUGINDIR')) {
-	define('PLUGINDIR','wp-content/plugins');
-}
-
-if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'embedly.php')) {
-	define('EMBEDLY_FILE', trailingslashit(ABSPATH.PLUGINDIR).'embedly.php');
-}
-else if (is_file(trailingslashit(ABSPATH.PLUGINDIR).'embedly/embedly.php')) {
-	define('EMBEDLY_FILE', trailingslashit(ABSPATH.PLUGINDIR).'embedly/embedly.php');
-}
-
 /* DB CRUD Methods
  */
 function insert_provider($obj){
@@ -43,15 +32,15 @@ function insert_provider($obj){
   $table_name = $wpdb->prefix . "embedly_providers";
   $insert = "INSERT INTO " . $table_name .
             " (name, selected, displayname, domain, type, favicon, regex, about) " .
-            "VALUES ('" . $wpdb->escape($obj->name) . "'," 
-            . "true ,'" 
-            . $wpdb->escape($obj->displayname) . "','" 
+            "VALUES ('" . $wpdb->escape($obj->name) . "',"
+            . "true ,'"
+            . $wpdb->escape($obj->displayname) . "','"
             . $wpdb->escape($obj->domain) . "','"
             . $wpdb->escape($obj->type) . "','"
             . $wpdb->escape($obj->favicon) . "','"
             . $wpdb->escape(json_encode($obj->regex)) . "','"
             . $wpdb->escape($obj->about) . "')";
-  $results = $wpdb->query( $insert );  
+  $results = $wpdb->query( $insert );
 }
 
 function update_provider($obj){
@@ -106,15 +95,15 @@ function get_embedly_selected_services(){
 /**
  * Activation Hooks
  */
-function embedly_Activate(){
+function embedly_activate(){
   global $wpdb;
 	$table_name = $wpdb->prefix . "embedly_providers";
-	add_option('embedly_active', true);	
+	add_option('embedly_active', true);
  //Table doesn't exist
   if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
     $sql = "CREATE TABLE " . $table_name . " (
             id MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
-            name TINYTEXT NOT NULL, 
+            name TINYTEXT NOT NULL,
             selected TINYINT NOT NULL DEFAULT 1,
             displayname TINYTEXT NOT NULL,
             domain TINYTEXT NULL,
@@ -141,7 +130,7 @@ function embedly_Activate(){
   add_option('embedly_key', '');
 
 }
-register_activation_hook( EMBEDLY_FILE, 'embedly_Activate' );
+register_activation_hook( __FILE__, 'embedly_activate' );
 
 function embedly_deactivate(){
   global $wpdb;
@@ -151,7 +140,7 @@ function embedly_deactivate(){
 	delete_option('embedly_active');
   delete_option('embedly_key');
 }
-register_deactivation_hook( EMBEDLY_FILE, 'embedly_deactivate' );
+register_deactivation_hook( __FILE__, 'embedly_deactivate' );
 
 
 /**
@@ -160,38 +149,36 @@ register_deactivation_hook( EMBEDLY_FILE, 'embedly_deactivate' );
 if ( is_admin() ){
   add_action('admin_menu', 'embedly_admin_menu');
   function embedly_admin_menu() {
-    add_menu_page('Embedly', 'Embedly', 'administrator',
+    add_menu_page('Embedly', 'Embedly', 'activate_plugins',
                       'embedly', 'embedly_provider_options');
   }
 }
 
 /**
-* Add the CSS and JavaScript includes to the head element
+* Add the CSS and JavaScript includes to the admin head of our plugin page only
 */
-function admin_register_head() {
-  $siteurl = get_option('siteurl');
-  $url = $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__));
-  echo "<link rel='stylesheet' type='text/css' href='$url/css/embedly.css' />\n";
-  echo "<script src='$url/js/embedly.js' type='text/javascript' ></script>";
+function embedly_admin_head() {
+  $url = plugin_dir_url ( __FILE__ );
+  echo "<link rel='stylesheet' type='text/css' href='{$url}css/embedly.css' />\n";
+  echo "<script src='{$url}js/embedly.js' type='text/javascript' ></script>";
 }
-add_action('admin_head', 'admin_register_head');
+add_action( 'admin_head-toplevel_page_embedly', 'embedly_admin_head' );
 
 
 /**
 * Add CSS to front end for handling Embedly Embeds
 */
-function frontend_register_head(){
-  $siteurl = get_option('siteurl');
-  $url = $siteurl . '/wp-content/plugins/' . basename(dirname(__FILE__));
-  echo "<link rel='stylesheet' type='text/css' href='$url/css/embedly.css' />\n";
+function embedly_head(){
+  $url = plugin_dir_url ( __FILE__ );
+  echo "<link rel='stylesheet' type='text/css' href='{$url}css/embedly.css' />\n";
 }
-add_action('wp_head', 'frontend_register_head');
+add_action('wp_head', 'embedly_head');
 
 /**
 * The list of providers embedly offers is always growing. This is a dynamic way to
 * pull in new providers.
 */
-function embedly_services_download(){  
+function embedly_services_download(){
   $old_services = get_embedly_services();
   $os_names = array();
   foreach ($old_services as $os){
@@ -218,7 +205,7 @@ function embedly_services_download(){
   //See if any names dissappered
   foreach($os_names as $os_name){
   	if (!in_array($os_name, $s_names)){
-      delete_provider($os_name);   
+      delete_provider($os_name);
     }
   }
 
@@ -232,12 +219,12 @@ function update_embedly_service($selected){
   $services = get_embedly_services();
   foreach($services as $service) {
     if(in_array($service->name, $selected) ){
-      if (!$service->selected){  
+      if (!$service->selected){
         update_provider_selected($service->name, true);
         $service->selected = true;
       }
     } else{
-      if ($service->selected){  
+      if ($service->selected){
         update_provider_selected($service->name, false);
         $service->selected = false;
       }
@@ -249,12 +236,13 @@ function update_embedly_service($selected){
 /**
  * Does the work of adding the Embedly providers to wp_oembed
  */
-function add_embedly_providers($the_content){
+function add_embedly_providers(){
   $services = get_embedly_selected_services();
   $embedly_key = get_option('embedly_key');
-	require_once( ABSPATH . WPINC . '/class-oembed.php' );
-	$oembed = _wp_oembed_get_object();
-	$oembed->providers = array(); 
+
+  // remove default WP oembed providers
+  add_filter( 'oembed_providers', create_function( '', 'return array();' ) );
+
   if ($services && get_option('embedly_active')) {
     foreach($services as $service) {
       foreach(json_decode($service->regex) as $sre) {
@@ -264,10 +252,10 @@ function add_embedly_providers($the_content){
           wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed', true );
       }
     }
-  }	
+  }
 }
-//add all the providers on init.
-add_action('init', 'add_embedly_providers');
+//add all the providers on the "plugins_loaded" action.
+add_action( 'plugins_loaded', 'add_embedly_providers' );
 
 /**
  * Ajax function that updates the selected state of providers
@@ -285,7 +273,7 @@ function embedly_ajax_update(){
   }
   die();
 }
-add_action('wp_ajax_embedly_update', 'embedly_ajax_update');
+add_action( 'wp_ajax_embedly_update', 'embedly_ajax_update' );
 
 /**
  * Ajax function that looks at embedly for new providers
@@ -299,9 +287,9 @@ function embedly_ajax_update_providers(){
   }
   die();
 }
-add_action('wp_ajax_embedly_update_providers', 'embedly_ajax_update_providers');
+add_action( 'wp_ajax_embedly_update_providers', 'embedly_ajax_update_providers' );
 
-function embedly_acct_has_feature($feature){  
+function embedly_acct_has_feature($feature){
   $result = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/feature?feature='.$feature.'&key='.get_option('embedly_key')));
   $feature_status = json_decode($result);
   if ($feature_status)
@@ -312,7 +300,7 @@ function embedly_acct_has_feature($feature){
 
 // Add TinyMCE Functionality
 function embedly_footer_widgets(){
-  $url = get_bloginfo('url').'/wp-content/plugins/embedly/tinymce';
+  $url = plugin_dir_url ( __FILE__ ) . 'tinymce';
   $embedly_key = get_option('embedly_key');
   echo '<script type="text/javascript">EMBEDLY_TINYMCE = "'.$url.'";';
   echo 'embedly_key = "' .$embedly_key. '";';
@@ -326,7 +314,7 @@ function embedly_footer_widgets(){
 function embedly_addbuttons(){
   if (! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
     return;
-  
+
   if (get_user_option('rich_editing') == 'true'){
     add_filter('mce_external_plugins', 'add_embedly_tinymce_plugin');
     add_filter('mce_buttons', 'register_embedly_button');
@@ -339,8 +327,7 @@ function register_embedly_button($buttons){
 }
 
 function add_embedly_tinymce_plugin($plugin_array){
-  $url = get_option('siteurl');
-  $url.= "/wp-content/plugins/embedly/tinymce/editor_plugin.js";
+  $url = plugin_dir_url ( __FILE__ ) . 'tinymce/editor_plugin.js';
   $plugin_array['embedly'] = $url;
   return $plugin_array;
 }
@@ -351,13 +338,13 @@ add_action('init', 'embedly_addbuttons');
 function embedly_change_mce_options($init){
   //$ext = 'div[id|class|data-mce-style|style|data-ajax]';
   //$ext.= ',p[id|class|style],a[id|class|style],span[id|class|style]';
-  
+
   if ( isset ($init['extended_valid_elements'] ) ) {
     $init['extended_valid_elements'] .= ',' . $ext;
   } else {
     $init['extended_valid_elements'] = $ext;
   }
-  
+
   return $init;
 }
 
@@ -382,7 +369,7 @@ function embedly_provider_options(){
     <fieldset>
       <label for='embedly_key'>Embedly Key</label>
       <input id="embedly_key" placeholder="enter your key..." name="embedly_key" type="text" style="width:75%;" <?php $k = get_option('embedly_key'); if($k){ echo "value=" . $k ; }?> />
-      <span><a href="//embed.ly/pricing" target="_new">Don't have a key?</a></span>
+      <span><a href="http://embed.ly/pricing" target="_new">Don't have a key?</a></span>
       <p>Add your Embedly Key to embed any URL</p>
       <input class="button-primary embedly_submit" name="submit" type="submit" value="Save"/>
     </fieldset>
@@ -392,7 +379,7 @@ function embedly_provider_options(){
   <h2 class="providers">Providers</h2>
   <p>
   The <a href="//embed.ly" >Embedly</a> plugin allows you to embed content
-  from the following services using the <a href="//embed.ly">Embedly API</a>. Select the services
+  from the following services using the <a href="http://embed.ly">Embedly API</a>. Select the services
   you wish to embed in your blog.
   </p>
 <ul class="actions">
