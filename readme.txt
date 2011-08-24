@@ -3,7 +3,7 @@ Contributors: Embedly
 Tags: embed, oembed, video, image, rich media
 Requires at least: 3.1
 Tested up to: 3.2.1
-Stable tag: 2.0.6
+Stable tag: 2.0.7
 
 Embed videos, images and rich media from "any" source with just the URL.
 Just add your Embedly Key to the Embedly plugin settings.
