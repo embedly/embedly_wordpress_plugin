@@ -94,6 +94,86 @@ add_option('embedly_settings', $embedly_options);
 # Update options from database
 $embedly_options = get_option('embedly_settings');
 
+/**
+ * I combined 6 separate functions into one for simplicity's sake
+ * All of the functions dealt with the same table in the database
+ * And as such, should have all been easily accessible by simply
+ * Passing different parameters based on what you want to do
+ *
+ * @param class   $obj      Object retreived from the API
+ * @param string  $action   The action to take (insert, update, get, or delete)
+ * @param string  $name     Name of the item you wish to modify
+ * @param boolean $selected Whether the service is selected
+ * @param string  $scope    Extra parameter so that get/update can use the same switch case (null or selected)
+ * @param boolean $return   Whether to return results or simply run the query
+ * 
+ * @todo change all references to the old functions to a reference to this function
+ *
+*/
+function embedly_provider_queries($obj=null, $action=null, $name=null, $selected=false, $scope=null, $return=false) {
+  global $wpdb, $embedly_options;
+  $action   = strtolower($action);
+  $sel_val  = ($selected ? 1 : 0);
+  
+  switch($action) {
+    case 'insert':
+      $query  = "INSERT INTO "
+        . $embedly_options['table']
+        . " (name, selected, displayname, domain, type, favicon, regex, about) "
+        . "VALUES ('" 
+        . $wpdb->escape($obj->name)."',"
+        . "true ,'"
+        . $wpdb->escape($obj->displayname)."','"
+        . $wpdb->escape($obj->domain)."','"
+        . $wpdb->escape($obj->type)."','"
+        . $wpdb->escape($obj->favicon)."','"
+        . $wpdb->escape(json_encode($obj->regex))."','"
+        . $wpdb->escape($obj->about) 
+        . "')";
+    break;
+    case 'update':
+      if($scope == 'selected') {
+        $query = "UPDATE ".$embedly_options['table']." SET selected=".$wpdb->escape($sel_val)." WHERE name='".$wpdb->escape($name)."'";
+      }
+      else {
+        $query = "UPDATE ".$embedly_options['table']." SET "
+          . "displayname='".$wpdb->escape($obj->displayname)."', "
+          . "domain='".$wpdb->escape($obj->domain)."', "
+          . "type='".$wpdb->escape($obj->type)."', "
+          . "favicon='".$wpdb->escape($obj->favicon)."', "
+          . "regex='".$wpdb->escape(json_encode($obj->regex))."', "
+          . "about='".$wpdb->escape($obj->about)."' "
+          . "WHERE name='".$wpdb->escape($obj->name)."'";        
+      }
+    break;
+    case 'get':
+      if($scope == 'selected') {
+        $query = $wpdb->get_results("SELECT * FROM ".$embedly_options['table']." WHERE selected=true;");
+      }
+      else {
+        $query = $wpdb->get_results("SELECT * FROM ".$embedly_options['table'].";");
+      }
+    break;
+    case 'delete':
+      $query = "DELETE FROM ".$embedly_options['table']." WHERE name='".$name."';";
+    break;
+  }
+  if(!$return) {
+    $results = $wpdb->query($query);
+  }
+  else {
+    return $query;
+  }
+}
+
+
+
+
+
+
+
+
+
 
 /* DB CRUD Methods
  */
