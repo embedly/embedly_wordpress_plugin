@@ -239,8 +239,10 @@ add_action('admin_head', 'embedly_menu_icons');
 
 
 
+
 /**
 * Add the CSS and JavaScript includes to the admin head of our plugin page only
+* @todo get rid of direct injections and replace with enqueue's
 */
 function embedly_admin_head() {
   $url = plugin_dir_url ( __FILE__ );
@@ -252,6 +254,7 @@ add_action( 'admin_head-toplevel_page_embedly', 'embedly_admin_head' );
 
 /**
 * Add CSS to front end for handling Embedly Embeds
+* @todo get rid of direct injections and replace with enqueue's
 */
 function embedly_head(){
   $url = plugin_dir_url ( __FILE__ );
@@ -260,8 +263,9 @@ function embedly_head(){
 add_action('wp_head', 'embedly_head');
 
 /**
-* The list of providers embedly offers is always growing. This is a dynamic way to
-* pull in new providers.
+* The list of providers embedly offers is always growing. 
+* This is a dynamic way to pull in new providers.
+* @todo simplify process
 */
 function embedly_services_download(){
   $old_services = get_embedly_services();
@@ -347,6 +351,7 @@ add_action( 'plugins_loaded', 'add_embedly_providers' );
 
 /**
  * Ajax function that updates the selected state of providers
+ * @todo add sanitation/verification before saving
  */
 function embedly_ajax_update(){
   $providers = $_POST['providers'];
@@ -379,6 +384,10 @@ function embedly_ajax_update_providers(){
 }
 add_action('wp_ajax_embedly_update_providers', 'embedly_ajax_update_providers');
 
+
+/**
+ * @todo track down bug allowing calls without key
+ */
 function embedly_acct_has_feature($feature) {
   global $embedly_options;
   if(!empty($embedly_options['key'])) {
@@ -387,7 +396,6 @@ function embedly_acct_has_feature($feature) {
   else {
     return false;
   }
-
   $feature_status = json_decode($result);
   if($feature_status) {
     return $feature_status->$feature;
