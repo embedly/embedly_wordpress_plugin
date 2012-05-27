@@ -75,12 +75,26 @@ if(!function_exists('json_encode')) {
   }
 }
 
+
+# Create array of default options
+$embedly_options = array(
+  'table'    => $wpdb->prefix.'embedly_providers',
+  'active'   => true,
+  'key'      => ''
+);
+
+# Write default options to database
+add_option('embedly_settings', $embedly_options);
+  
+# Update options from database
+$embedly_options = get_option('embedly_settings');
+
+
 /* DB CRUD Methods
  */
 function insert_provider($obj){
-  global $wpdb;
-  $table_name = $wpdb->prefix . "embedly_providers";
-  $insert = "INSERT INTO " . $table_name .
+  global $wpdb, $embedly_options;
+  $insert = "INSERT INTO " . $embedly_options['table'] .
             " (name, selected, displayname, domain, type, favicon, regex, about) " .
             "VALUES ('" . $wpdb->escape($obj->name) . "',"
             . "true ,'"
@@ -94,9 +108,8 @@ function insert_provider($obj){
 }
 
 function update_provider($obj){
-  global $wpdb;
-  $table_name = $wpdb->prefix . "embedly_providers";
-  $update = "UPDATE " . $table_name . " ".
+  global $wpdb, $embedly_options;
+  $update = "UPDATE " . $embedly_options['table'] . " ".
             "SET displayname='". $wpdb->escape($obj->displayname) . "', ".
             "domain='". $wpdb->escape($obj->domain) . "', ".
             "type='". $wpdb->escape($obj->type) . "', ".
@@ -107,51 +120,45 @@ function update_provider($obj){
   $results = $wpdb->query( $update );
 }
 
-function update_provider_selected($name, $selected){
-  global $wpdb;
+function update_provider_selected($name, $selected) {
+  global $wpdb, $embedly_options;
   if ($selected){
   	$selected = 1;
   } else {
   	$selected = 0;
   }
-  $table_name = $wpdb->prefix . "embedly_providers";
-  $update = "UPDATE " . $table_name . " ".
+  $update = "UPDATE " . $embedly_options['table'] . " ".
             "SET selected=". $wpdb->escape($selected) . " ".
             "WHERE name='".$wpdb->escape($name)."'";
   $results = $wpdb->query( $update );
 }
 
 function delete_provider($name){
-  global $wpdb;
-  $table_name = $wpdb->prefix . "embedly_providers";
-  $delete = "DELETE FROM ".$table_name." WHERE name='".$name."';";
+  global $wpdb, $embedly_options;
+  $delete = "DELETE FROM ".$embedly_options['table']." WHERE name='".$name."';";
   $results = $wpdb->query($delete);
 }
 
 function get_embedly_services(){
-  global $wpdb;
-  $table_name = $wpdb->prefix . "embedly_providers";
-  $results = $wpdb->get_results( "SELECT * FROM ".$table_name.";");
+  global $wpdb, $embedly_options;
+  $results = $wpdb->get_results( "SELECT * FROM ".$embedly_options['table'].";");
   return $results;
 }
 
 function get_embedly_selected_services(){
-  global $wpdb;
-  $table_name = $wpdb->prefix . "embedly_providers";
-  $results = $wpdb->get_results( "SELECT * FROM ".$table_name." WHERE selected=true;");
+  global $wpdb, $embedly_options;
+  $results = $wpdb->get_results( "SELECT * FROM ".$embedly_options['table']." WHERE selected=true;");
   return $results;
 }
 
 /**
  * Activation Hooks
  */
-function embedly_activate(){
-  global $wpdb;
-	$table_name = $wpdb->prefix . "embedly_providers";
-	add_option('embedly_active', true);
+function embedly_activate() {
+  global $wpdb, $embedly_options;
  //Table doesn't exist
-  if($wpdb->get_var("SHOW TABLES LIKE '$table_name'") != $table_name) {
-    $sql = "CREATE TABLE " . $table_name . " (
+  if($wpdb->get_var("SHOW TABLES LIKE '".$embedly_options['table']."'") != $embedly_options['table']) {
+    $sql = "CREATE TABLE " . $embedly_options['table'] . " (
             id MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
             name TINYTEXT NOT NULL,
             selected TINYINT NOT NULL DEFAULT 1,
@@ -165,30 +172,26 @@ function embedly_activate(){
      );";
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta($sql);
-  } else {
+  }
+  else {
     //Clean Slate
-		$sql = "TRUNCATE TABLE ".$table_name.";";
+		$sql = "TRUNCATE TABLE ".$embedly_options['table'].";";
 		$results = $wpdb->query($sql);
   }
-  $result = wp_remote_retrieve_body( wp_remote_get('http://api.embed.ly/1/wordpress'));
+  $result = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/wordpress'));
   $services = json_decode($result);
   foreach($services as $service){
   	insert_provider($service);
   }
 
-  //Embedly Account Setting
-  add_option('embedly_key', '');
-
 }
 register_activation_hook( __FILE__, 'embedly_activate' );
 
 function embedly_deactivate(){
-  global $wpdb;
-  $table_name = $wpdb->prefix . "embedly_providers";
-	$sql = $wpdb->prepare("TRUNCATE TABLE ".$table_name.";");
+  global $wpdb, $embedly_options;
+	$sql = $wpdb->prepare("TRUNCATE TABLE ".$embedly_options['table'].";");
   $results = $wpdb->query($sql);
-	delete_option('embedly_active');
-  delete_option('embedly_key');
+  delete_option('embedly_settings');
 }
 register_deactivation_hook( __FILE__, 'embedly_deactivate' );
 
@@ -300,7 +303,8 @@ function update_embedly_service($selected){
         update_provider_selected($service->name, true);
         $service->selected = true;
       }
-    } else{
+    }
+    else{
       if ($service->selected){
         update_provider_selected($service->name, false);
         $service->selected = false;
@@ -323,8 +327,8 @@ function add_embedly_providers(){
   if ($services && get_option('embedly_active')) {
     foreach($services as $service) {
       foreach(json_decode($service->regex) as $sre) {
-        if ($embedly_key)
-          wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed?key='.$embedly_key, true );
+        if ($embedly_options['key'])
+          wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed?key='.$embedly_options['key'], true );
         else
           wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed', true );
       }
@@ -366,7 +370,7 @@ function embedly_ajax_update_providers(){
 }
 add_action( 'wp_ajax_embedly_update_providers', 'embedly_ajax_update_providers' );
 
-function embedly_acct_has_feature($feature){
+function embedly_acct_has_feature($feature) {
   $embedly_key = get_option('embedly_key');
   if ($embedly_key) {
     $result = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/feature?feature='.$feature.'&key='.$embedly_key));
