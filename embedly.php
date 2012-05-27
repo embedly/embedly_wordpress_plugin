@@ -25,6 +25,16 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 
+# Prevent direct access
+if(!function_exists('add_action')) {
+	echo 'You sneaky devil you...';
+	exit;
+}
+
+# Create plugin text domain
+load_plugin_textdomain('embedly', false, dirname(plugin_basename(__FILE__)).'/lang/');
+
+
 /* DB CRUD Methods
  */
 function insert_provider($obj){
@@ -344,59 +354,60 @@ add_action('init', 'embedly_addbuttons');
 /**
  * The Admin Page.
  */
-function embedly_provider_options(){
+function embedly_provider_options() {
   $services = get_embedly_services();
 ?>
 <div class="wrap">
-<div class="icon32" id="embedly-logo"><br></div>
-<h2>Embedly</h2>
-<?php  if ($services == null) {?>
-<div id="message" class="error">
-<p><strong>Hmmmm, there where no providers found. Try updating?</strong></p>
-</div>
-<?php } else { ?>
-<form id="embedly_providers_form" method="POST" action=".">
-  <div class="embedly_key_form">
-    <fieldset>
-      <label for='embedly_key'>Embedly Key</label>
-      <input id="embedly_key" placeholder="enter your key..." name="embedly_key" type="text" style="width:75%;" <?php $k = get_option('embedly_key'); if($k){ echo "value=" . $k ; }?> />
-      <span><a href="http://embed.ly/pricing" target="_new">Don't have a key?</a></span>
-      <p>Add your Embedly Key to embed any URL</p>
-      <input class="button-primary embedly_submit" name="submit" type="submit" value="Save"/>
-    </fieldset>
+  <div class="icon32" id="embedly-logo"><br></div>
+  <h2><?php _e('Embedly', 'embedly'); ?></h2>
+<?php if($services == null) { ?>
+  <div id="message" class="error">
+    <p><strong><?php _e('Hmmmm, there where no providers found. Try updating?', 'embedly'); ?></strong></p>
   </div>
-  <div style="clear:both;"></div>
-  <hr />
-  <h2 class="providers">Providers</h2>
-  <p>
-  The <a href="//embed.ly" >Embedly</a> plugin allows you to embed content
-  from the following services using the <a href="http://embed.ly">Embedly API</a>. Select the services
-  you wish to embed in your blog.
-  </p>
-<ul class="actions">
-  <li><a class="all" href="#">All</a></li>
-  <li><a class="clearselection" href="#">Clear</a></li>
-  <li><a class="videos" href="#">Videos</a></li>
-  <li><a class="audio" href="#">Audio</a></li>
-  <li><a class="photos" href="#">Photos</a></li>
-  <li><a class="products" href="#">Products</a></li>
-</ul>
-<div style="clear:both;"></div>
-<ul class="generator">
-<?php  foreach($services as $service) { ?>
-<li class="<?php echo $service->type?>" id="<?php echo $service->name ?>">
-<input type="checkbox" name="<?php echo $service->name ?>" <?php if($service->selected == 1){ echo "checked=checked"; }?>>
-<a href="#<?php echo $service->name ?>" class="info ">
-<img src="<?php echo $service->favicon; ?>" title="<?php echo $service->name; ?>" alt="<?php echo $service->displayname; ?>"><?php echo $service->displayname; ?></a></li>
-<?php }?>
-</ul>
-<div style="clear:both;"></div>
-<input class="button-primary embedly_submit" name="submit" type="submit" value="Save"/>
-
-</form>
+<?php } else { ?>
+  <form id="embedly_providers_form" method="POST" action=".">
+    <div class="embedly_key_form">
+      <fieldset>
+        <label for='embedly_key'><?php _e('Embedly Key', 'embedly'); ?></label>
+        <input id="embedly_key" placeholder="<?php _e('enter your key...', 'embedly'); ?>" name="embedly_key" type="text" style="width:75%;" <?php $k = get_option('embedly_key'); if($k){ echo "value=" . $k ; }?> />
+        <span><a href="http://embed.ly/pricing" target="_new"><?php _e("Don't have a key?", 'embedly'); ?></a></span>
+        <p><?php _e('Add your Embedly Key to embed any URL', 'embedly'); ?></p>
+        <input class="button-primary embedly_submit" name="submit" type="submit" value="<?php _e('Save', 'embedly'); ?>"/>
+      </fieldset>
+    </div>
+    <div style="clear:both;"></div>
+    <hr>
+    <h2 class="providers"><?php _e('Providers', 'embedly'); ?></h2>
+    <p><?php printf(__('The %1$sEmbedly%2$s plugin allows you to embed content from the following services using the %1$sEmbedly API%2$s. Select the services you wish to embed in your blog.', 'embedly'), '<a href="http://embed.ly" target="_blank">', '</a>'); ?></p>
+    <ul class="actions">
+      <li><a class="all" href="#"><?php _e('All', 'embedly'); ?></a></li>
+      <li><a class="clearselection" href="#"><?php _e('Clear', 'embedly'); ?></a></li>
+      <li><a class="videos" href="#"><?php _e('Videos', 'embedly'); ?></a></li>
+      <li><a class="audio" href="#"><?php _e('Audio', 'embedly'); ?></a></li>
+      <li><a class="photos" href="#"><?php _e('Photos', 'embedly'); ?></a></li>
+      <li><a class="products" href="#"><?php _e('Products', 'embedly'); ?></a></li>
+    </ul>
+    <div style="clear:both;"></div>
+    <ul class="generator">
+<?php foreach($services as $service) { ?>
+      <li class="<?php echo $service->type?>" id="<?php echo $service->name ?>">
+        <div class="full_service_wrap">
+          <div class="service_icon_wrap">
+            <input type="checkbox" name="<?php echo $service->name ?>"<?php if($service->selected == 1) { echo " checked=checked"; } ?>>
+            <a href="#<?php echo $service->name ?>" class="info ">
+              <img src="<?php echo $service->favicon; ?>" title="<?php echo $service->name; ?>" alt="<?php echo $service->displayname; ?>"><?php echo $service->displayname; ?>
+            </a>
+          </div>
+        </div>
+      </li>
 <?php } ?>
-<form id="embedly_update_providers_form"  method="POST" action="." >
-<input class="button-secondary embedly_submit" type="submit" name="submit" value="Update Provider List"/>
-</form>
+    </ul>
+    <div style="clear:both;"></div>
+    <input class="button-primary embedly_submit" name="submit" type="submit" value="<?php _e('Save Changes', 'embedly'); ?>"/>
+  </form>
+<?php } ?>
+  <form id="embedly_update_providers_form"  method="POST" action="." >
+    <input class="button-secondary embedly_submit" type="submit" name="submit" value="<?php _e('Update Provider List', 'embedly'); ?>"/>
+  </form>
 </div>
 <?php } ?>
