@@ -154,15 +154,42 @@ register_deactivation_hook( __FILE__, 'embedly_deactivate' );
 
 
 /**
-* Adds Embedly to the settings menu
-*/
-if ( is_admin() ){
-  add_action('admin_menu', 'embedly_admin_menu');
-  function embedly_admin_menu() {
-    add_menu_page('Embedly', 'Embedly', 'activate_plugins',
-                      'embedly', 'embedly_provider_options');
-  }
+ * Adds toplevel Embedly settings page
+ */
+function embedly_add_settings_page() {
+  global $embedly_settings_page;
+  $embedly_settings_page = add_menu_page('Embedly', 'Embedly', 'activate_plugins', 'embedly', 'embedly_provider_options');
 }
+add_action('admin_menu', 'embedly_add_settings_page');
+
+
+
+
+/**
+ * Define plugin menu icons
+ */
+function embedly_menu_icons() {
+  ob_start();
+?>
+<style type="text/css" media="screen">
+  #toplevel_page_embedly .wp-menu-image a img {
+    display:none;
+  }
+  #toplevel_page_embedly .wp-menu-image a {
+    background: url('<?php echo EMBEDLY_URL; ?>/img/menu-icon.png') no-repeat 5px 7px !important;
+  }
+  #toplevel_page_embedly:hover .wp-menu-image a, #toplevel_page_embedly.current .wp-menu-image a {
+    background-position:5px -25px !important;
+  }
+</style>
+<?php 
+  echo ob_get_clean();
+}
+add_action('admin_head', 'embedly_menu_icons');
+
+
+
+
 
 /**
 * Add the CSS and JavaScript includes to the admin head of our plugin page only
