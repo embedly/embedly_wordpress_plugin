@@ -31,6 +31,11 @@ if(!function_exists('add_action')) {
 	exit;
 }
 
+# Load/Define global vars
+else {
+  global $wpdb, $embedly_options;
+}
+
 # Create plugin text domain
 load_plugin_textdomain('embedly', false, dirname(plugin_basename(__FILE__)).'/lang/');
 
@@ -317,20 +322,22 @@ function update_embedly_service($selected){
 /**
  * Does the work of adding the Embedly providers to wp_oembed
  */
-function add_embedly_providers(){
+function add_embedly_providers() {
+  global $embedly_options;
   $services = get_embedly_selected_services();
-  $embedly_key = get_option('embedly_key');
 
   // remove default WP oembed providers
-  add_filter( 'oembed_providers', create_function( '', 'return array();' ) );
+  add_filter('oembed_providers', create_function( '', 'return array();' ));
 
-  if ($services && get_option('embedly_active')) {
+  if($services && $embedly_options['active']) {
     foreach($services as $service) {
       foreach(json_decode($service->regex) as $sre) {
-        if ($embedly_options['key'])
+        if(!empty($embedly_options['key'])) {
           wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed?key='.$embedly_options['key'], true );
-        else
+        }
+        else {
           wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed', true );
+        }
       }
     }
   }
@@ -343,66 +350,71 @@ add_action( 'plugins_loaded', 'add_embedly_providers' );
  */
 function embedly_ajax_update(){
   $providers = $_POST['providers'];
-  $embedly_key = $_POST['embedly_key'];
-  update_option('embedly_key', $embedly_key);
+  $embedly_options['key'] = $_POST['embedly_key'];
+  update_option('embedly_settings', $embedly_options);
   $services = explode(',', $providers);
   $result = update_embedly_service($services);
-  if($result == null){
+  if($result == null) {
     echo json_encode(array('error'=>true));
-  } else {
+  }
+  else {
     echo json_encode(array('error'=>false));
   }
   die();
 }
-add_action( 'wp_ajax_embedly_update', 'embedly_ajax_update' );
+add_action('wp_ajax_embedly_update', 'embedly_ajax_update');
 
 /**
  * Ajax function that looks at embedly for new providers
  */
 function embedly_ajax_update_providers(){
   $services = embedly_services_download();
-  if ($services == null){
+  if($services == null) {
     echo json_encode(array('error'=>true));
-  } else {
+  }
+  else {
     echo json_encode($services);
   }
   die();
 }
-add_action( 'wp_ajax_embedly_update_providers', 'embedly_ajax_update_providers' );
+add_action('wp_ajax_embedly_update_providers', 'embedly_ajax_update_providers');
 
 function embedly_acct_has_feature($feature) {
-  $embedly_key = get_option('embedly_key');
-  if ($embedly_key) {
-    $result = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/feature?feature='.$feature.'&key='.$embedly_key));
-  } else {
+  global $embedly_options;
+  if(!empty($embedly_options['key'])) {
+    $result = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/feature?feature='.$feature.'&key='.$embedly_options['key']));
+  }
+  else {
     return false;
   }
 
   $feature_status = json_decode($result);
-  if ($feature_status)
+  if($feature_status) {
     return $feature_status->$feature;
-  else
+  }
+  else {
     return false;
+  }
 }
 
 // Add TinyMCE Functionality
-function embedly_footer_widgets(){
-  $url = plugin_dir_url ( __FILE__ ) . 'tinymce';
-  $embedly_key = get_option('embedly_key');
-  echo '<script type="text/javascript">EMBEDLY_TINYMCE = "'.$url.'";';
-  echo 'embedly_key = "' .$embedly_key. '";';
-  if (embedly_acct_has_feature('preview'))
+function embedly_footer_widgets() {
+  global $embedly_options;
+  echo '<script type="text/javascript">EMBEDLY_TINYMCE = "'.EMBEDLY_URL.'/tinymce";';
+  echo 'embedly_key = "'.$embedly_options['key'].'";';
+  if(embedly_acct_has_feature('preview')) {
     echo 'embedly_endpoint = "preview";';
-  else
+  }
+  else {
     echo 'embedly_endpoint = "";';
-
+  }
   echo '</script>';
 }
 function embedly_addbuttons(){
-  if (! current_user_can('edit_posts') && ! current_user_can('edit_pages') )
+  if (!current_user_can('edit_posts') && !current_user_can('edit_pages')) {
     return;
-
-  if (get_user_option('rich_editing') == 'true'){
+  }
+  if (get_user_option('rich_editing') == 'true') {
     add_filter('mce_external_plugins', 'add_embedly_tinymce_plugin');
     add_filter('mce_buttons', 'register_embedly_button');
   }
@@ -413,9 +425,8 @@ function register_embedly_button($buttons){
   return $buttons;
 }
 
-function add_embedly_tinymce_plugin($plugin_array){
-  $url = plugin_dir_url ( __FILE__ ) . 'tinymce/editor_plugin.js';
-  $plugin_array['embedly'] = $url;
+function add_embedly_tinymce_plugin($plugin_array) {
+  $plugin_array['embedly'] = EMBEDLY_URL.'/tinymce/editor_plugin.js';
   return $plugin_array;
 }
 
@@ -426,6 +437,7 @@ add_action('init', 'embedly_addbuttons');
  * The Admin Page.
  */
 function embedly_provider_options() {
+  global $embedly_options;
   $services = get_embedly_services();
 ?>
 <div class="wrap">
@@ -440,7 +452,7 @@ function embedly_provider_options() {
     <div class="embedly_key_form">
       <fieldset>
         <label for='embedly_key'><?php _e('Embedly Key', 'embedly'); ?></label>
-        <input id="embedly_key" placeholder="<?php _e('enter your key...', 'embedly'); ?>" name="embedly_key" type="text" style="width:75%;" <?php $k = get_option('embedly_key'); if($k){ echo "value=" . $k ; }?> />
+        <input id="embedly_key" placeholder="<?php _e('enter your key...', 'embedly'); ?>" name="embedly_key" type="text" style="width:75%;" <?php if(!empty($embedly_options['key'])) { echo 'value="'.$embedly_options['key'].'"'; } ?> />
         <span><a href="http://embed.ly/pricing" target="_new"><?php _e("Don't have a key?", 'embedly'); ?></a></span>
         <p><?php _e('Add your Embedly Key to embed any URL', 'embedly'); ?></p>
         <input class="button-primary embedly_submit" name="submit" type="submit" value="<?php _e('Save', 'embedly'); ?>"/>
