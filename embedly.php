@@ -24,7 +24,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-
 # Prevent direct access
 if(!function_exists('add_action')) {
 	echo 'You sneaky devil you...';
@@ -80,19 +79,21 @@ if(!function_exists('json_encode')) {
   }
 }
 
-
 # Create array of default options
 $embedly_options = array(
   'table'    => $wpdb->prefix.'embedly_providers',
   'active'   => true,
   'key'      => ''
 );
-
+  
 # Write default options to database
 add_option('embedly_settings', $embedly_options);
-  
+    
 # Update options from database
 $embedly_options = get_option('embedly_settings');
+
+
+
 
 /**
  * I combined 6 separate functions into one for simplicity's sake
@@ -103,11 +104,9 @@ $embedly_options = get_option('embedly_settings');
  * @param class   $obj      Object retreived from the API
  * @param string  $action   The action to take (insert, update, get, or delete)
  * @param string  $name     Name of the item you wish to modify
- * @param boolean $selected Whether the service is selected
+ * @param boolean $selected Whether the service is selected (true or false)
  * @param string  $scope    Extra parameter so that get/update can use the same switch case (null or selected)
  * @param boolean $return   Whether to return results or simply run the query
- * 
- * @todo change all references to the old functions to a reference to this function
  *
 */
 function embedly_provider_queries($obj=null, $action=null, $name=null, $selected=false, $scope=null, $return=false) {
@@ -151,7 +150,7 @@ function embedly_provider_queries($obj=null, $action=null, $name=null, $selected
         $query = $wpdb->get_results("SELECT * FROM ".$embedly_options['table']." WHERE selected=true;");
       }
       else {
-        $query = $wpdb->get_results("SELECT * FROM ".$embedly_options['table'].";");
+        $query = $wpdb->get_results("SELECT * FROM ".$embedly_options['table']." ORDER BY name;");
       }
     break;
     case 'delete':
@@ -167,47 +166,51 @@ function embedly_provider_queries($obj=null, $action=null, $name=null, $selected
 }
 
 
-
 /**
- * Activation Hooks
+ * Activation Hook
  */
 function embedly_activate() {
   global $wpdb, $embedly_options;
- //Table doesn't exist
+
+  # Table doesn't exist, let's create it
   if($wpdb->get_var("SHOW TABLES LIKE '".$embedly_options['table']."'") != $embedly_options['table']) {
-    $sql = "CREATE TABLE " . $embedly_options['table'] . " (
-            id MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
-            name TINYTEXT NOT NULL,
-            selected TINYINT NOT NULL DEFAULT 1,
-            displayname TINYTEXT NOT NULL,
-            domain TINYTEXT NULL,
-            type TINYTEXT NOT NULL,
-            favicon TINYTEXT NOT NULL,
-            regex TEXT NOT NULL,
-            about TEXT NULL,
-            UNIQUE KEY id (id)
-     );";
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    $sql = "CREATE TABLE ".$embedly_options['table']." (
+      id MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
+      name TINYTEXT NOT NULL,
+      selected TINYINT NOT NULL DEFAULT 1,
+      displayname TINYTEXT NOT NULL,
+      domain TINYTEXT NULL,
+      type TINYTEXT NOT NULL,
+      favicon TINYTEXT NOT NULL,
+      regex TEXT NOT NULL,
+      about TEXT NULL,
+      UNIQUE KEY id (id)
+    );";
+    require_once(ABSPATH.'wp-admin/includes/upgrade.php');
     dbDelta($sql);
   }
   else {
-    //Clean Slate
+    # Table already exists, wipe it clean and start over
 		$sql = "TRUNCATE TABLE ".$embedly_options['table'].";";
 		$results = $wpdb->query($sql);
   }
-  $result = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/wordpress'));
-  $services = json_decode($result);
-  foreach($services as $service){
+  $data     = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/wordpress'));
+  $services = json_decode($data);
+  foreach($services as $service) {
   	embedly_provider_queries($service, 'insert');
   }
 }
 register_activation_hook(__FILE__, 'embedly_activate');
 
-function embedly_deactivate(){
+
+/**
+ * Deactivation Hook
+ */
+function embedly_deactivate() {
   global $wpdb, $embedly_options;
-	$sql = $wpdb->prepare("TRUNCATE TABLE ".$embedly_options['table'].";");
+	$sql     = $wpdb->prepare("TRUNCATE TABLE ".$embedly_options['table'].";");
   $results = $wpdb->query($sql);
-  delete_option('embedly_settings');
+	delete_option('embedly_settings');
 }
 register_deactivation_hook(__FILE__, 'embedly_deactivate');
 
@@ -222,10 +225,13 @@ function embedly_add_settings_page() {
 add_action('admin_menu', 'embedly_add_settings_page');
 
 
-
-
 /**
  * Define plugin menu icons
+ * Normally we would simply add styles to an external stylesheet
+ * However, the proper way of loading stylesheets is to only load
+ * them on plugin pages... Therefore, we're injecting a bit of CSS
+ * directly into the <head /> since it needs to be accessible on 
+ * ALL of the dashboard pages (as it deals with menu icons)
  */
 function embedly_menu_icons() {
   ob_start();
@@ -248,18 +254,15 @@ add_action('admin_head', 'embedly_menu_icons');
 
 
 
-
-
-
 /**
 * Add the CSS and JavaScript includes to the admin head of our plugin page only
 */
 function embedly_admin_head() {
-  $url = plugin_dir_url (__FILE__);
+  $url = plugin_dir_url(__FILE__);
   echo "<link rel='stylesheet' type='text/css' href='{$url}css/embedly.css' />\n";
   echo "<script src='{$url}js/embedly.js' type='text/javascript' ></script>";
 }
-add_action( 'admin_head-toplevel_page_embedly', 'embedly_admin_head' );
+add_action('admin_head-toplevel_page_embedly', 'embedly_admin_head');
 
 
 /**
@@ -367,7 +370,7 @@ function embedly_ajax_update() {
   update_option('embedly_settings', $embedly_options);
   $services = explode(',', $providers);
   $result = update_embedly_service($services);
-  if($result == null) {
+  if($result == null || !$result) {
     echo json_encode(array('error'=>true));
   }
   else {
@@ -375,7 +378,7 @@ function embedly_ajax_update() {
   }
   die();
 }
-add_action( 'wp_ajax_embedly_update', 'embedly_ajax_update' );
+add_action('wp_ajax_embedly_update', 'embedly_ajax_update');
 
 /**
  * Ajax function that looks at embedly for new providers
@@ -411,14 +414,15 @@ function embedly_acct_has_feature($feature) {
 
 // Add TinyMCE Functionality
 function embedly_footer_widgets() {
+  global $embedly_options;
   $url = plugin_dir_url(__FILE__).'tinymce';
   echo '<script type="text/javascript">EMBEDLY_TINYMCE = "'.$url.'";';
-  echo 'embedly_key = "' .$embedly_options['key']. '";';
+  echo 'embedly_key="'.$embedly_options['key'].'";';
   if(embedly_acct_has_feature('preview')) {
-    echo 'embedly_endpoint = "preview";';
+    echo 'embedly_endpoint="preview";';
   }
   else {
-    echo 'embedly_endpoint = "";';
+    echo 'embedly_endpoint="";';
   }
   echo '</script>';
 }
@@ -438,7 +442,7 @@ function register_embedly_button($buttons) {
 }
 
 function add_embedly_tinymce_plugin($plugin_array) {
-  $url = plugin_dir_url (__FILE__).'tinymce/editor_plugin.js';
+  $url = plugin_dir_url(__FILE__).'tinymce/editor_plugin.js';
   $plugin_array['embedly'] = $url;
   return $plugin_array;
 }
@@ -452,11 +456,21 @@ add_action('init', 'embedly_addbuttons');
 function embedly_provider_options() {
   global $wpdb, $embedly_options;
   $services = embedly_provider_queries(null, 'get', null, false, null, true);
+
+
+
 ?>
 <div class="wrap">
   <div class="icon32" id="embedly-logo"><br></div>
   <h2><?php _e('Embedly', 'embedly'); ?></h2>
-<?php  if ($services == null) {?>
+  <div class="clear"><br></div>
+  <div class="embedly-error" id="embedly-message">
+    <p><strong><?php _e('Something went wrong. Please try again later.', 'embedly'); ?></strong>
+  </div>
+  <div class="embedly-updated" id="embedly-message">
+    <p><strong><?php _e('Providers Updated.', 'embedly'); ?></strong></p>
+  </div>
+<?php if ($services == null) { ?>
   <div id="message" class="error">
     <p><strong><?php _e('Hmmmm, there where no providers found. Try updating?', 'embedly'); ?></strong></p>
   </div>
@@ -475,9 +489,10 @@ function embedly_provider_options() {
     <hr>
     <h2 class="providers"><?php _e('Providers', 'embedly'); ?></h2>
     <p><?php printf(__('The %1$sEmbedly%2$s plugin allows you to embed content from the following services using the %1$sEmbedly API%2$s. Select the services you wish to embed in your blog.', 'embedly'), '<a href="http://embed.ly" target="_blank">', '</a>'); ?></p>
-    <ul class="actions">
+    <ul class="embedly-actions">
       <li><a class="all" href="#"><?php _e('All', 'embedly'); ?></a></li>
       <li><a class="clearselection" href="#"><?php _e('Clear', 'embedly'); ?></a></li>
+      <li><a class="rich" href="#"><?php _e('Rich Media', 'embedly'); ?></a></li>
       <li><a class="videos" href="#"><?php _e('Videos', 'embedly'); ?></a></li>
       <li><a class="audio" href="#"><?php _e('Audio', 'embedly'); ?></a></li>
       <li><a class="photos" href="#"><?php _e('Photos', 'embedly'); ?></a></li>
