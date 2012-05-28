@@ -1,12 +1,25 @@
-jQuery(document).ready(function($){
-    $("a.info").bind("click", function(e){
-        e.preventDefault();
-        if($(this).siblings('input').attr("checked") == false)
-            $(this).siblings('input').attr("checked", "checked");
-        else
-            $(this).siblings('input').removeAttr("checked");
-        $(this).siblings('input').trigger('change');
+jQuery(document).ready(function($) {
+  
+  
+  $('.embedly-service-generator li').each(function() {
+    var iconBox = $(this).children('.full-service-wrapper');
+    var labelWidth = $(this).find('label').width() + 53;
+    $(this).hover(function() {
+      iconBox.addClass('overlay-expanded').stop().animate({width: labelWidth + 'px'}, 150);
+    }, function() {
+      iconBox.stop().animate({width: '47px'}, 150, function() {$(this).removeClass('overlay-expanded');});
+    }).click(function() {
+      if($(this).find('input[type=checkbox]').attr('checked')) {
+        $(this).find('input[type=checkbox]').removeAttr('checked');
+      }
+      else {
+        $(this).find('input[type=checkbox]').attr('checked', 'checked');
+      }
     });
+  });
+
+
+
     $(".actions .all").bind("click", function(e){
         e.preventDefault();
         $('input').attr("checked", "checked");

@@ -1,6 +1,76 @@
-UL.generator LI {background-color:#EFEFEF;border:1px solid #DDDDDD;float:left;margin:4px;overflow:hidden;padding:5px;white-space:nowrap;width:140px;}
-UL.generator A {color:#000000;padding:0 0 0 18px;position:relative;text-decoration:none;}
-UL.generator A IMG {height:16px;left:0;position:absolute;top:0;width:16px;}
+.embedly-service-generator li {
+  position:relative;
+  display:block;
+  float:left;
+  height:28px;
+  padding:6px;
+  width:47px;
+  margin:4px 0 0 4px;
+}
+.full-service-wrapper {
+  background:#efefef;
+  border:1px solid #ccc;
+  border-radius:5px;
+  height:28px;
+  width:47px;
+  position:absolute;
+  top:0;
+  left:0;
+  overflow:hidden !important;
+  cursor:pointer;
+}
+.embedly-icon-wrapper {
+  height:16px;
+  width:35px;
+  position:relative;
+  top:6px;
+  left:6px;
+}
+.embedly-icon-wrapper img {
+  height:16px;
+  width:16px;
+  position:absolute;
+  top:0;
+  left:18px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+.embedly-icon-wrapper input {
+  margin:0;
+  padding:0;
+  position:absolute;
+  top:1px;
+  left:0;
+}
+.embedly-icon-name {
+  height:16px;
+  position:absolute;
+  top:6px;
+  left:47px;
+  display:block;
+  height:16px;
+  line-height:16px;
+  cursor:pointer;
+  white-space:nowrap;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+.overlay-expanded {
+  z-index:999 !important;
+  border-color:#aaa;
+}
+
+
+
+
+
+
 UL.actions LI {background-color:#EFEFEF;border:1px solid #DDDDDD;float:left;margin:0 4px;padding:5px;}
 #embedly-logo{background:transparent url(../img/embedly_wordpress_logo.png) no-repeat scroll 0 0; height:36px;}
 INPUT.embedly_submit{float:left; margin:10px 5px;}

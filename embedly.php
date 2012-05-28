@@ -561,13 +561,11 @@ function embedly_provider_options() {
     <div style="clear:both;"></div>
     <ul class="generator">
 <?php foreach($services as $service) { ?>
-      <li class="<?php echo $service->type?>" id="<?php echo $service->name ?>">
-        <div class="full_service_wrap">
-          <div class="service_icon_wrap">
-            <input type="checkbox" name="<?php echo $service->name ?>"<?php if($service->selected == 1) { echo " checked=checked"; } ?>>
-            <a href="#<?php echo $service->name ?>" class="info ">
-              <img src="<?php echo $service->favicon; ?>" title="<?php echo $service->name; ?>" alt="<?php echo $service->displayname; ?>"><?php echo $service->displayname; ?>
-            </a>
+      <li class="<?php echo $service->type; ?>" id="<?php echo $service->name; ?>">
+        <div class="full-service-wrapper">
+          <label for="<?php echo $service->name; ?>-checkbox" class="embedly-icon-name"><?php echo $service->displayname; ?></label>
+          <div class="embedly-icon-wrapper">
+            <input type="checkbox" id="<?php echo $service->name; ?>-checkbox" name="<?php echo $service->name; ?>"<?php if($service->selected == 1) { echo " checked=checked"; } ?>><img src="<?php echo $service->favicon; ?>" title="<?php echo $service->name; ?>" alt="<?php echo $service->displayname; ?>">
           </div>
         </div>
       </li>
