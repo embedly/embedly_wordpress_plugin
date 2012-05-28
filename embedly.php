@@ -198,11 +198,10 @@ function embedly_activate() {
   $result = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/wordpress'));
   $services = json_decode($result);
   foreach($services as $service){
-  	insert_provider($service);
+  	embedly_provider_queries($service, 'insert');
   }
-
 }
-register_activation_hook( __FILE__, 'embedly_activate' );
+register_activation_hook(__FILE__, 'embedly_activate');
 
 function embedly_deactivate(){
   global $wpdb, $embedly_options;
