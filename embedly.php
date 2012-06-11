@@ -485,7 +485,7 @@ function embedly_provider_options() {
           <fieldset>
             <h2 class="section-label"><?php _e('Embedly Key', 'embedly'); ?></h2><span><a href="http://embed.ly/pricing" target="_new"><?php _e("Lost your key?", 'embedly'); ?></a></span>
             <input id="embedly_key" placeholder="<?php _e('enter your key...', 'embedly'); ?>" name="embedly_key" type="text" class="embedly_key_input" <?php if(!empty($embedly_options['key'])){ echo 'value="'.$embedly_options['key'].'"'; } ?> />
-            <input class="button-primary embedly_submit" name="submit" type="submit" value="<?php _e('Save Key', 'embedly'); ?>"/>
+            <input class="button-primary embedly_submit embedly_top_submit" name="submit" type="submit" value="<?php _e('Save Key', 'embedly'); ?>"/>
             <p><?php _e('Add your Embedly Key to embed any URL', 'embedly'); ?></p>
           </fieldset>
         </div>    
@@ -498,11 +498,11 @@ function embedly_provider_options() {
           <div class="embedly-ui-quicksand">
             <p><?php _e('Filter', 'embedly'); ?></p>
             <ul class="embedly-actions embedly-action-filter" id="embedly-service-filter">
-              <li><a class="all" href="#"><?php _e('All', 'embedly'); ?></a></li>
-              <li><a class="videos" href="#"><?php _e('Videos', 'embedly'); ?></a></li>
-              <li><a class="audio" href="#"><?php _e('Audio', 'embedly'); ?></a></li>
-              <li><a class="photos" href="#"><?php _e('Photos', 'embedly'); ?></a></li>
-              <li><a class="products" href="#"><?php _e('Products', 'embedly'); ?></a></li>
+              <li data-value="all"><a class="all" href="#"><?php _e('All', 'embedly'); ?></a></li>
+              <li data-value="video"><a class="videos" href="#"><?php _e('Videos', 'embedly'); ?></a></li>
+              <li data-value="audio"><a class="audio" href="#"><?php _e('Audio', 'embedly'); ?></a></li>
+              <li data-value="photo"><a class="photos" href="#"><?php _e('Photos', 'embedly'); ?></a></li>
+              <li data-value="product"><a class="products" href="#"><?php _e('Products', 'embedly'); ?></a></li>
             </ul>
           </div>
         </div>
@@ -523,8 +523,8 @@ function embedly_provider_options() {
           <div class="embedly-ui-quicksand">
             <p><?php _e('Sort', 'embedly'); ?></p>
             <ul class="embedly-actions embedly-action-sort" id="embedly-service-sort">
-              <li><a class="all" href="#"><?php _e('Name', 'embedly'); ?></a></li>
-              <li><a class="clearselection" href="#"><?php _e('Selected', 'embedly'); ?></a></li>
+              <li data-value="sortname"><a class="sortname" href="#"><?php _e('Name', 'embedly'); ?></a></li>
+              <li data-value="sortselected"><a class="sortselected" href="#"><?php _e('Selected', 'embedly'); ?></a></li>
             </ul>
           </div>
         </div>
@@ -545,11 +545,11 @@ function embedly_provider_options() {
 <?php } ?>
         </ul>
         <div style="clear:both;"></div>
-        <input class="button-primary embedly_submit" name="submit" type="submit" value="<?php _e('Save Changes', 'embedly'); ?>"/>
+        <input class="button-primary embedly_submit embedly_bottom_submit" name="submit" type="submit" value="<?php _e('Save Changes', 'embedly'); ?>"/>
       </form>
 <?php } ?>
       <form id="embedly_update_providers_form"  method="POST" action="." >
-        <input class="button-secondary embedly_submit" type="submit" name="submit" value="<?php _e('Update Provider List', 'embedly'); ?>"/>
+        <input class="button-secondary embedly_submit embedly_bottom_secondary" type="submit" name="submit" value="<?php _e('Update Provider List', 'embedly'); ?>"/>
       </form>
     </div>
   </div>

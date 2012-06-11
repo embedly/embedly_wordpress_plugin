@@ -318,42 +318,74 @@ jQuery(document).ready(function($) {
   });
 
 
+
+  var serviceList = $('#services-source');
+  var listClone   = $('#services-source').clone();
+
+
   $('.embedly-action-select a').click(function(e) {
-    $('.embedly-actions').find('a').removeClass('active');
+    $('.embedly-action-select').find('a').removeClass('active');
     e.preventDefault();
     var elem_class = $(this).attr('class');
     switch(elem_class) {
       case 'all':
         $(this).addClass('active');
         allCheckboxes.attr('checked', 'checked').trigger('change').parents('li').addClass('service-selected');
+        var listClone   = $('#services-source').clone();
       break;
       case 'clearselection':
         $(this).addClass('active');
         allCheckboxes.removeAttr('checked').trigger('change').parents('li').removeClass('service-selected');
+        var listClone   = $('#services-source').clone();
       break;
       case 'videos':
         $(this).addClass('active');
         videoCheckboxes.attr('checked', 'checked').trigger('change').parents('li').addClass('service-selected');
+        var listClone   = $('#services-source').clone();
       break;
       case 'photos':
         $(this).addClass('active');
         photoCheckboxes.attr('checked', 'checked').trigger('change').parents('li').addClass('service-selected');
+        var listClone   = $('#services-source').clone();
       break;
       case 'products':
         $(this).addClass('active');
         productCheckboxes.attr('checked', 'checked').trigger('change').parents('li').addClass('service-selected');
+        var listClone   = $('#services-source').clone();
       break;
       case 'audio':
         $(this).addClass('active');
         audioCheckboxes.attr('checked', 'checked').trigger('change').parents('li').addClass('service-selected');
+        var listClone   = $('#services-source').clone();
       break;
       case 'rich':
         $(this).addClass('active');
         richCheckboxes.attr('checked', 'checked').trigger('change').parents('li').addClass('service-selected');
+        var listClone   = $('#services-source').clone();
       break;
     }
   });
 
+
+
+  $('.embedly-action-filter li a').click(function(e) {
+    e.preventDefault();
+    $(this).parents('ul').find('a').removeClass('active');
+    $(this).addClass('active');
+    var dataValue = $(this).parent('li').attr('data-value');
+    if(dataValue == 'all') {
+      serviceList.quicksand(listClone.find('li'), {
+        duration: 800,
+      });
+    }
+    else {
+      serviceList.quicksand(listClone.find('li[data-type='+dataValue+']'), {
+        duration: 800,
+      });      
+    }
+  });
+  
+  
 
   $('.embedly_submit').click(function(e) {
     $('#embedly-message.embedly-error').hide();
@@ -405,9 +437,7 @@ jQuery(document).ready(function($) {
   });
 
 
-  /*
-   * TODO: Add Quicksand filtering/sorting here
-  */
 
-
+  
+  
 });
