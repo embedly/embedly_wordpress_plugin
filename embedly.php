@@ -509,7 +509,7 @@ function embedly_provider_options() {
         <div class="embedly-ui-quicksand-wrapper quicksand-middle-wrapper">
           <div class="embedly-ui-quicksand">
             <p><?php _e('Select', 'embedly'); ?></p>
-            <ul class="embedly-actions embedly-action-select">
+            <ul class="embedly-actions embedly-action-select" id="embedly-service-select">
               <li><a class="all" href="#"><?php _e('All', 'embedly'); ?></a></li>
               <li><a class="clearselection" href="#"><?php _e('None', 'embedly'); ?></a></li>
               <li><a class="videos" href="#"><?php _e('Videos', 'embedly'); ?></a></li>
