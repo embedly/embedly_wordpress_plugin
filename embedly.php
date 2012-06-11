@@ -189,9 +189,10 @@ function embedly_activate() {
     require_once(ABSPATH.'wp-admin/includes/upgrade.php');
     dbDelta($sql);
   }
+  
+  # Table already exists, wipe it clean and start over
   else {
-    # Table already exists, wipe it clean and start over
-		$sql = "TRUNCATE TABLE ".$embedly_options['table'].";";
+		$sql     = "TRUNCATE TABLE ".$embedly_options['table'].";";
 		$results = $wpdb->query($sql);
   }
   $data     = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/wordpress'));
@@ -225,58 +226,43 @@ function embedly_add_settings_page() {
 add_action('admin_menu', 'embedly_add_settings_page');
 
 
+/** 
+ * Enqueue styles/scripts for embedly page(s) only
+*/
+function embedly_enqueue_admin() {
+  global $embedly_settings_page;
+  $screen = get_current_screen();
+  if($screen->id == $embedly_settings_page) {
+    wp_enqueue_style('embedly_admin_styles', EMBEDLY_URL.'/css/embedly-admin.css');
+    wp_enqueue_style('google_fonts', 'http://fonts.googleapis.com/css?family=Cabin:400,600');
+    wp_enqueue_script('embedly_admin_scripts', EMBEDLY_URL.'/js/embedly.js',array('jquery'),'1.0',true);
+  }
+  return;
+}
+add_action('admin_print_styles', 'embedly_enqueue_admin');
+
+
 /**
- * Define plugin menu icons
- * Normally we would simply add styles to an external stylesheet
- * However, the proper way of loading stylesheets is to only load
- * them on plugin pages... Therefore, we're injecting a bit of CSS
- * directly into the <head /> since it needs to be accessible on 
- * ALL of the dashboard pages (as it deals with menu icons)
- */
+ * Enqueue menu icon styles globally in admin
+*/
 function embedly_menu_icons() {
-  ob_start();
-?>
-<style type="text/css" media="screen">
-  #toplevel_page_embedly .wp-menu-image a img {
-    display:none;
-  }
-  #toplevel_page_embedly .wp-menu-image a {
-    background: url('<?php echo EMBEDLY_URL; ?>/img/menu-icon.png') no-repeat 5px 7px !important;
-  }
-  #toplevel_page_embedly:hover .wp-menu-image a, #toplevel_page_embedly.current .wp-menu-image a {
-    background-position:5px -25px !important;
-  }
-</style>
-<?php 
-  echo ob_get_clean();
+  wp_enqueue_style('embedly_menu_icons', EMBEDLY_URL.'/css/embedly-icons.css');
 }
-add_action('admin_head', 'embedly_menu_icons');
-
+add_action('admin_print_styles', 'embedly_menu_icons');
 
 
 /**
-* Add the CSS and JavaScript includes to the admin head of our plugin page only
+ * Enqueue styles for front-end
 */
-function embedly_admin_head() {
-  $url = plugin_dir_url(__FILE__);
-  echo "<link rel='stylesheet' type='text/css' href='{$url}css/embedly.css' />\n";
-  echo "<script src='{$url}js/embedly.js' type='text/javascript' ></script>";
+function embedly_enqueue_public() {
+  wp_enqueue_style('embedly_font_end', EMBEDLY_URL.'/css/embedly-frontend.css');
 }
-add_action('admin_head-toplevel_page_embedly', 'embedly_admin_head');
+add_action('wp_head', 'embedly_enqueue_public');
 
 
 /**
-* Add CSS to front end for handling Embedly Embeds
-*/
-function embedly_head() {
-  $url = plugin_dir_url(__FILE__);
-  echo "<link rel='stylesheet' type='text/css' href='{$url}css/embedly.css' />\n";
-}
-add_action('wp_head', 'embedly_head');
-
-/**
-* The list of providers embedly offers is always growing. This is a dynamic way to
-* pull in new providers.
+ * The list of providers embedly offers is always growing. This is a dynamic way to
+ * pull in new providers.
 */
 function embedly_services_download() {
   $old_services = embedly_provider_queries(null, 'get', null, false, null, true);
@@ -289,20 +275,21 @@ function embedly_services_download() {
   if(!$services) {
     return null;
   }
-  //add new services
+  
+  # Add new services
   $s_names = array();
   foreach($services as $service) {
     if(!in_array($service->name, $os_names)) {
       embedly_provider_queries($service, 'insert');
     }
     else{
-      //We need to update the provider if anything has changed.
+      # We need to update the provider if anything has changed.
       embedly_provider_queries($service, 'update');
     }
     array_push($s_names, $service->name);
   }
 
-  //See if any names dissappered
+  # See if any names dissappered
   foreach($os_names as $os_name) {
     if(!in_array($os_name, $s_names)) {
       embedly_provider_queries($os_name, 'delete');
@@ -311,6 +298,7 @@ function embedly_services_download() {
 
   return embedly_provider_queries(null, 'get', null, false, null, true);
 }
+
 
 /**
  * Updates the selected services
@@ -333,6 +321,7 @@ function update_embedly_service($selected) {
   }
   return $services;
 }
+
 
 /**
  * Does the work of adding the Embedly providers to wp_oembed
@@ -357,8 +346,8 @@ function add_embedly_providers() {
     }
   }
 }
-//add all the providers on the "plugins_loaded" action.
 add_action('plugins_loaded', 'add_embedly_providers');
+
 
 /**
  * Ajax function that updates the selected state of providers
@@ -380,6 +369,7 @@ function embedly_ajax_update() {
 }
 add_action('wp_ajax_embedly_update', 'embedly_ajax_update');
 
+
 /**
  * Ajax function that looks at embedly for new providers
  */
@@ -395,6 +385,10 @@ function embedly_ajax_update_providers() {
 }
 add_action('wp_ajax_embedly_update_providers', 'embedly_ajax_update_providers');
 
+
+/**
+ * Function to check if account has specific features enabled
+*/
 function embedly_acct_has_feature($feature) {
   global $embedly_options;
   if($embedly_options['key']) {
@@ -412,7 +406,10 @@ function embedly_acct_has_feature($feature) {
   }
 }
 
-// Add TinyMCE Functionality
+
+/**
+ * Add TinyMCE functionality
+*/
 function embedly_footer_widgets() {
   global $embedly_options;
   $url = plugin_dir_url(__FILE__).'tinymce';
@@ -450,6 +447,7 @@ function add_embedly_tinymce_plugin($plugin_array) {
 add_action('admin_head', 'embedly_footer_widgets');
 add_action('init', 'embedly_addbuttons');
 
+
 /**
  * The Admin Page.
  */
@@ -459,64 +457,101 @@ function embedly_provider_options() {
 
 
 
+
 ?>
-<div class="wrap">
-  <div class="icon32" id="embedly-logo"><br></div>
-  <h2><?php _e('Embedly', 'embedly'); ?></h2>
-  <div class="clear"><br></div>
-  <div class="embedly-error" id="embedly-message">
-    <p><strong><?php _e('Something went wrong. Please try again later.', 'embedly'); ?></strong>
-  </div>
-  <div class="embedly-updated" id="embedly-message">
-    <p><strong><?php _e('Providers Updated.', 'embedly'); ?></strong></p>
-  </div>
-<?php if ($services == null) { ?>
-  <div id="message" class="error">
-    <p><strong><?php _e('Hmmmm, there where no providers found. Try updating?', 'embedly'); ?></strong></p>
-  </div>
-<?php } else { ?>
-  <form id="embedly_providers_form" method="POST" action=".">
-    <div class="embedly_key_form">
-      <fieldset>
-        <label for='embedly_key'><?php _e('Embedly Key', 'embedly'); ?></label>
-        <input id="embedly_key" placeholder="<?php _e('enter your key...', 'embedly'); ?>" name="embedly_key" type="text" style="width:75%;" <?php if(!empty($embedly_options['key'])){ echo 'value="'.$embedly_options['key'].'"'; } ?> />
-        <span><a href="http://embed.ly/pricing" target="_new"><?php _e("Don't have a key?", 'embedly'); ?></a></span>
-        <p><?php _e('Add your Embedly Key to embed any URL', 'embedly'); ?></p>
-        <input class="button-primary embedly_submit" name="submit" type="submit" value="<?php _e('Save', 'embedly'); ?>"/>
-      </fieldset>
+<div class="embedly-wrap">
+  <div class="embedly-ui">
+    <div class="embedly-ui-header-outer-wrapper">
+      <div class="embedly-ui-header-wrapper">
+        <div class="embedly-ui-header">
+          <a class="embedly-ui-logo" href="http://embed.ly" target="_blank"><?php _e('Embedly', 'embedly'); ?></a>
+        </div>
+      </div>
     </div>
-    <div style="clear:both;"></div>
-    <hr>
-    <h2 class="providers"><?php _e('Providers', 'embedly'); ?></h2>
-    <p><?php printf(__('The %1$sEmbedly%2$s plugin allows you to embed content from the following services using the %1$sEmbedly API%2$s. Select the services you wish to embed in your blog.', 'embedly'), '<a href="http://embed.ly" target="_blank">', '</a>'); ?></p>
-    <ul class="embedly-actions">
-      <li><a class="all" href="#"><?php _e('All', 'embedly'); ?></a></li>
-      <li><a class="clearselection" href="#"><?php _e('Clear', 'embedly'); ?></a></li>
-      <li><a class="rich" href="#"><?php _e('Rich Media', 'embedly'); ?></a></li>
-      <li><a class="videos" href="#"><?php _e('Videos', 'embedly'); ?></a></li>
-      <li><a class="audio" href="#"><?php _e('Audio', 'embedly'); ?></a></li>
-      <li><a class="photos" href="#"><?php _e('Photos', 'embedly'); ?></a></li>
-      <li><a class="products" href="#"><?php _e('Products', 'embedly'); ?></a></li>
-    </ul>
-    <div style="clear:both;"></div>
-    <ul class="embedly-service-generator">
-<?php foreach($services as $service) { ?>
-      <li class="<?php echo $service->type; ?>" id="<?php echo $service->name; ?>">
-        <div class="full-service-wrapper">
-          <label for="<?php echo $service->name; ?>-checkbox" class="embedly-icon-name"><?php echo $service->displayname; ?></label>
-          <div class="embedly-icon-wrapper">
-            <input type="checkbox" id="<?php echo $service->name; ?>-checkbox" name="<?php echo $service->name; ?>"<?php if($service->selected == 1) { echo " checked=checked"; } ?>><img src="<?php echo $service->favicon; ?>" title="<?php echo $service->name; ?>" alt="<?php echo $service->displayname; ?>">
+    <div class="embedly-error" id="embedly-message">
+      <p><strong><?php _e('Something went wrong. Please try again later.', 'embedly'); ?></strong></p>
+    </div>
+    <div class="embedly-updated" id="embedly-message">
+      <p><strong><?php _e('Providers Updated.', 'embedly'); ?></strong></p>
+    </div>
+<?php if ($services == null) { ?>
+    <div id="embedly-message" class="embedly-error">
+      <p><strong><?php _e('Hmmmm, there where no providers found. Try updating?', 'embedly'); ?></strong></p>
+    </div>
+<?php } else { ?>
+    <form id="embedly_providers_form" method="POST" action=".">
+      <div class="embedly-ui-key-wrap">
+        <div class="embedly_key_form embedly-ui-key-form">
+          <fieldset>
+            <h2 class="section-label"><?php _e('Embedly Key', 'embedly'); ?></h2><span><a href="http://embed.ly/pricing" target="_new"><?php _e("Lost your key?", 'embedly'); ?></a></span>
+            <input id="embedly_key" placeholder="<?php _e('enter your key...', 'embedly'); ?>" name="embedly_key" type="text" class="embedly_key_input" <?php if(!empty($embedly_options['key'])){ echo 'value="'.$embedly_options['key'].'"'; } ?> />
+            <input class="button-primary embedly_submit" name="submit" type="submit" value="<?php _e('Save Key', 'embedly'); ?>"/>
+            <p><?php _e('Add your Embedly Key to embed any URL', 'embedly'); ?></p>
+          </fieldset>
+        </div>    
+      </div>
+      <div class="pixel-popper"></div>
+      <div class="embedly-ui-service-sorter-wrapper">
+        <!--
+        <p><?php printf(__('The %1$sEmbedly%2$s plugin allows you to embed content from the following services using the %1$sEmbedly API%2$s. Select the services you wish to embed in your blog.', 'embedly'), '<a href="http://embed.ly" target="_blank">', '</a>'); ?></p> -->
+        <div class="embedly-ui-quicksand-wrapper">
+          <div class="embedly-ui-quicksand">
+            <p><?php _e('Filter', 'embedly'); ?></p>
+            <ul class="embedly-actions embedly-action-filter" id="embedly-service-filter">
+              <li><a class="all" href="#"><?php _e('All', 'embedly'); ?></a></li>
+              <li><a class="videos" href="#"><?php _e('Videos', 'embedly'); ?></a></li>
+              <li><a class="audio" href="#"><?php _e('Audio', 'embedly'); ?></a></li>
+              <li><a class="photos" href="#"><?php _e('Photos', 'embedly'); ?></a></li>
+              <li><a class="products" href="#"><?php _e('Products', 'embedly'); ?></a></li>
+            </ul>
           </div>
         </div>
-      </li>
+        <div class="embedly-ui-quicksand-wrapper quicksand-middle-wrapper">
+          <div class="embedly-ui-quicksand">
+            <p><?php _e('Select', 'embedly'); ?></p>
+            <ul class="embedly-actions embedly-action-select">
+              <li><a class="all" href="#"><?php _e('All', 'embedly'); ?></a></li>
+              <li><a class="clearselection" href="#"><?php _e('None', 'embedly'); ?></a></li>
+              <li><a class="videos" href="#"><?php _e('Videos', 'embedly'); ?></a></li>
+              <li><a class="audio" href="#"><?php _e('Audio', 'embedly'); ?></a></li>
+              <li><a class="photos" href="#"><?php _e('Photos', 'embedly'); ?></a></li>
+              <li><a class="products" href="#"><?php _e('Products', 'embedly'); ?></a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="embedly-ui-quicksand-wrapper">
+          <div class="embedly-ui-quicksand">
+            <p><?php _e('Sort', 'embedly'); ?></p>
+            <ul class="embedly-actions embedly-action-sort" id="embedly-service-sort">
+              <li><a class="all" href="#"><?php _e('Name', 'embedly'); ?></a></li>
+              <li><a class="clearselection" href="#"><?php _e('Selected', 'embedly'); ?></a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="clear"></div>
+        <div class="embedly-service-description">
+          <p></p>
+        </div>   
+        <ul id="services-source" class="embedly-service-generator">
+<?php $cnt = 0; foreach($services as $service) { $cnt++; ?>
+          <li class="<?php echo $service->type; ?>" id="<?php echo $service->name; ?>" data-type="<?php echo $service->type; ?>" data-id="id-<?php echo $cnt; ?>">
+            <div class="full-service-wrapper">
+              <label for="<?php echo $service->name; ?>-checkbox" class="embedly-icon-name"><?php if(strlen($service->displayname)>10){$strcut=substr($service->displayname,0,10);$strrev=strrev($strcut);$lastchar=$strrev{0};if($lastchar==' '){echo substr($service->displayname,0,9).'...';}else{echo substr($service->displayname, 0, 10).'...';}}else{echo $service->displayname;} ?></label>
+              <div class="embedly-icon-wrapper">
+                <input type="checkbox" id="<?php echo $service->name; ?>-checkbox" name="<?php echo $service->name; ?>"<?php if($service->selected == 1) { echo " checked=checked"; } ?>><img src="<?php echo $service->favicon; ?>" title="<?php echo $service->name; ?>" alt="<?php echo $service->displayname; ?>">
+              </div>
+            </div>
+          </li>
 <?php } ?>
-    </ul>
-    <div style="clear:both;"></div>
-    <input class="button-primary embedly_submit" name="submit" type="submit" value="<?php _e('Save Changes', 'embedly'); ?>"/>
-  </form>
+        </ul>
+        <div style="clear:both;"></div>
+        <input class="button-primary embedly_submit" name="submit" type="submit" value="<?php _e('Save Changes', 'embedly'); ?>"/>
+      </form>
 <?php } ?>
-  <form id="embedly_update_providers_form"  method="POST" action="." >
-    <input class="button-secondary embedly_submit" type="submit" name="submit" value="<?php _e('Update Provider List', 'embedly'); ?>"/>
-  </form>
+      <form id="embedly_update_providers_form"  method="POST" action="." >
+        <input class="button-secondary embedly_submit" type="submit" name="submit" value="<?php _e('Update Provider List', 'embedly'); ?>"/>
+      </form>
+    </div>
+  </div>
 </div>
 <?php } ?>
