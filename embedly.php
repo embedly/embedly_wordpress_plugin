@@ -221,7 +221,7 @@ register_deactivation_hook(__FILE__, 'embedly_deactivate');
  */
 function embedly_add_settings_page() {
   global $embedly_settings_page;
-  $embedly_settings_page = add_menu_page('Embedly', 'Embedly', 'activate_plugins', 'embedly', 'embedly_provider_options');
+  $embedly_settings_page = add_menu_page('Embedly', 'Embedly', 'activate_plugins', 'embedly', 'embedly_settings_page');
 }
 add_action('admin_menu', 'embedly_add_settings_page');
 
@@ -351,13 +351,11 @@ add_action('plugins_loaded', 'add_embedly_providers');
 
 /**
  * Ajax function that updates the selected state of providers
- */
-function embedly_ajax_update() {
+ *
+function embedly_ajax_update($services) {
   global $embedly_options;
-  $providers = $_POST['providers'];
-  $embedly_options['key'] = $_POST['embedly_key'];
-  update_option('embedly_settings', $embedly_options);
-  $services = explode(',', $providers);
+
+
   $result = update_embedly_service($services);
   if($result == null || !$result) {
     echo json_encode(array('error'=>true));
@@ -366,8 +364,15 @@ function embedly_ajax_update() {
     echo json_encode(array('error'=>false));
   }
   die();
+}*/
+function embedly_update_selected_services($services) {
+  $result = update_embedly_service($services);
+  if($result == null || !$result) {
+    return false;
+  }
+  return true;
 }
-add_action('wp_ajax_embedly_update', 'embedly_ajax_update');
+//add_action('wp_ajax_embedly_update', 'embedly_ajax_update');
 
 
 /**
@@ -389,10 +394,9 @@ add_action('wp_ajax_embedly_update_providers', 'embedly_ajax_update_providers');
 /**
  * Function to check if account has specific features enabled
 */
-function embedly_acct_has_feature($feature) {
-  global $embedly_options;
-  if($embedly_options['key']) {
-    $result = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/feature?feature='.$feature.'&key='.$embedly_options['key']));
+function embedly_acct_has_feature($feature, $key=false) {
+  if($key) {
+    $result = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/feature?feature='.$feature.'&key='.$key));
   }
   else {
     return false;
@@ -415,7 +419,7 @@ function embedly_footer_widgets() {
   $url = plugin_dir_url(__FILE__).'tinymce';
   echo '<script type="text/javascript">EMBEDLY_TINYMCE = "'.$url.'";';
   echo 'embedly_key="'.$embedly_options['key'].'";';
-  if(embedly_acct_has_feature('preview')) {
+  if(embedly_acct_has_feature('preview', $embedly_options['key'])) {
     echo 'embedly_endpoint="preview";';
   }
   else {
@@ -451,9 +455,43 @@ add_action('init', 'embedly_addbuttons');
 /**
  * The Admin Page.
  */
-function embedly_provider_options() {
+function embedly_settings_page() {
   global $wpdb, $embedly_options;
-  $services = embedly_provider_queries(null, 'get', null, false, null, true);
+  $keyValid  = true;
+  $selectedServices = array();
+  $services  = embedly_provider_queries(null, 'get', null, false, null, true);
+  if(isset($_POST['embedly_key']) && !empty($_POST['embedly_key'])) {
+    if(embedly_acct_has_feature('oembed', $_POST['embedly_key'])) {
+      $embedly_options['key'] = $_POST['embedly_key'];
+      update_option('embedly_settings', $embedly_options);
+      $embedly_options = get_option('embedly_settings');
+      $successMessage  = __('Your API key is now safely tucked away for safe keeping.', 'embedly');
+    }
+    else {
+      $keyValid = false;
+      $errorMessage = __('You have entered an invalid API key. Please try again.', 'embedly');
+    }
+  }
+  elseif($services == null) {
+    $errorMessage = __('Hmmm, there were no providers found. Try updating?', 'embedly');
+  }
+  elseif(isset($_POST['updating_providers'])) {
+    foreach($services as $service) {
+      if(isset($_POST[$service->name])) {
+        $selectedServices[] .= $service->name;
+      }
+    }
+    if(isset($selectedServices)) {
+      if(embedly_update_selected_services($selectedServices)) {
+        $successMessage = sprintf(__('The providers you chose have been saved to the database. %1$sPlease reload%2$s to reflect the changes.', 'embedly'), '<a href="admin.php?page=embedly">', '</a>');
+      }
+      else {
+        $errorMessage = __("It would appear that we've encountered a problem while updating your providers. Try again?", 'embedly');
+      }
+    }    
+  }
+
+  
 
 
 
@@ -468,28 +506,35 @@ function embedly_provider_options() {
         </div>
       </div>
     </div>
+<?php if(isset($errorMessage)) { ?>
     <div class="embedly-error" id="embedly-message">
+      <p><strong><?php echo $errorMessage; ?></strong></p>
+    </div>
+<?php } elseif(isset($successMessage) && !isset($errorMessage)) { ?>
+    <div class="embedly-updated" id="embedly-message">
+      <p><strong><?php echo $successMessage; ?></strong></p>
+    </div>
+<?php } ?>
+    <div class="embedly-error embedly-ajax-message" id="embedly-message">
       <p><strong><?php _e('Something went wrong. Please try again later.', 'embedly'); ?></strong></p>
     </div>
-    <div class="embedly-updated" id="embedly-message">
+    <div class="embedly-updated embedly-ajax-message" id="embedly-message">
       <p><strong><?php _e('Providers Updated.', 'embedly'); ?></strong></p>
     </div>
-<?php if ($services == null) { ?>
-    <div id="embedly-message" class="embedly-error">
-      <p><strong><?php _e('Hmmmm, there where no providers found. Try updating?', 'embedly'); ?></strong></p>
-    </div>
-<?php } else { ?>
-    <form id="embedly_providers_form" method="POST" action=".">
+<?php if($services != null) { ?>
+    <form id="embedly_key_form" method="POST" action="">
       <div class="embedly-ui-key-wrap">
         <div class="embedly_key_form embedly-ui-key-form">
           <fieldset>
             <h2 class="section-label"><?php _e('Embedly Key', 'embedly'); ?></h2><span><a href="http://embed.ly/pricing" target="_new"><?php _e("Lost your key?", 'embedly'); ?></a></span>
-            <input id="embedly_key" placeholder="<?php _e('enter your key...', 'embedly'); ?>" name="embedly_key" type="text" class="embedly_key_input" <?php if(!empty($embedly_options['key'])){ echo 'value="'.$embedly_options['key'].'"'; } ?> />
-            <input class="button-primary embedly_submit embedly_top_submit" name="submit" type="submit" value="<?php _e('Save Key', 'embedly'); ?>"/>
+            <input id="embedly_key" placeholder="<?php _e('enter your key...', 'embedly'); ?>" name="embedly_key" type="text" class="<?php if(!$keyValid) {echo 'invalid ';} ?>embedly_key_input" <?php if(!empty($embedly_options['key'])){ echo 'value="'.$embedly_options['key'].'"'; } ?> />
+            <input class="button-primary embedly_submit embedly_top_submit" name="submit" type="submit" value="<?php _e('Validate Key', 'embedly'); ?>"/>
             <p><?php _e('Add your Embedly Key to embed any URL', 'embedly'); ?></p>
           </fieldset>
         </div>    
       </div>
+    </form>
+    <form id="embedly_providers_form" method="POST" action="">
       <div class="pixel-popper"></div>
       <div class="embedly-ui-service-sorter-wrapper">
         <!--
@@ -498,7 +543,7 @@ function embedly_provider_options() {
           <div class="embedly-ui-quicksand">
             <p><?php _e('Filter', 'embedly'); ?></p>
             <ul class="embedly-actions embedly-action-filter" id="embedly-service-filter">
-              <li data-value="all"><a class="all" href="#"><?php _e('All', 'embedly'); ?></a></li>
+              <li data-value="all"><a class="all active" href="#"><?php _e('All', 'embedly'); ?></a></li>
               <li data-value="video"><a class="videos" href="#"><?php _e('Videos', 'embedly'); ?></a></li>
               <li data-value="audio"><a class="audio" href="#"><?php _e('Audio', 'embedly'); ?></a></li>
               <li data-value="photo"><a class="photos" href="#"><?php _e('Photos', 'embedly'); ?></a></li>
@@ -510,7 +555,7 @@ function embedly_provider_options() {
           <div class="embedly-ui-quicksand">
             <p><?php _e('Select', 'embedly'); ?></p>
             <ul class="embedly-actions embedly-action-select" id="embedly-service-select">
-              <li><a class="all" href="#"><?php _e('All', 'embedly'); ?></a></li>
+              <li><a class="all active" href="#"><?php _e('All', 'embedly'); ?></a></li>
               <li><a class="clearselection" href="#"><?php _e('None', 'embedly'); ?></a></li>
               <li><a class="videos" href="#"><?php _e('Videos', 'embedly'); ?></a></li>
               <li><a class="audio" href="#"><?php _e('Audio', 'embedly'); ?></a></li>
@@ -523,7 +568,7 @@ function embedly_provider_options() {
           <div class="embedly-ui-quicksand">
             <p><?php _e('Sort', 'embedly'); ?></p>
             <ul class="embedly-actions embedly-action-sort" id="embedly-service-sort">
-              <li data-value="sortname"><a class="sortname" href="#"><?php _e('Name', 'embedly'); ?></a></li>
+              <li data-value="sortname"><a class="sortname active" href="#"><?php _e('Name', 'embedly'); ?></a></li>
               <li data-value="sortselected"><a class="sortselected" href="#"><?php _e('Selected', 'embedly'); ?></a></li>
             </ul>
           </div>
@@ -538,13 +583,14 @@ function embedly_provider_options() {
             <div class="full-service-wrapper">
               <label for="<?php echo $service->name; ?>-checkbox" class="embedly-icon-name"><?php if(strlen($service->displayname)>10){$strcut=substr($service->displayname,0,10);$strrev=strrev($strcut);$lastchar=$strrev{0};if($lastchar==' '){echo substr($service->displayname,0,9).'...';}else{echo substr($service->displayname, 0, 10).'...';}}else{echo $service->displayname;} ?></label>
               <div class="embedly-icon-wrapper">
-                <input type="checkbox" id="<?php echo $service->name; ?>-checkbox" name="<?php echo $service->name; ?>"<?php if($service->selected == 1) { echo " checked=checked"; } ?>><img src="<?php echo $service->favicon; ?>" title="<?php echo $service->name; ?>" alt="<?php echo $service->displayname; ?>">
+                <input type="checkbox" data-selected="<?php echo $service->selected + 1; ?>" id="<?php echo $service->name; ?>-checkbox" name="<?php echo $service->name; ?>"<?php if($service->selected == 1) { echo " checked=checked"; } ?>><img src="<?php echo $service->favicon; ?>" title="<?php echo $service->name; ?>" alt="<?php echo $service->displayname; ?>">
               </div>
             </div>
           </li>
 <?php } ?>
         </ul>
         <div style="clear:both;"></div>
+        <input type="hidden" name="updating_providers" value="1" />
         <input class="button-primary embedly_submit embedly_bottom_submit" name="submit" type="submit" value="<?php _e('Save Changes', 'embedly'); ?>"/>
       </form>
 <?php } ?>
