@@ -527,8 +527,11 @@ function embedly_settings_page() {
         <div class="embedly_key_form embedly-ui-key-form">
           <fieldset>
             <h2 class="section-label"><?php _e('Embedly Key', 'embedly'); ?></h2><span><a href="http://embed.ly/pricing" target="_new"><?php _e("Lost your key?", 'embedly'); ?></a></span>
-            <input id="embedly_key" placeholder="<?php _e('enter your key...', 'embedly'); ?>" name="embedly_key" type="text" class="<?php if(!$keyValid) {echo 'invalid ';} ?>embedly_key_input" <?php if(!empty($embedly_options['key'])){ echo 'value="'.$embedly_options['key'].'"'; } ?> />
-            <input class="button-primary embedly_submit embedly_top_submit" name="submit" type="submit" value="<?php _e('Validate Key', 'embedly'); ?>"/>
+            <div class="embedly-input-wrapper">
+              <a href="#" class="embedly-lock-control embedly-unlocked" data-unlocked="<?php _e('Lock this field to prevent editing.', 'embedly'); ?>" data-locked="<?php _e('Unlock to edit this field.', 'embedly'); ?>" title=""><?php if($keyValid) {_e('Unlock to Edit', 'embedly');}else {_e('Lock this Field', 'embedly');} ?></a>
+              <input <?php if($keyValid) {echo 'readonly="readonly" ';} ?>id="embedly_key" placeholder="<?php _e('enter your key...', 'embedly'); ?>" name="embedly_key" type="text" class="<?php if(!$keyValid) {echo 'invalid ';}else {echo 'embedly-locked-input ';} ?>embedly_key_input" <?php if(!empty($embedly_options['key'])){ echo 'value="'.$embedly_options['key'].'"'; } ?> />
+              <input class="button-primary embedly_submit embedly_top_submit" name="submit" type="submit" value="<?php _e('Validate Key', 'embedly'); ?>"/>
+            </div>
             <p><?php _e('Add your Embedly Key to embed any URL', 'embedly'); ?></p>
           </fieldset>
         </div>    

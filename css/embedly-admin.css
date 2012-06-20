@@ -83,6 +83,25 @@
   border-radius:5px;
   padding:14px;
 }
+.embedly-input-wrapper {
+  position:relative;
+}
+.embedly-lock-control {
+  position:absolute;
+  top:23px;
+  right:15.6%;
+  display:block;
+  height:19px;
+  width:15px;
+  background:url('../img/lock.png') no-repeat 0 0;
+  text-indent:-9999em;
+}
+.embedly-unlocked {
+  background-position:0 0;
+}
+.embedly-locked {
+  background-position: 0 -19px;
+}
 .embedly-ui-key-form input.embedly_key_input {
   width:85%;
   background:#fcfcfc;
@@ -106,6 +125,10 @@
   -moz-box-shadow:inset 0 0 4px rgba(255,0,0,0.4);
   -ms-box-shadow:inset 0 0 4px rgba(255,0,0,0.4);
   box-shadow:inset 0 0 4px rgba(255,0,0,0.4);
+}
+.embedly-ui-key-form input.embedly_key_input.embedly-locked-input {
+  background:#eee;
+  color:#bbb;
 }
 input.embedly_top_submit {
   height:30px;

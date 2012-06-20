@@ -17,6 +17,31 @@
 
 jQuery(document).ready(function($) {
   
+  if($('#embedly_key').attr('readonly')) {
+    $('.embedly-lock-control').removeClass('embedly-unlocked').addClass('embedly-locked');
+  }
+  else {
+    $('.embedly-lock-control').removeClass('embedly-locked').addClass('embedly-unlocked');
+  }
+  $('.embedly-lock-control').click(function(e) {
+    e.preventDefault();
+    if($(this).hasClass('embedly-locked')) {
+      $(this).removeClass('embedly-locked').addClass('embedly-unlocked').siblings('#embedly_key').removeClass('embedly-locked-input').removeAttr('readonly');
+    }
+    else {
+      $(this).removeClass('embedly-unlocked').addClass('embedly-locked').siblings('#embedly_key').addClass('embedly-locked-input').attr('readonly', 'readonly');
+    }
+  }).hover(function() {
+    if($(this).hasClass('embedly-locked')) {
+      $(this).attr('title', $(this).attr('data-locked'));
+    }
+    else {
+      $(this).attr('title', $(this).attr('data-unlocked'));
+    }
+  }, function() {
+    $(this).attr('title', '');
+  });
+  
   // Adjust some minor aesthetic details onload
   $('.embedly-service-generator li').each(function() {
     if($(this).find('input').attr('checked')) {
