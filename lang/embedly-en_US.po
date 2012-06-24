@@ -1,0 +1,134 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Embed.ly WordPress Plugin\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-06-24 06:49-0600\n"
+"PO-Revision-Date: 2012-06-24 06:54-0600\n"
+"Last-Translator: Josh Jones <josh.jones@gmx.us>\n"
+"Language-Team: Embed.ly Developer <developer@embed.ly>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e;_n;_x\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: UNITED STATES\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: embedly.php:471
+#: embedly.php:540
+msgid "Please enter your key..."
+msgstr ""
+
+#: embedly.php:474
+msgid "You didn't enter a key to validate, so for now you only have basic capabilities."
+msgstr ""
+
+#: embedly.php:482
+msgid "Your API key is now tucked away for safe keeping."
+msgstr ""
+
+#: embedly.php:486
+msgid "You have entered an invalid API key. Please try again."
+msgstr ""
+
+#: embedly.php:490
+msgid "Hmmm, there were no providers found. Try updating?"
+msgstr ""
+
+#: embedly.php:500
+#, php-format
+msgid "The providers you chose have been saved to the database. %1$sPlease reload%2$s to reflect the changes."
+msgstr ""
+
+#: embedly.php:503
+msgid "It would appear that we've encountered a problem while updating your providers. Try again?"
+msgstr ""
+
+#: embedly.php:513
+msgid "Embedly"
+msgstr ""
+
+#: embedly.php:527
+msgid "Something went wrong. Please try again later."
+msgstr ""
+
+#: embedly.php:530
+msgid "We have sync'd your providers list with our API. Enjoy!"
+msgstr ""
+
+#: embedly.php:537
+msgid "Embedly Key"
+msgstr ""
+
+#: embedly.php:537
+msgid "Lost your key?"
+msgstr ""
+
+#: embedly.php:539
+msgid "Lock this field to prevent editing."
+msgstr ""
+
+#: embedly.php:539
+msgid "Unlock to edit this field."
+msgstr ""
+
+#: embedly.php:541
+msgid "Validate Key"
+msgstr ""
+
+#: embedly.php:543
+msgid "Add your Embedly Key to embed any URL"
+msgstr ""
+
+#: embedly.php:553
+msgid "Select"
+msgstr ""
+
+#: embedly.php:555
+#: embedly.php:569
+msgid "All"
+msgstr ""
+
+#: embedly.php:556
+msgid "None"
+msgstr ""
+
+#: embedly.php:557
+#: embedly.php:570
+msgid "Videos"
+msgstr ""
+
+#: embedly.php:558
+#: embedly.php:571
+msgid "Audio"
+msgstr ""
+
+#: embedly.php:559
+#: embedly.php:572
+msgid "Photos"
+msgstr ""
+
+#: embedly.php:560
+#: embedly.php:573
+msgid "Rich Media"
+msgstr ""
+
+#: embedly.php:561
+#: embedly.php:574
+msgid "Products"
+msgstr ""
+
+#: embedly.php:567
+msgid "Filter"
+msgstr ""
+
+#: embedly.php:593
+msgid "Save Changes"
+msgstr ""
+
+#: embedly.php:597
+msgid "Update Provider List"
+msgstr ""
+

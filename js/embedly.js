@@ -16,7 +16,15 @@
 
 
 jQuery(document).ready(function($) {
-  
+
+
+
+
+
+
+
+
+
   if($('#embedly_key').attr('readonly')) {
     $('.embedly-lock-control').removeClass('embedly-unlocked').addClass('embedly-locked');
   }
@@ -68,6 +76,7 @@ jQuery(document).ready(function($) {
     }
   });
   
+  // Define the vars
   var allCheckboxes     = $('.embedly-service-generator li input');
   var photoCheckboxes   = $('.embedly-service-generator li.photo input');
   var videoCheckboxes   = $('.embedly-service-generator li.video input');
@@ -76,9 +85,7 @@ jQuery(document).ready(function($) {
   var audioCheckboxes   = $('.embedly-service-generator li.audio input');
   var serviceList       = $('#services-source');
   var listClone         = $('#services-source').clone();
-  var filterType        = $('#embedly-service-filter li a');
-  var filterSort        = $('#embedly-service-sort li a');
-  var cnt = 0;
+  var cnt               = 0;
   
   
   /**
@@ -87,7 +94,7 @@ jQuery(document).ready(function($) {
   function create_provider(obj, cnt) {
     var checked = (obj.selected == 1) ? 'checked="checked"' : '';
     var li  = '<li class="'+obj.type+'" id="'+obj.name+'" data-type="'+obj.type+'" data-id="id-'+cnt+'"><div class="full-service-wrapper"><label for="'+obj.name+'-checkbox" class="embedly-icon-name">'+obj.displayname+'</label>';
-        li += '<div class="embedly-icon-wrapper"><input type="checkbox" id="'+obj.name+'-checkbox" name="'+obj.name+'" '+checked+' data-selected="'+obj.selected+'" />';
+        li += '<div class="embedly-icon-wrapper"><input type="checkbox" id="'+obj.name+'-checkbox" name="'+obj.name+'" '+checked+'" />';
         li += '<img src="'+obj.favicon+'" title="'+obj.name+'" alt="'+obj.displayname+'"></div></div></li>';
     return li;
   }
@@ -97,55 +104,31 @@ jQuery(document).ready(function($) {
    * Resets all services to de-selected state
   **/
   function resetSelected() {
-    allCheckboxes.removeAttr('checked').trigger('change').attr('data-selected', '1');
+    allCheckboxes.removeAttr('checked').trigger('change');
     listClone.find('li').removeClass('service-selected').find('input[type=checkbox]').removeAttr('checked');
     serviceList.find('li').removeClass('service-selected').find('input[type=checkbox]').removeAttr('checked');
   }
 
 
-
-
-
-
-
-  filterType.add(filterSort).click(function(e) {
+  /**
+   * Adds "filtering" via the Quicksand jQuery plugin
+  **/
+  $('#embedly-service-filter li a').click(function(e) {
     e.preventDefault();
-    
     var dataValue = $(this).parents('li').attr('data-value');
-    
     $(this).parents('ul').find('a').removeClass('active');
     $(this).addClass('active');
-    
-    
     if($(this).hasClass('all')) {
       var filteredData = listClone.find('li');
     }
     else {
       var filteredData = listClone.find('li[data-type='+dataValue+']')
     }
-    
-    if($(this).hasClass('sortselected')) {
-      var sortedData = filteredData.sorted({
-        by: function(v) {
-          return parseInt($(v).find('input').attr('data-selected'));
-		    }
-      });
-    }
-    else {
-      var sortedData = filteredData.sorted({
-        by: function(v) {
-          return $(v).find('label').text().toLowerCase();
-        }
-      });
-    }
-    
-    serviceList.quicksand(sortedData, {
+    serviceList.quicksand(filteredData, {
       duration: 800,
       easing: 'swing',
     });
-    
   });
-
 
 
   /**
@@ -209,89 +192,52 @@ jQuery(document).ready(function($) {
 
 
 
-  
-  
-
-
-
-
-
-
-
 
   /**
    * Function to change selected state upon clicking individual services
   **/
-  serviceList.find('li').add(listClone.find('li')).click(function(e) {
+  $('#services-source li').on('click', function(e) {
     e.preventDefault();
     var checkBox = $(this).find('input[type=checkbox]');
     if(checkBox.attr('checked')) {
       $(this).removeClass('service-selected');
-      checkBox.removeAttr('checked').trigger('change').attr('data-selected', '1');
+      checkBox.removeAttr('checked').trigger('change');
     }
     else {
       $(this).addClass('service-selected');
-      checkBox.attr('checked', 'checked').trigger('change').attr('data-selected', '2');
+      checkBox.attr('checked', 'checked').trigger('change');
     }
   });
   
 
-
-  $('.embedly_submit').click(function(e) {
-    $('#embedly-message.embedly-error').hide();
-    $('#embedly-message.embedly-updated').hide();
-
-    var formName = $(this).parents('form').attr('id');
-    var embedly_key = $('#embedly_key').val();
+  /**
+   * AJAX function that handles retrieving/updating providers from Embed.ly API
+  **/
+  $('#embedly_update_providers_form').submit(function(e) {
+    e.preventDefault();
+    $('#embedly-ajax-error').add($('#embedly-ajax-success')).hide();
     var providers = [];
     $('.embedly-service-generator li input:checked').each(function(index, elem) {
       providers.push($(elem).attr('name'));
     });
-    if(formName == 'embedly_providers_form') {
-      var data = {
-        action:      'embedly_update',
-        providers:   providers.join(','),
-        embedly_key: embedly_key
-      };
-    }
-    else if(formName == 'embedly_update_providers_form') {
-      var data = {
-        action: 'embedly_update_providers'
-      };
-    }
-    jQuery.post(ajaxurl, data, function(json) {
-      if(formName == 'embedly_providers_form') {
-        if(json.error) {
-          $('.embedly-error').fadeIn();
-        }
-        else {
-          $('.embedly-updated').fadeIn();
-        }
+    var data = {
+      action: 'embedly_update_providers'
+    };
+    $.post(ajaxurl, data, function(json) {
+      if(json.hasOwnProperty('error')) {
+        $('#embedly-ajax-error').fadeIn();
       }
-      else if(formName == 'embedly_update_providers_form') {
-        if(json.hasOwnProperty('error')) {
-          $('.embedly-error').fadeIn();
+      else {
+        if($('#services-source').length != 1) {
+          window.location.reload();
+          $('#services-source').html('');
+          $.each(json, function(index, obj) {
+            $('#services-source').append(create_provider(obj, cnt++));
+          });
         }
-        else {
-          if($('#services-source').length != 1) {
-            window.location.reload();
-            $('#services-source').html('');
-            $.each(json, function(index, obj) {
-              $('#services-source').append(create_provider(obj, cnt++));
-            });
-            $('#embedly-message.embedly-updated').fadeIn();
-          }
-        }
+        $('#embedly-ajax-success').fadeIn();
       }
     }, 'json');
   });
 
-
-
-
-
-
-
-  
-  
 });
