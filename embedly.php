@@ -287,7 +287,7 @@ function embedly_services_download() {
 
   # See if any names dissappered
   foreach($os_names as $os_name) {
-    if(!in_array($os_name, $os_names)) {
+    if(!in_array($os_name, $s_names)) {
       embedly_provider_queries($os_name, 'delete');
     }
   }
@@ -462,7 +462,6 @@ add_action('init', 'embedly_addbuttons');
 **/
 function embedly_settings_page() {
   global $wpdb, $embedly_options;
-  $keyValid = true;
   $services = embedly_provider_queries(null, 'get', null, false, null, true);
   $selServs = array();
   $cnt      = 0;
@@ -471,8 +470,7 @@ function embedly_settings_page() {
   if(isset($_POST['embedly_key']) && (empty($_POST['embedly_key']) || $_POST['embedly_key'] == __('Please enter your key...', 'embedly'))) {
     $embedly_options['key'] = '';
     update_option('embedly_settings', $embedly_options);
-    $successMessage = __("You didn't enter a key to validate, so for now you only have basic capabilities.", 'embedly');
-    $keyValid = true;    
+    $successMessage = __("You didn't enter a key to validate, so for now you only have basic capabilities.", 'embedly');  
   }
   elseif(isset($_POST['embedly_key']) && !empty($_POST['embedly_key'])) {
     if(embedly_acct_has_feature('oembed', $_POST['embedly_key'])) {
@@ -480,11 +478,15 @@ function embedly_settings_page() {
       update_option('embedly_settings', $embedly_options);
       $embedly_options = get_option('embedly_settings');
       $successMessage  = __('Your API key is now tucked away for safe keeping.', 'embedly');
+      $keyValid = true;
     }
     else {
       $keyValid = false;
       $errorMessage = __('You have entered an invalid API key. Please try again.', 'embedly');
     }
+  }
+  elseif(!isset($_POST['embedly_key']) && isset($embedly_options['key']) && !empty($embedly_options['key'])) {
+    $keyValid = true;
   }
   elseif($services == null) {
     $errorMessage = __('Hmmm, there were no providers found. Try updating?', 'embedly');
@@ -536,8 +538,8 @@ function embedly_settings_page() {
           <fieldset>
             <h2 class="section-label"><?php _e('Embedly Key', 'embedly'); ?></h2><span><a href="http://app.embed.ly" target="_new"><?php _e("Lost your key?", 'embedly'); ?></a></span>
             <div class="embedly-input-wrapper">
-              <a href="#" class="embedly-lock-control embedly-unlocked" data-unlocked="<?php _e('Lock this field to prevent editing.', 'embedly'); ?>" data-locked="<?php _e('Unlock to edit this field.', 'embedly'); ?>" title=""><?php if($keyValid) {_e('Unlock to edit this field.', 'embedly');}else {_e('Lock this field to prevent editing.', 'embedly');} ?></a>
-              <input <?php if($keyValid) {echo 'readonly="readonly" ';} ?>id="embedly_key" placeholder="<?php _e('Please enter your key...', 'embedly'); ?>" name="embedly_key" type="text" class="<?php if(!$keyValid) {echo 'invalid ';}else {echo 'embedly-locked-input ';} ?>embedly_key_input" <?php if(!empty($embedly_options['key'])){ echo 'value="'.$embedly_options['key'].'"'; } ?> />
+              <a href="#" class="embedly-lock-control embedly-unlocked" data-unlocked="<?php _e('Lock this field to prevent editing.', 'embedly'); ?>" data-locked="<?php _e('Unlock to edit this field.', 'embedly'); ?>" title=""><?php if(isset($keyValid) && $keyValid){_e('Unlock to edit this field.', 'embedly');}else{_e('Lock this field to prevent editing.', 'embedly');} ?></a>
+              <input <?php if(isset($keyValid) && $keyValid){echo 'readonly="readonly" ';} ?>id="embedly_key" placeholder="<?php _e('Please enter your key...', 'embedly'); ?>" name="embedly_key" type="text" class="<?php if(isset($keyValid) && !$keyValid){echo 'invalid embedly-unlocked-input ';}elseif(!isset($keyValid)){echo 'embedly-unlocked-input ';}else{echo 'embedly-locked-input ';} ?>embedly_key_input" <?php if(!empty($embedly_options['key'])){echo 'value="'.$embedly_options['key'].'"';} ?> />
               <input class="button-primary embedly_submit embedly_top_submit" name="submit" type="submit" value="<?php _e('Validate Key', 'embedly'); ?>"/>
             </div>
             <p><?php _e('Add your Embedly Key to embed any URL', 'embedly'); ?></p>
