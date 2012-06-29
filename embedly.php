@@ -540,7 +540,7 @@ function embedly_settings_page() {
             <div class="embedly-input-wrapper">
               <a href="#" class="embedly-lock-control embedly-unlocked" data-unlocked="<?php _e('Lock this field to prevent editing.', 'embedly'); ?>" data-locked="<?php _e('Unlock to edit this field.', 'embedly'); ?>" title=""><?php if(isset($keyValid) && $keyValid){_e('Unlock to edit this field.', 'embedly');}else{_e('Lock this field to prevent editing.', 'embedly');} ?></a>
               <input <?php if(isset($keyValid) && $keyValid){echo 'readonly="readonly" ';} ?>id="embedly_key" placeholder="<?php _e('Please enter your key...', 'embedly'); ?>" name="embedly_key" type="text" class="<?php if(isset($keyValid) && !$keyValid){echo 'invalid embedly-unlocked-input ';}elseif(!isset($keyValid)){echo 'embedly-unlocked-input ';}else{echo 'embedly-locked-input ';} ?>embedly_key_input" <?php if(!empty($embedly_options['key'])){echo 'value="'.$embedly_options['key'].'"';} ?> />
-              <input class="button-primary embedly_submit embedly_top_submit" name="submit" type="submit" value="<?php _e('Validate Key', 'embedly'); ?>"/>
+              <input class="button-primary embedly_submit embedly_top_submit" name="submit" type="submit" value="<?php _e('Save Key', 'embedly'); ?>"/>
             </div>
             <p><?php _e('Add your Embedly Key to embed any URL', 'embedly'); ?></p>
           </fieldset>
