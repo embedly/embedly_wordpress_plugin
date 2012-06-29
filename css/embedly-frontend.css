@@ -1,20 +1,3 @@
-UL.generator LI {background-color:#EFEFEF;border:1px solid #DDDDDD;float:left;margin:4px;overflow:hidden;padding:5px;white-space:nowrap;width:140px;}
-UL.generator A {color:#000000;padding:0 0 0 18px;position:relative;text-decoration:none;}
-UL.generator A IMG {height:16px;left:0;position:absolute;top:0;width:16px;}
-UL.actions LI {background-color:#EFEFEF;border:1px solid #DDDDDD;float:left;margin:0 4px;padding:5px;}
-#embedly-logo{background:transparent url(../img/embedly_wordpress_logo.png) no-repeat scroll 0 0; height:36px;}
-INPUT.embedly_submit{float:left; margin:10px 5px;}
-
-
-#embedly_providers_form { margin-left:45px;}
-div.embedly_key_form { margin:1em 0 2em 0px; width:75%; }
-div.embedly_key_form fieldset { border:1px solid #dadada; padding:5px 10px; }
-div.embedly_key_form p { font-style:italic; margin:0 0 5px; clear:both; }
-div.embedly_key_form input.embedly_submit { float:none; clear:left;}
-div.embedly_key_form label { clear:both; display:block; font-weight:bold;}
-div.embedly_key_form input#embedly_key { font-size:18px; padding:0.25em; border:1px solid #dadada; outline:none; width:60%; margin-right:10px; }
-div.embedly_key_form span { line-height:28px;}
-
 div.embedly {
   margin: 10px 10px 10px 0;
   padding: 5px;
