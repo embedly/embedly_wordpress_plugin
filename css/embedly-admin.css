@@ -304,7 +304,7 @@ input.embedly_top_submit {
   -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
-  font-size:11px;
+  font-size:10px;
 }
 .overlay-expanded {
   z-index:999 !important;

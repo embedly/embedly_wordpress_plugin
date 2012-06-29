@@ -403,10 +403,10 @@ function embedly_trim_title($title) {
     $strrev   = strrev($strcut);
     $lastchar = $strrev{0};
     if($lastchar == ' ') {
-      echo substr($title, 0, 9).'...';
+      echo substr($title, 0, 9).'..';
     }
     else {
-      echo substr($title, 0, 10).'...';
+      echo substr($title, 0, 10).'..';
     }
   }
   else {
