@@ -488,6 +488,14 @@ function embedly_settings_page() {
   elseif(!isset($_POST['embedly_key']) && isset($embedly_options['key']) && !empty($embedly_options['key'])) {
     $keyValid = true;
   }
+  elseif(get_option('embedly_key') && (!isset($embedly_options['key']) || empty($embedly_options['key']))) {
+    #Backwards compatible
+    $embedly_options['key'] = get_option('embedly_key');
+    update_option('embedly_settings', $embedly_options);
+    $embedly_options = get_option('embedly_settings');
+    delete_option('embedly_key');
+    $keyValid = true;
+  }
   elseif($services == null) {
     $errorMessage = __('Hmmm, there were no providers found. Try updating?', 'embedly');
   }
