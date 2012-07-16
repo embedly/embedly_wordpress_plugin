@@ -10,7 +10,7 @@ Tested up to: 3.4
 Stable tag: 2.1
 
 
-Embed videos, images and rich media from "any" source with just the URL.
+Embed videos, images, PDF, and rich media from "any" source with just the URL.
 Just add your Embedly Key to the Embedly plugin settings.
 
 
@@ -128,6 +128,11 @@ and support.
 
 == Changelog ==
 
+= 2.1 =
+
+* Admin Redesign.
+* embedly_options setting for wp_options table.
+* SQL optimizations.
 
 = 2.0.9 =
 
