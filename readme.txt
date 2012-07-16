@@ -193,3 +193,7 @@ Initial Version
 = 2.0 =
 
 Embed "any" URL.
+
+= 2.1 =
+
+Admin Redesign.
