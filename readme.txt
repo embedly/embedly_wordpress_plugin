@@ -2,7 +2,7 @@
 
 Contributors: Embedly
 
-Tags: embed, oembed, video, image, rich media
+Tags: embed, oembed, video, image, pdf
 
 Requires at least: 3.1
 
@@ -10,7 +10,7 @@ Tested up to: 3.4
 Stable tag: 2.1
 
 
-Embed videos, images, PDF, and rich media from "any" source with just the URL.
+Embed videos, images, PDF, and article previews from "any" source with just the URL.
 Just add your Embedly Key to the Embedly plugin settings.
 
 
@@ -18,7 +18,7 @@ Just add your Embedly Key to the Embedly plugin settings.
 == Description ==
 
 
-The [Embedly](http://embed.ly) plugin allows bloggers to embed videos, images and rich media from
+The [Embedly](http://embed.ly) plugin allows bloggers to embed videos, images, PDF, and article previews from
 "any" source with just the URL. It uses the [Embedly API](http://embed.ly/docs) to
 get the embed code and display it in a post.
 
@@ -114,6 +114,11 @@ ability to choose the images used in your embed, remove the
 powered by Embedly logo, and allow higher levels of usage
 and support.
 
+= 
+What is your support email? 
+=
+
+support@embed.ly
 
 
 
