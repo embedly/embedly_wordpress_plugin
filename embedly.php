@@ -467,12 +467,16 @@ function embedly_settings_page() {
   $cnt      = 0;
   
   #Begin processing form data
+
+  #empty key set when saving
   if(isset($_POST['embedly_key']) && (empty($_POST['embedly_key']) || $_POST['embedly_key'] == __('Please enter your key...', 'embedly'))) {
     $embedly_options['key'] = '';
     update_option('embedly_settings', $embedly_options);
     $successMessage = __("You didn't enter a key to validate, so for now you only have basic capabilities.", 'embedly');  
   }
+  #user inputted key when saving
   elseif(isset($_POST['embedly_key']) && !empty($_POST['embedly_key'])) {
+    #user key is valid
     if(embedly_acct_has_feature('oembed', $_POST['embedly_key'])) {
       $embedly_options['key'] = $_POST['embedly_key'];
       update_option('embedly_settings', $embedly_options);
@@ -480,14 +484,17 @@ function embedly_settings_page() {
       $successMessage  = __('Your API key is now tucked away for safe keeping.', 'embedly');
       $keyValid = true;
     }
+    #user key is invalid
     else {
       $keyValid = false;
       $errorMessage = __('You have entered an invalid API key. Please try again.', 'embedly');
     }
   }
+  #key is already saved
   elseif(!isset($_POST['embedly_key']) && isset($embedly_options['key']) && !empty($embedly_options['key'])) {
     $keyValid = true;
   }
+  #key was set in older version, needs to be resaved.
   elseif(get_option('embedly_key') && (!isset($embedly_options['key']) || empty($embedly_options['key']))) {
     #Backwards compatible
     $embedly_options['key'] = get_option('embedly_key');
@@ -496,23 +503,29 @@ function embedly_settings_page() {
     delete_option('embedly_key');
     $keyValid = true;
   }
-  elseif($services == null) {
+  
+  #no services available
+  if($services == null) {
     $errorMessage = __('Hmmm, there were no providers found. Try updating?', 'embedly');
   }
+  #saving providers selected
   elseif(isset($_POST['updating_providers'])) {
     foreach($services as $service) {
       if(isset($_POST[$service->name])) {
         $selServs[] .= $service->name;
       }
     }
-    if(isset($selServs)) {
+    # user selected services
+    if(isset($selServs)) {      
+      #saved selected services
       if(embedly_update_selected_services($selServs)) {
         $successMessage = sprintf(__('The providers you chose have been saved to the database. %1$sPlease reload%2$s to reflect the changes.', 'embedly'), '<a href="admin.php?page=embedly">', '</a>');
       }
+      #failed saving services
       else {
         $errorMessage = __("It would appear that we've encountered a problem while updating your providers. Try again?", 'embedly');
       }
-    }    
+    }
   }
 ?>
 <div class="embedly-wrap">
