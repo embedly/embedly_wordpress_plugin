@@ -6,7 +6,7 @@ Tags: embed, oembed, video, image, pdf
 
 Requires at least: 3.1
 
-Tested up to: 3.4
+Tested up to: 3.4.1
 Stable tag: 2.1
 
 
