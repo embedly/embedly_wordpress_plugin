@@ -7,7 +7,7 @@ Tags: embed, oembed, video, image, pdf
 Requires at least: 3.1
 
 Tested up to: 3.4.1
-Stable tag: 2.1
+Stable tag: 2.1.1
 
 
 Embed videos, images, PDF, and article previews from "any" source with just the URL.
@@ -132,6 +132,10 @@ support@embed.ly
 
 
 == Changelog ==
+
+= 2.1.1 =
+
+* Providers save fix.
 
 = 2.1 =
 
