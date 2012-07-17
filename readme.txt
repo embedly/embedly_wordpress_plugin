@@ -136,7 +136,7 @@ support@embed.ly
 = 2.1 =
 
 * Admin Redesign.
-* embedly_options setting for wp_options table.
+* embedly_settngs option for wp_options table.
 * SQL optimizations.
 
 = 2.0.9 =
