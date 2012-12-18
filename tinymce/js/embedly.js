@@ -87,7 +87,7 @@ var EmbedlyDialog = {
       EmbedlyDialog.data.height = null;
     }
     
-    params['url'] = escape(url);
+    params['url'] = encodeURIComponent(url);
     params['key'] = EmbedlyDialog.key;
     params['allowscripts'] = 'true'; //allows us to get script tags.
     $j('#embedly_ajax_load').show();
