@@ -150,7 +150,7 @@ Note: You will need to activate Embedly for each site.
 
 == Changelog ==
 
-= 2.1.3 =
+= 2.1.4 =
 
 * Support for blogs using HTTPS.
 * Steps for multi-site setup.
