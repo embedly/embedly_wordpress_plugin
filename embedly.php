@@ -4,7 +4,7 @@ Plugin Name: Embedly
 Plugin URI: http://embed.ly
 Description: The Embedly Plugin extends Wordpress's Oembed feature, allowing bloggers to Embed from 230+ services and counting.
 Author: Embed.ly Inc
-Version: 2.1.3
+Version: 2.1.4
 Author URI: http://embed.ly
 License: GPL2
 
@@ -191,7 +191,7 @@ function embedly_activate() {
   }
   
   # Grab new data
-  $data     = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/wordpress'));
+  $data     = wp_remote_retrieve_body(wp_remote_get('https://api.embed.ly/1/wordpress'));
   $services = json_decode($data);
   foreach($services as $service) {
   	embedly_provider_queries($service, 'insert');
@@ -229,8 +229,9 @@ function embedly_enqueue_admin() {
   global $embedly_settings_page;
   $screen = get_current_screen();
   if($screen->id == $embedly_settings_page) {
+    $protocol = is_ssl() ? 'https' : 'http';
     wp_enqueue_style('embedly_admin_styles', EMBEDLY_URL.'/css/embedly-admin.css');
-    wp_enqueue_style('google_fonts', 'http://fonts.googleapis.com/css?family=Cabin:400,600');
+    wp_enqueue_style('google_fonts', $protocol.'://fonts.googleapis.com/css?family=Cabin:400,600');
     wp_enqueue_script('embedly_admin_scripts', EMBEDLY_URL.'/js/embedly.js',array('jquery'),'1.0',true);
   }
   return;
@@ -266,7 +267,7 @@ function embedly_services_download() {
   foreach($old_services as $os) {
   	array_push($os_names, $os->name);
   }
-  $result   = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/wordpress'));
+  $result   = wp_remote_retrieve_body(wp_remote_get('https://api.embed.ly/1/wordpress'));
   $services = json_decode($result);
   if(!$services) {
     return null;
@@ -333,10 +334,10 @@ function add_embedly_providers() {
     foreach($selected_services as $service) {
       foreach(json_decode($service->regex) as $sre) {
         if(!empty($embedly_options['key'])) {
-          wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed?key='.$embedly_options['key'], true);
+          wp_oembed_add_provider($sre, 'https://api.embed.ly/1/oembed?key='.$embedly_options['key'], true);
         }
         else {
-          wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed', true);
+          wp_oembed_add_provider($sre, 'https://api.embed.ly/1/oembed', true);
         }
       }
     }
@@ -379,7 +380,7 @@ add_action('wp_ajax_embedly_update_providers', 'embedly_ajax_update_providers');
 **/
 function embedly_acct_has_feature($feature, $key=false) {
   if($key) {
-    $result = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/feature?feature='.$feature.'&key='.$key));
+    $result = wp_remote_retrieve_body(wp_remote_get('https://api.embed.ly/1/feature?feature='.$feature.'&key='.$key));
   }
   else {
     return false;

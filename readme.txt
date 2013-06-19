@@ -7,7 +7,7 @@ Tags: embed, oembed, video, image, pdf
 Requires at least: 3.1
 
 Tested up to: 3.5
-Stable tag: 2.1.3
+Stable tag: 2.1.4
 
 
 Embed videos, images, PDF, and article previews from "any" source with just the URL.
@@ -74,6 +74,17 @@ Activate the plugin through the 'Plugins' menu in WordPress
 
 
 
+Multi-Site
+
+1.
+Navigate to My Sites -> Network Admin.
+1.
+Follow Steps 1-5 in Using the Plugin Manager setup above. DO NOT NETWORK ACTIVATE.
+1.
+Go to each site's dashboard and follow all steps above for Plugin Manager to activate.
+
+
+
 == Frequently Asked Questions ==
 
 = 
@@ -120,6 +131,12 @@ What is your support email?
 
 support@embed.ly
 
+= 
+Do you support multi-site? 
+=
+
+Yes, see steps above to install for multi-site.
+Note: You will need to activate Embedly for each site.
 
 
 == Screenshots ==
@@ -132,6 +149,11 @@ support@embed.ly
 
 
 == Changelog ==
+
+= 2.1.3 =
+
+* Support for blogs using HTTPS.
+* Steps for multi-site setup.
 
 = 2.1.2 =
 
