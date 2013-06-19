@@ -7,7 +7,7 @@ Tags: embed, oembed, video, image, pdf
 Requires at least: 3.1
 
 Tested up to: 3.5
-Stable tag: 2.1.4
+Stable tag: 2.1.5
 
 
 Embed videos, images, PDF, and article previews from "any" source with just the URL.
@@ -76,12 +76,12 @@ Activate the plugin through the 'Plugins' menu in WordPress
 
 Multi-Site
 
-1.
+1. 
 Navigate to My Sites -> Network Admin.
-1.
-Follow Steps 1-5 in Using the Plugin Manager setup above. DO NOT NETWORK ACTIVATE.
-1.
-Go to each site's dashboard and follow all steps above for Plugin Manager to activate.
+1. 
+Follow Steps 1-5 in Using the Plugin Manager setup above. `Do not Network Activate.`
+1. 
+Go to each site's dashboard and activate Embedly in Plugins section..
 
 
 
