@@ -238,3 +238,7 @@ Embed "any" URL.
 = 2.1 =
 
 Admin Redesign.
+
+= 2.2 =
+
+Update tinymce and jquery libs.
