@@ -6,7 +6,7 @@ Tags: embed, oembed, video, image, pdf
 
 Requires at least: 3.1
 
-Tested up to: 3.5
+Tested up to: 3.7
 Stable tag: 2.2
 
 
@@ -27,7 +27,7 @@ to add "any" URL to your post.
 
 OR
 
-Embed 200+ sources by putting the URL to the content you want to embed on
+Embed 250+ sources by putting the URL to the content you want to embed on
 a single line like so:
 
     This Embedly lets me embed everything great on the web!
