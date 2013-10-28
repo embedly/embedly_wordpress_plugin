@@ -7,7 +7,7 @@ Tags: embed, oembed, video, image, pdf
 Requires at least: 3.1
 
 Tested up to: 3.5
-Stable tag: 2.1.5
+Stable tag: 2.2
 
 
 Embed videos, images, PDF, and article previews from "any" source with just the URL.
@@ -37,8 +37,6 @@ a single line like so:
     http://i.imgur.com/ywzpg.jpg
     
     http://www.amazon.com/gp/product/B002BRZ9G0/ref=s9_pop_gw_ir01
-    
-    http://twitter.com/jack/status/20
 
     http://azizisbored.tumblr.com/post/558456193/mtv-movie-awards-promo-who-is-aziz-ansari
 
@@ -77,11 +75,11 @@ Activate the plugin through the 'Plugins' menu in WordPress
 Multi-Site
 
 1. 
-Navigate to My Sites -> Network Admin.
+Navigate to My Sites -> Network Admin
 1. 
-Follow Steps 1-5 in Using the Plugin Manager setup above. `Do not Network Activate.`
+Follow Steps 1-5 in Using the Plugin Manager setup above, `Do not Network Activate`
 1. 
-Go to each site's dashboard and activate Embedly in Plugins section..
+Go to each site's dashboard and activate Embedly in Plugins section
 
 
 
@@ -98,7 +96,7 @@ Yes
 Where do I get a key? 
 =
 
-You can sign up for a free or paid plan by clicking [here](http://embed.ly/pricing).
+You can sign up for a free or paid plan by clicking [here](https://app.embed.ly).
 
 = 
 
@@ -117,12 +115,11 @@ only be available for these [providers](http://embed.ly/providers).
 
 = 
 
-What does a paid plan give me? 
+What does a paid product give me? 
 =
 
-The paid [plans](http://embed.ly/pricing) will give you the 
-ability to choose the images used in your embed, remove the
-powered by Embedly logo, and allow higher levels of usage
+If you upgrade to the Embed paid product (http://embed.ly/embed) it will 
+remove the powered by Embedly logo, and allow higher levels of usage
 and support.
 
 = 
@@ -149,6 +146,14 @@ Note: You will need to activate Embedly for each site.
 
 
 == Changelog ==
+
+= 2.2 =
+
+* Update TinyMce Popup js to latest.
+* Update to latest JQuery 1.10.2.
+* Update Powered by link destination to code generator.
+* Fix powered by logo for RSS generation.
+* Add support for links to open in new window.
 
 = 2.1.4 =
 

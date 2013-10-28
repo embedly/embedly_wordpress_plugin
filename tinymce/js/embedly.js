@@ -15,7 +15,7 @@ var EmbedlyDialog = {
   embed : null,
   data : {},
   embedTemplate: '<div class="embedly" style="position:relative; {{style}}">{{>content}}',
-  embedlyPowered: '<span class="embedly-powered" style="float:right;display:block"><a target="_blank" href="http://embed.ly?src=anywhere" title="Powered by Embedly"><img src="//static.embed.ly/images/logos/embedly-powered-small-light.png" alt="Embedly Powered" /></a></span>',
+  embedlyPowered: '<span class="embedly-powered" style="float:right;display:block"><a target="_blank" href="http://embed.ly/code?url={{original_url}}" title="Powered by Embedly"><img src="http://static.embed.ly/images/logos/embedly-powered-small-light.png" alt="Embedly Powered" /></a></span>',
   templateCap: '<div class="media-attribution"><span>via </span>{{#favicon}}         \
   <img class="embedly-favicon" width="16px" height="16px" src="{{favicon_url}}">{{/favicon}}   \
   <a href="{{provider_url}}" class="media-attribution-link" target="_blank">{{provider_name}}</a>        \
@@ -126,7 +126,7 @@ var EmbedlyDialog = {
       } else {
         pr = EmbedlyDialog.generateOembed(resp);
       }
-    
+      
       $j('#embedly_ajax_load').hide();
       $j('#embedly_form_lookup').text('Update');
       $j('#embedly_form_submit').attr('disabled', false).removeClass('disabled').focus();
@@ -162,11 +162,11 @@ var EmbedlyDialog = {
     data = EmbedlyDialog.data;
     title = resp.title || data.url;
     style = '';
-    if(typeof data.width != "undefined" && data.width != '')
+    if(typeof data.width != "undefined" && data.width != '' && data.width != null)
       style += 'max-width:'+data.width+'px;';
-    if(typeof data.height != "undefined" && data.height != '')
+    if(typeof data.height != "undefined" && data.height != '' && data.height != null)
       style += 'max-height:'+data.height+'px';
-    
+
     // show a preview of what oEmbed returns, no image editing
     if (resp.type === 'photo'){
       code = '<a href="'+data.url+'" target="_blank"><img style="width:100%" src="'+resp.url+'" title="'+title+'" /></a>';
@@ -178,12 +178,18 @@ var EmbedlyDialog = {
       
       thumb = resp.thumbnail_url ? '<img src="'+resp.thumbnail_url+'" class="thumb embedly-thumbnail-small" />' : '';
       description = resp.description;
-      code = thumb+"<a class='embedly-title' href='" + data.url + "'>" + title + "</a>";
+      code = thumb+"<a class='embedly-title' target='_blank' href='" + data.url + "'>" + title + "</a>";
       code += description;
     }
+
+    // powered by url creation
+    var re_url = new RegExp('{{original_url}}', 'g');
+    var powered_by = EmbedlyDialog.embedlyPowered;
+    powered_by = powered_by.replace(re_url, encodeURIComponent(data['url']));
+
     // Wrap the embed in our class for manipulation
     pr = '<div class="embedly" style="'+style+'">'+code + '<div class="embedly-clear"></div>';
-    pr += EmbedlyDialog.embedlyPowered;
+    pr += powered_by;
     pr += '<div class="media-attribution"><span>via </span><a href="'+resp.provider_url+'" class="media-attribution-link" target="_blank">'+resp.provider_name+'</a></span></div>'
     pr += '<div class="embedly-clear"></div></div>';
     return pr;

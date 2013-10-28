@@ -478,8 +478,9 @@ function embedly_settings_page() {
   #user inputted key when saving
   elseif(isset($_POST['embedly_key']) && !empty($_POST['embedly_key'])) {
     #user key is valid
-    if(embedly_acct_has_feature('oembed', $_POST['embedly_key'])) {
-      $embedly_options['key'] = $_POST['embedly_key'];
+    $key = trim($_POST['embedly_key']);
+    if(embedly_acct_has_feature('oembed', $key)) {
+      $embedly_options['key'] = $key;
       update_option('embedly_settings', $embedly_options);
       $embedly_options = get_option('embedly_settings');
       $successMessage  = __('Your API key is now tucked away for safe keeping.', 'embedly');
