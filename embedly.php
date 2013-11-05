@@ -4,7 +4,7 @@ Plugin Name: Embedly
 Plugin URI: http://embed.ly
 Description: The Embedly Plugin extends Wordpress's Oembed feature, allowing bloggers to Embed from 230+ services and counting.
 Author: Embed.ly Inc
-Version: 2.2.1
+Version: 2.2.2
 Author URI: http://embed.ly
 License: GPL2
 
@@ -191,7 +191,7 @@ function embedly_activate() {
   }
   
   # Grab new data
-  $data     = wp_remote_retrieve_body(wp_remote_get('https://api.embed.ly/1/wordpress'));
+  $data     = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/wordpress'));
   $services = json_decode($data);
   foreach($services as $service) {
   	embedly_provider_queries($service, 'insert');
@@ -267,7 +267,7 @@ function embedly_services_download() {
   foreach($old_services as $os) {
   	array_push($os_names, $os->name);
   }
-  $result   = wp_remote_retrieve_body(wp_remote_get('https://api.embed.ly/1/wordpress'));
+  $result   = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/wordpress'));
   $services = json_decode($result);
   if(!$services) {
     return null;
@@ -334,10 +334,10 @@ function add_embedly_providers() {
     foreach($selected_services as $service) {
       foreach(json_decode($service->regex) as $sre) {
         if(!empty($embedly_options['key'])) {
-          wp_oembed_add_provider($sre, 'https://api.embed.ly/1/oembed?key='.$embedly_options['key'], true);
+          wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed?key='.$embedly_options['key'], true);
         }
         else {
-          wp_oembed_add_provider($sre, 'https://api.embed.ly/1/oembed', true);
+          wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed', true);
         }
       }
     }
@@ -380,7 +380,7 @@ add_action('wp_ajax_embedly_update_providers', 'embedly_ajax_update_providers');
 **/
 function embedly_acct_has_feature($feature, $key=false) {
   if($key) {
-    $result = wp_remote_retrieve_body(wp_remote_get('https://api.embed.ly/1/feature?feature='.$feature.'&key='.$key));
+    $result = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/feature?feature='.$feature.'&key='.$key));
   }
   else {
     return false;

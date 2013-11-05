@@ -7,7 +7,7 @@ Tags: embed, oembed, video, image, pdf
 Requires at least: 3.1
 
 Tested up to: 3.7
-Stable tag: 2.2.1
+Stable tag: 2.2.2
 
 
 Embed videos, images, PDF, and article previews from "any" source with just the URL.
@@ -146,6 +146,11 @@ Note: You will need to activate Embedly for each site.
 
 
 == Changelog ==
+
+= 2.2.2 =
+
+* Change server side calls to HTTP to avoid issues.
+* Disable rocketloader syntax.
 
 = 2.2 =
 
