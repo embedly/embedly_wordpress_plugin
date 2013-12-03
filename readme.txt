@@ -4,10 +4,10 @@ Contributors: Embedly
 
 Tags: embed, oembed, video, image, pdf
 
-Requires at least: 3.1
+Requires at least: 3.5.1
 
 Tested up to: 3.7
-Stable tag: 2.2.2
+Stable tag: 2.3.0
 
 
 Embed videos, images, PDF, and article previews from "any" source with just the URL.
@@ -146,6 +146,11 @@ Note: You will need to activate Embedly for each site.
 
 
 == Changelog ==
+
+= 2.3.0 =
+
+* Use TinyMCE provided by WP Core.
+* Fixes issue with HTML editting and formatting.
 
 = 2.2.2 =
 

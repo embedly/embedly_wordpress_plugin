@@ -4,7 +4,7 @@ Plugin Name: Embedly
 Plugin URI: http://embed.ly
 Description: The Embedly Plugin extends Wordpress's Oembed feature, allowing bloggers to Embed from 230+ services and counting.
 Author: Embed.ly Inc
-Version: 2.2.2
+Version: 2.3.0
 Author URI: http://embed.ly
 License: GPL2
 
@@ -205,7 +205,7 @@ register_activation_hook(__FILE__, 'embedly_activate');
 **/
 function embedly_deactivate() {
   global $wpdb, $embedly_options;
-	$sql     = $wpdb->prepare("TRUNCATE TABLE ".$embedly_options['table'].";");
+	$sql     = $wpdb->prepare("TRUNCATE TABLE %s;", $embedly_options['table']);
   $results = $wpdb->query($sql);
 	delete_option('embedly_settings');
 }
@@ -422,7 +422,7 @@ function embedly_trim_title($title) {
 function embedly_footer_widgets() {
   global $embedly_options;
   $url = plugin_dir_url(__FILE__).'tinymce';
-  echo '<script type="text/javascript">EMBEDLY_TINYMCE = "'.$url.'";';
+  echo '<script data-cfasync="false" type="text/javascript">EMBEDLY_TINYMCE = "'.$url.'";';
   echo 'embedly_key="'.$embedly_options['key'].'";';
   if(embedly_acct_has_feature('preview', $embedly_options['key'])) {
     echo 'embedly_endpoint="preview";';
