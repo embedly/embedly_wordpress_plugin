@@ -6,6 +6,7 @@
   <script data-cfasync="false" type="text/javascript" src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script data-cfasync="false" type="text/javascript" src="js/mustache.js"></script>
   <script data-cfasync="false" stype="text/javascript" src="js/embedly.js"></script>
+  <script data-cfasync="false" stype="text/javascript" src="//cdn.embedly.com/widgets/platform.js"></script>
   <link href="css/embedly.css" rel="stylesheet" type="text/css" />
 </head>
 <body style="display: none" role="application" aria-labelledby="app_title">
@@ -31,16 +32,12 @@
             <fieldset>
               <legend>Optional</legend>
               <p class="third first">
-                <label for="embedly_width_field">{#embedly_dlg.width_field}</label>
-                <input type="text" class="embedly_field" id="embedly_width_field" name="embedly_width" >
+                <label id="chromeless">Chromeles</label>
+                <input class="embedly_field" id="card-chromeless" type="checkbox"/>
               </p>
               <p class="third">
-                <label for="embedly_height_field">{#embedly_dlg.height_field}</label>
-                <input type="text" class="embedly_field" id="embedly_height_field" name="embedly_height" >
-              </p>
-              <p class="third">
-                <label for="embedly_words_field">{#embedly_dlg.words_field}</label>
-                <input type="text" class="embedly_field" id="embedly_words_field" name="embedly_words" >
+                <label id="background">Dark Background</label>
+                <input class="embedly_field" id="card-background" type="checkbox"/>
               </p>
               <p class="third-mini last">
                  <button id="embedly_form_lookup" class="primary">Preview</button>
@@ -52,7 +49,11 @@
             
               <legend>Preview Embed</legend>
               <div id="embedly-preview-results">
-                
+                <div class="generator-card">
+                  <span></span>
+                  <div id="card"></div>
+                  <textarea style="display:none;" id="snippet" readonly></textarea> 
+                </div>              
               </div>
             </fieldset>
     </form>
