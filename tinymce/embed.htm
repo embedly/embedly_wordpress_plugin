@@ -24,29 +24,30 @@
     <span style="display:none;" id="app_title">{#embedly_dlg.title}</span>
     <form action="." method="get" class="embedly_form">
             <fieldset>
-              <p>
+              <div>
                 <label for="embedly_url_field">{#embedly_dlg.url_field}</label>
                 <input type="url" class="embedly_field" id="embedly_url_field" name="embedly_url" />
-              </p>
+              </div>
             </fieldset>
             <fieldset>
               <legend>Optional</legend>
-              <p class="third first">
-                <label id="chromeless">Chromeles</label>
+              <div class="third first generator-opts">
+                <label id="chromeless"><span>Chromeless</span>
                 <input class="embedly_field" id="card-chromeless" type="checkbox"/>
-              </p>
-              <p class="third">
-                <label id="background">Dark Background</label>
+                </label>
+              </div>
+              <div class="third options generator-opts">
+                <label id="background"><span>Dark Background</span>
                 <input class="embedly_field" id="card-background" type="checkbox"/>
-              </p>
-              <p class="third-mini last">
+                </label>
+              </div>
+              <div class="third-mini last">
                  <button id="embedly_form_lookup" class="primary">Preview</button>
-                </p>
+              </div>
               <div style='clear:both'></div>
             </fieldset>
             <fieldset>
               <img src="img/ajax.gif" id="embedly_ajax_load" />
-            
               <legend>Preview Embed</legend>
               <div id="embedly-preview-results">
                 <div class="generator-card">

@@ -42,22 +42,13 @@ var EmbedlyDialog = {
       return false;
     }
     EmbedlyDialog.data.url = url;
-    params = {};
-   
-    var script = ["\n<",
-    "script>!function(a){var b=\"embedly-platform\",c=\"script\";",
-    "if(!a.getElementById(b)){var d=a.createElement(c);",
-    "d.id=b,d.src=(\"https:\"===document.location.protocol",
-    "?\"https\":\"http\")+\"://cdn.embedly.com/widgets/platform.js\";",
-    "var e=document.getElementsByTagName(c)[0];e.parentNode.insertBefore(d,e)}}(document);<",
-    "/script>"].join('');
-
     var $jcard = $j('.generator-card'); 
-    
+    var $jopts = $j('.generator-inputs');
+
     // clear card
     $j('#card').empty();  
 
-    // add url
+    // add embedly a tag w/ url
     var a = document.createElement('a');
     a.href = url;
     a.setAttribute('class', 'embedly-card');
@@ -67,24 +58,28 @@ var EmbedlyDialog = {
     var frame = embedly.card(a);
     $jsnippet = $j('#snippet');
 
-    //Create the embed code when the snippet changes.
+    // create the embed code when the snippet changes.
     frame.on('card.snippet', function(data){
-      $jsnippet.val(data.snippet+script);
+      $jsnippet.val(data.snippet);//+script);
       $jsnippet.select();
     });
 
-    //Create the embed code when the snippet changes.
+    // create the embed code when the snippet changes.
     frame.on('card.rendered', function(data){
       frame.send('card.snippet');
       frame.send('card.freeze');
       frame.send('card.edit');
 
-      // if it's editable, it can't be chromeless.
+      // if it's editable, not chromeless.
       if (data.isEditable === true){
-        $j('#chromeless').hide();
+        $j('#card-chromeless').parent().parent().hide();
+      }
+      else {
+        $j('#card-chromeless').parent().parent().show();
       }
     });
 
+    $j('#card-background').attr('onclick','').unbind('click');
     $j('#card-background').on('click', function(){
       var theme;
       if ( $j(this).prop('checked') ){
@@ -99,7 +94,8 @@ var EmbedlyDialog = {
         value: theme
       });
     });
-
+    
+    $j('#card-chromeless').attr('onclick','').unbind('click');
     $j('#card-chromeless').on('click', function(){
       var chrome;
       if ( $j(this).prop('checked') ){
