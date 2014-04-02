@@ -28,27 +28,12 @@
                 <label for="embedly_url_field">{#embedly_dlg.url_field}</label>
                 <input type="url" class="embedly_field" id="embedly_url_field" name="embedly_url" />
               </div>
-            </fieldset>
-            <fieldset>
-              <legend>Optional</legend>
-              <div class="third first generator-opts">
-                <label id="chromeless"><span>Chromeless</span>
-                <input class="embedly_field" id="card-chromeless" type="checkbox"/>
-                </label>
-              </div>
-              <div class="third options generator-opts">
-                <label id="background"><span>Dark Background</span>
-                <input class="embedly_field" id="card-background" type="checkbox"/>
-                </label>
-              </div>
               <div class="third-mini last">
-                 <button id="embedly_form_lookup" class="primary">Preview</button>
+                <button id="embedly_form_lookup" class="primary">Show</button>
               </div>
-              <div style='clear:both'></div>
             </fieldset>
             <fieldset>
-              <img src="img/ajax.gif" id="embedly_ajax_load" />
-              <legend>Preview Embed</legend>
+              <legend>Preview</legend>
               <div id="embedly-preview-results">
                 <div class="generator-card">
                   <span></span>
@@ -58,9 +43,26 @@
               </div>
             </fieldset>
     </form>
-    <div class="embedly_button_row">
-     <button id="embedly_form_submit" class="primary disabled" disabled="disabled" onclick="javascript:EmbedlyDialog.insert()">Embed this URL</button><button onclick="javascript:EmbedlyDialog.cancel()">Cancel</button>
-    </div>
+    <fieldset>
+      <legend>Edit</legend>
+      <div class="third first">
+      <div class="generator-opts">
+        <label id="chromeless">
+        <input class="embedly_field" id="card-chromeless" type="checkbox"/>
+        <span>Chromeless</span>
+        </label>
+      </div>
+      <div class="generator-opts">
+        <label id="background">
+        <input class="embedly_field" id="card-background" type="checkbox"/>
+        <span>Dark Background</span>
+        </label>
+      </div>
+      </div>
+      <div class="embedly_button_row">
+       <button id="embedly_form_submit" class="primary disabled" disabled="disabled" onclick="javascript:EmbedlyDialog.insert()">Add to Post</button><button onclick="javascript:EmbedlyDialog.cancel()">Cancel</button>
+      </div>
+    </fieldset>
   </div>
 </body>
 </html>

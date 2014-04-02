@@ -35,18 +35,34 @@ var EmbedlyDialog = {
   
   lookupUrl : function(e){
     e.preventDefault();
+
+    //Handle URL
     $j('#embedly_url_field').removeClass('error');
-    url = $j('#embedly_url_field').val();
+    var url = $j('#embedly_url_field').val();
+    
+    //Trim off the whitespace.
+    url = $j.trim(url);
+    
+    //Escape whitespace
+    url = url.replace(/ /g, '%20');
+
+    // Make sure we have a protocol.
+    if (!(/^https?:\/\//i).test(url)){
+      url = 'http://' + url;
+    }
+
+    //Validate URL
     if (url == '' || !EmbedlyDialog.urlValid(url)){
       $j('#embedly_url_field').addClass('error');
       return false;
     }
+
     EmbedlyDialog.data.url = url;
     var $jcard = $j('.generator-card'); 
     var $jopts = $j('.generator-inputs');
 
     // clear card
-    $j('#card').empty();  
+    $j('#card').empty();
 
     // add embedly a tag w/ url
     var a = document.createElement('a');
@@ -94,7 +110,7 @@ var EmbedlyDialog = {
         value: theme
       });
     });
-    
+
     $j('#card-chromeless').attr('onclick','').unbind('click');
     $j('#card-chromeless').on('click', function(){
       var chrome;

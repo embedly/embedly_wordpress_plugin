@@ -9,8 +9,6 @@ form div {
   margin:0; padding:0.5em;
 }
 input {
-  width:330px;
-  display:block;
   border:1px solid #ccc;
   padding:4px;
   font-size:12px;
@@ -25,7 +23,10 @@ input:focus {
 }
 input#embedly_url_field {
   padding-right:30px;
-  width:93%;
+  width:75%;
+  margin-top:8px;
+  float:left;
+  display:block;
 }
 label {
   margin:0;
@@ -41,9 +42,6 @@ fieldset legend {
 }
 fieldset div {
   padding:0;
-}
-fieldset input {
-  width:444px;
 }
 fieldset div.third {
   width:26%;
@@ -63,9 +61,6 @@ fieldset div.half {
 fieldset div.first {
   margin-left:0;
 }
-fieldset div.third input {
-  width: 95%;
-}
 fieldset div.third label {
   display: block;
   padding-left: 15px;
@@ -81,16 +76,10 @@ fieldset div.last {
   float:right;
 }
 
-#embedly_ajax_load {
-  position:absolute;
-  left:175px;
-  top:115px;
-  display:none;
-}
 .embedly_button_row {
-  position:absolute;
-  bottom:3px;
-  left:3px;
+  margin-top:10px;
+  margin-right:-3px;
+  float:right;
 }
 .embedly_button_row button {
   margin-right:5px;
@@ -99,9 +88,14 @@ fieldset div.last {
 #embedly-preview-results {
   background:#fff;
   border:1px solid #dadada;
-  height:240px;
+  height:280px;
   overflow-y:scroll;
   padding:10px;
+}
+
+#embedly_form_lookup {
+  margin-right:5px;
+  float:right;
 }
 
 /* Button Styles */
@@ -163,7 +157,8 @@ button.primary, a.button.primary {
   padding: 0.25em 0.5em;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
-  border-radius: 4px; 
+  border-radius: 4px;
+  margin-top:-5px;
 }
 button.primary:hover, button.primary:focus,
 a.button.primary:hover, a.button.primary:focus {
