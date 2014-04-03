@@ -179,25 +179,12 @@ function embedly(){
       },
     
       imgToEmbed : function(node, args) {
-        var self = this, editor = self.editor, embed, data, style;
-        data = node.attr('data-ajax');
+        var self = this, editor = self.editor, embed, data;
+        var data = node.attr('data-ajax');
         if (!data)
           return;
         data = JSON.parse(data);
-        try{
-          style = node.attr('data-mce-style');
-          if (!style) {
-            style = node.attr('style');
-            if (style)
-              style = editor.dom.serializeStyle(editor.dom.parseStyle(style, 'img'));
-            else
-              style = '';
-          }
-          style += 'max-width:'+ node.attr('width') + 'px;';
-          if(data.height && data.height != '')
-            style += 'overflow:hidden;max-height:'+ node.attr('height') + 'px;';
-      
-      
+        try{      
           if(data.embed){
             var ser = JSON.serialize(data, "'");
             embed = new Node('div', 1);
@@ -205,8 +192,6 @@ function embedly(){
             value.raw = true;
             value.value = data.embed;
             embed.append(value);
-            embed.attr('class', 'mceItemEmbedly' );
-            embed.attr('style', style);
             embed.attr('data-ajax', ser);
           }
           if(embed)
