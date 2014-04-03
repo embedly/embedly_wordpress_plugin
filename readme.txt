@@ -6,8 +6,8 @@ Tags: embed, oembed, video, image, pdf
 
 Requires at least: 3.5.1
 
-Tested up to: 3.7
-Stable tag: 2.3.0
+Tested up to: 3.8.1
+Stable tag: 3.0
 
 
 Embed videos, images, PDF, and article previews from "any" source with just the URL.
@@ -147,6 +147,10 @@ Note: You will need to activate Embedly for each site.
 
 == Changelog ==
 
+= 3.0 =
+
+* Upgrade Embedly TinyMce editor option to use Embedly Cards.
+
 = 2.3.0 =
 
 * Use TinyMCE provided by WP Core.
@@ -252,3 +256,7 @@ Admin Redesign.
 = 2.2 =
 
 Update tinymce and jquery libs.
+
+= 3.0 =
+
+Embedly rich post editor option now uses Embedly Cards layout.
