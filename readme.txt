@@ -2,12 +2,12 @@
 
 Contributors: Embedly
 
-Tags: embed, oembed, video, image, pdf
+Tags: embed, oembed, video, image, pdf, card
 
 Requires at least: 3.5.1
 
 Tested up to: 3.8.1
-Stable tag: 3.0
+Stable tag: 3.0.2
 
 
 Embed videos, images, PDF, and article previews from "any" source with just the URL.
@@ -19,7 +19,7 @@ Just add your Embedly Key to the Embedly plugin settings.
 
 
 The [Embedly](http://embed.ly) plugin allows bloggers to embed videos, images, PDF, and article previews from
-"any" source with just the URL. It uses the Embedly Cards](http://embed.ly/cards) to generate a clean, responsive, and shareable card for content types video, products, articles and more.
+"any" source with just the URL. It uses the [Embedly Cards](http://embed.ly/cards) to generate a clean, responsive, and shareable card for content types video, products, articles and more.
 
 Write your post as normal and click the Embedly Icon in your Rich Editor
 to add "any" URL to your post.
