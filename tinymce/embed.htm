@@ -2,14 +2,59 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>{#embedly_dlg.title}</title>
-  <script data-cfasync="false" type="text/javascript" src="tiny_mce_popup.js"></script>
+  <script type="text/javascript">
+
+    function getEmbedlyTinyMCE() {
+      // Grab tinymce from parent window.
+      var win = (!window.frameElement && window.dialogArguments) || opener || parent || top;
+      return win.tinymce;
+    }
+
+    function injectScript(src, fn) {
+     var script = document.createElement('script')
+     script.type = 'text/javascript'
+     script.src = src
+     script.onload = fn
+     head = document.getElementsByTagName('head')[0]
+     head.appendChild(script)
+    }
+
+    function injectScripts(scripts, fn) {
+     lastsrc = scripts.pop()
+     last = function() {
+       injectScript(lastsrc, fn);
+     }
+     i = last
+
+     while (scripts.length > 0) {
+       var src = scripts.pop()
+       var next = i
+       i = function() {
+         injectScript(src, next)
+       }
+     }
+     i()
+    }
+
+    function loadEmbedlyTinyMCEPopup() {
+      // Insert tinymce popup based on majorVersion.
+      var tinyMCE = getEmbedlyTinyMCE();
+      var embedTinyMCE = "tiny_mce_popup.js"
+      if (parseInt(tinyMCE.majorVersion) > 3) {
+        embedTinyMCE = "tiny_mce_popup_4_0.js"
+      }
+
+      var scripts = [embedTinyMCE, 'js/embedly.js'];
+      
+      injectScripts(scripts, function(){ EmbedlyDialog.init(); });
+    }
+  </script>
   <script data-cfasync="false" type="text/javascript" src="//code.jquery.com/jquery-1.10.2.js"></script>
   <script data-cfasync="false" type="text/javascript" src="js/mustache.js"></script>
-  <script data-cfasync="false" stype="text/javascript" src="js/embedly.js"></script>
   <script data-cfasync="false" stype="text/javascript" src="//cdn.embedly.com/widgets/platform.js"></script>
   <link href="css/embedly.css" rel="stylesheet" type="text/css" />
 </head>
-<body style="display: none" role="application" aria-labelledby="app_title">
+<body onload="javascript:loadEmbedlyTinyMCEPopup();" style="display: none" role="application" aria-labelledby="app_title">
   <div id="embedly_error" style="display:none">
     <fieldset>
       <h2>We're Sorry</h2>

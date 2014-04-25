@@ -6,8 +6,8 @@ Tags: embed, oembed, video, image, pdf, card
 
 Requires at least: 3.5.1
 
-Tested up to: 3.8.1
-Stable tag: 3.0.2
+Tested up to: 3.9
+Stable tag: 3.1
 
 
 Embed videos, images, PDF, and article previews from "any" source with just the URL.
@@ -148,6 +148,11 @@ Note: You will need to activate Embedly for each site.
 
 == Changelog ==
 
+= 3.1 =
+
+* Fixes issue with Embedly not loading on WP3.9.
+* Load tiny_mce_popup_4_0.js when TinyMCE is v4.0.
+
 = 3.0 =
 
 * Upgrade Embedly TinyMce editor option to use Embedly Cards.
@@ -261,3 +266,7 @@ Update tinymce and jquery libs.
 = 3.0 =
 
 Embedly rich post editor option now uses Embedly Cards layout.
+
+= 3.1 =
+
+Dynamically loading Embedly popup based on TinyMCE Version.
