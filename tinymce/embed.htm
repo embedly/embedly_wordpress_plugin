@@ -57,12 +57,12 @@
 <body onload="javascript:loadEmbedlyTinyMCEPopup();" style="display: none" role="application" aria-labelledby="app_title">
   <div id="embedly_error" style="display:none">
     <fieldset>
-      <h2>We're Sorry</h2>
-      <p>An Embedly Key is required. You can sign up for a key <a target="_blank" href="http://embed.ly/pricing">here</a>.</p>
-      <p>If you already have an Embedly Key, please add it to the Embedly Plugin Settings.</p>
+      <h2>{#embedly_dlg.no_key_title}</h2>
+      <p>{#embedly_dlg.no_key_message} <a href="https://app.embed.ly/signup">{#embedly_dlg.signup_link}</a></p>
+      <p>{#embedly_dlg.add_key_message}</p>
     </fieldset>
     <div class="embedly_button_row">
-      <button onclick="javascript:EmbedlyDialog.cancel()">Close</button>
+      <button onclick="javascript:EmbedlyDialog.cancel()">{#embedly_dlg.close_button}</button>
     </div>
   </div>
   <div id="embedly_main">
@@ -74,11 +74,11 @@
                 <input type="url" class="embedly_field" id="embedly_url_field" name="embedly_url" />
               </div>
               <div class="third-mini last">
-                <button id="embedly_form_lookup" class="primary">Show</button>
+                <button id="embedly_form_lookup" class="primary">{#embedly_dlg.show_button}</button>
               </div>
             </fieldset>
             <fieldset>
-              <legend>Hover Over Embed to Edit</legend>
+              <legend>{#embedly_dlg.hover_title}</legend>
               <div id="embedly-preview-results">
                 <div class="generator-card">
                   <span></span>
@@ -89,23 +89,23 @@
             </fieldset>
     </form>
     <fieldset>
-      <legend>Options</legend>
+      <legend>{#embedly_dlg.options_title}</legend>
       <div class="third first">
       <div class="generator-opts">
         <label id="chromeless">
         <input class="embedly_field" id="card-chromeless" type="checkbox"/>
-        <span>Chromeless</span>
+        <span>{#embedly_dlg.border_field}</span>
         </label>
       </div>
       <div class="generator-opts">
         <label id="background">
         <input class="embedly_field" id="card-background" type="checkbox"/>
-        <span>Dark Background</span>
+        <span>{#embedly_dlg.background_field}</span>
         </label>
       </div>
       </div>
       <div class="embedly_button_row">
-       <button id="embedly_form_submit" class="primary disabled" disabled="disabled" onclick="javascript:EmbedlyDialog.insert()">Add to Post</button><button onclick="javascript:EmbedlyDialog.cancel()">Cancel</button>
+       <button id="embedly_form_submit" class="primary disabled" disabled="disabled" onclick="javascript:EmbedlyDialog.insert()">{#embedly_dlg.post_button}</button><button onclick="javascript:EmbedlyDialog.cancel()">{#embedly_dlg.cancel_button}</button>
       </div>
     </fieldset>
   </div>
