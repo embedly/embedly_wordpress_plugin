@@ -217,7 +217,7 @@ register_deactivation_hook(__FILE__, 'embedly_deactivate');
 **/
 function embedly_add_settings_page() {
   global $embedly_settings_page;
-  $embedly_settings_page = add_menu_page('Embedly', 'Embedly', 'activate_plugins', 'embedly', 'embedly_settings_page');
+  $embedly_settings_page = add_menu_page('Embedly', 'Embedly', 'administrator', 'embedly', 'embedly_settings_page');
 }
 add_action('admin_menu', 'embedly_add_settings_page');
 
