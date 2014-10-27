@@ -64,7 +64,7 @@ if(!function_exists('json_decode')) {
 		require_once('inc/JSON.php');
 		if($assoc) {
 			$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
-		} 
+		}
     else {
 			$json = new Services_JSON;
 		}
@@ -85,10 +85,10 @@ $embedly_options = array(
   'active'   => true,
   'key'      => ''
 );
-  
+
 # Write default options to database
 add_option('embedly_settings', $embedly_options);
-    
+
 # Update options from database
 $embedly_options = get_option('embedly_settings');
 
@@ -107,13 +107,13 @@ function embedly_provider_queries($obj=null, $action=null, $name=null, $selected
   global $wpdb, $embedly_options;
   $action   = strtolower($action);
   $sel_val  = ($selected ? 1 : 0);
-  
+
   switch($action) {
     case 'insert':
       $query  = "INSERT INTO "
         . $embedly_options['table']
         . " (name, selected, displayname, domain, type, favicon, regex, about) "
-        . "VALUES ('" 
+        . "VALUES ('"
         . $wpdb->escape($obj->name)."',"
         . "true ,'"
         . $wpdb->escape($obj->displayname)."','"
@@ -121,7 +121,7 @@ function embedly_provider_queries($obj=null, $action=null, $name=null, $selected
         . $wpdb->escape($obj->type)."','"
         . $wpdb->escape($obj->favicon)."','"
         . $wpdb->escape(json_encode($obj->regex))."','"
-        . $wpdb->escape($obj->about) 
+        . $wpdb->escape($obj->about)
         . "')";
     break;
     case 'update':
@@ -136,7 +136,7 @@ function embedly_provider_queries($obj=null, $action=null, $name=null, $selected
           . "favicon='".$wpdb->escape($obj->favicon)."', "
           . "regex='".$wpdb->escape(json_encode($obj->regex))."', "
           . "about='".$wpdb->escape($obj->about)."' "
-          . "WHERE name='".$wpdb->escape($obj->name)."'";        
+          . "WHERE name='".$wpdb->escape($obj->name)."'";
       }
     break;
     case 'get':
@@ -183,13 +183,13 @@ function embedly_activate() {
     require_once(ABSPATH.'wp-admin/includes/upgrade.php');
     dbDelta($sql);
   }
-  
+
   # Table already exists, wipe it clean and start over
   else {
 		$sql     = "TRUNCATE TABLE ".$embedly_options['table'].";";
 		$results = $wpdb->query($sql);
   }
-  
+
   # Grab new data
   $data     = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/wordpress'));
   $services = json_decode($data);
@@ -222,7 +222,7 @@ function embedly_add_settings_page() {
 add_action('admin_menu', 'embedly_add_settings_page');
 
 
-/** 
+/**
  * Enqueue styles/scripts for embedly page(s) only
 **/
 function embedly_enqueue_admin() {
@@ -269,7 +269,7 @@ add_action('wp_head','embedly_platform_javascript', 0);
 
 
 /**
- * The list of providers embedly offers is always growing. 
+ * The list of providers embedly offers is always growing.
  * This is a dynamic way to pull in new providers.
 **/
 function embedly_services_download() {
@@ -283,7 +283,7 @@ function embedly_services_download() {
   if(!$services) {
     return null;
   }
-  
+
   # Add new services
   $s_names = array();
   foreach($services as $service) {
@@ -353,6 +353,9 @@ function add_embedly_providers() {
       }
     }
   }
+
+  // Since Embedly does not support Twitter, we have to add it back into the mix.
+  wp_oembed_add_provider('#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i', 'https://api.twitter.com/1/statuses/oembed.{format}', true);
 }
 add_action('plugins_loaded', 'add_embedly_providers');
 
@@ -480,13 +483,13 @@ function embedly_settings_page() {
   $services = embedly_provider_queries(null, 'get', null, false, null, true);
   $selServs = array();
   $cnt      = 0;
-  
+
   #Begin processing form data
   #empty key set when saving
   if(isset($_POST['embedly_key']) && (empty($_POST['embedly_key']) || $_POST['embedly_key'] == __('Please enter your key...', 'embedly'))) {
     $embedly_options['key'] = '';
     update_option('embedly_settings', $embedly_options);
-    $successMessage = __("You didn't enter a key to validate, so for now you only have basic capabilities.", 'embedly');  
+    $successMessage = __("You didn't enter a key to validate, so for now you only have basic capabilities.", 'embedly');
   }
   #user inputted key when saving
   elseif(isset($_POST['embedly_key']) && !empty($_POST['embedly_key'])) {
@@ -518,7 +521,7 @@ function embedly_settings_page() {
     delete_option('embedly_key');
     $keyValid = true;
   }
-  
+
   #no services available
   if($services == null) {
     $errorMessage = __('Hmmm, there were no providers found. Try updating?', 'embedly');
@@ -531,7 +534,7 @@ function embedly_settings_page() {
       }
     }
     # user selected services
-    if(isset($selServs)) {      
+    if(isset($selServs)) {
       #saved selected services
       if(embedly_update_selected_services($selServs)) {
         $successMessage = sprintf(__('The providers you chose have been saved to the database. %1$sPlease reload%2$s to reflect the changes.', 'embedly'), '<a href="admin.php?page=embedly">', '</a>');
@@ -580,7 +583,7 @@ function embedly_settings_page() {
             </div>
             <p><?php _e('Add your Embedly Key to embed any URL', 'embedly'); ?></p>
           </fieldset>
-        </div>    
+        </div>
       </div>
     </form>
     <form id="embedly_providers_form" method="POST" action="">
