@@ -67,7 +67,6 @@ var EmbedlyDialog = {
     // add embedly a tag w/ url
     var a = document.createElement('a');
     a.href = url;
-    a.setAttribute('class', 'embedly-card');
     $j('#card').append(a);
 
     // this lets us do the setting of things.

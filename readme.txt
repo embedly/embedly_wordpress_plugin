@@ -7,7 +7,7 @@ Tags: embed, oembed, video, image, pdf, card
 Requires at least: 3.5.1
 
 Tested up to: 3.9
-Stable tag: 3.1.2
+Stable tag: 3.1.3
 
 
 Embed videos, images, PDF, and article previews from "any" source with just the URL.
@@ -147,6 +147,10 @@ Note: You will need to activate Embedly for each site.
 
 
 == Changelog ==
+
+= 3.1.3 =
+
+* Fix Add Post bug in IE.
 
 = 3.1.2 =
 
