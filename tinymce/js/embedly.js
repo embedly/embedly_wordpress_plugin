@@ -1,6 +1,6 @@
 tinyMCEPopup.requireLangPack();
 
-$j = jQuery.noConflict(true);
+$j = jQuery;
 
 // callback handler for the embedly service lookup
 var embedlyAjaxCallback = function(resp){
@@ -155,3 +155,9 @@ var EmbedlyDialog = {
 };
 
 tinyMCEPopup.onInit.add(EmbedlyDialog.init, EmbedlyDialog);
+
+//Set Dialog title.
+$j(document).ready(function() {
+    document.title = 'Embedly';
+});
+

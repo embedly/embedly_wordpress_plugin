@@ -4,10 +4,10 @@ Contributors: Embedly
 
 Tags: embed, oembed, video, image, pdf, card
 
-Requires at least: 3.5.1
+Requires at least: 3.6
 
-Tested up to: 3.9
-Stable tag: 3.1.3
+Tested up to: 4.1
+Stable tag: 3.2
 
 
 Embed videos, images, PDF, and article previews from "any" source with just the URL.
@@ -26,12 +26,12 @@ to add "any" URL to your post.
 
 OR
 
-Embed 250+ sources by putting the URL to the content you want to embed on
+Embed 300+ sources by putting the URL to the content you want to embed on
 a single line like so:
 
     This Embedly lets me embed everything great on the web!
-    
-    http://twitpic.com/1owy89
+
+    http://instagram.com/p/w8hB9Dn7qF/
     
     http://i.imgur.com/ywzpg.jpg
     
@@ -147,6 +147,13 @@ Note: You will need to activate Embedly for each site.
 
 
 == Changelog ==
+
+= 3.2 =
+
+* Embedly TinyMCE dialog and dependencies managed server side.
+* Refactor code to use class structure.
+* Clean up deprecated SQL generation to make compliant with WP3.6 and above.
+
 
 = 3.1.3 =
 
@@ -278,3 +285,7 @@ Embedly rich post editor option now uses Embedly Cards layout.
 = 3.1 =
 
 Dynamically loading Embedly popup based on TinyMCE Version.
+
+= 3.2 =
+
+Refactor Embedly TinyMCE Dialog to generate via iframe request.

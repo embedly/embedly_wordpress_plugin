@@ -6,6 +6,10 @@ function embedly(){
   var JSON = tinymce.util.JSON, Node = tinymce.html.Node, s = tinymce.settings, t = this;
   function embedlyError(e){ console.warn("Embedly Plugin: %s", e.message); }
   try{
+    // Load plugin specific language pack
+    tinymce.PluginManager.requireLangPack('embedly');
+
+    //TinyMCE
     tinymce.create('tinymce.plugins.embedly', {
       init: function(ed, url){
         var self = this;
@@ -105,9 +109,10 @@ function embedly(){
           data['endpoint'] = self.endpoint
         
           ed.windowManager.open({
-            file : url + '/embed.htm',
+            file : url + '/../dialog.php',
             width : 500 + parseInt(ed.getLang('embedly.delta_width', 0)),
             height: 450 + parseInt(ed.getLang('embedly.delta_height', 0)),
+            title: 'Embedly',
             inline:1
           }, {
             plugin_url:url,
@@ -117,7 +122,7 @@ function embedly(){
           
         // Register Buttons
         ed.addButton('embedly', 
-                       {title : 'embedly.embedly_desc', 
+                       {title : 'Embedly', 
                         image : EMBEDLY_TINYMCE+'/img/icon.gif',
                           cmd : 'mceEmbedly'});
           
