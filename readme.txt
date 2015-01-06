@@ -7,7 +7,7 @@ Tags: embed, oembed, video, image, pdf, card
 Requires at least: 3.6
 
 Tested up to: 4.1
-Stable tag: 3.2
+Stable tag: 3.2.1
 
 
 Embed videos, images, PDF, and article previews from "any" source with just the URL.
