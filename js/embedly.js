@@ -49,7 +49,7 @@ jQuery(document).ready(function($) {
   }, function() {
     $(this).attr('title', '');
   });
-  
+
   // Adjust some minor aesthetic details onload
   $('.embedly-service-generator li').each(function() {
     if($(this).find('input').attr('checked')) {
@@ -72,10 +72,10 @@ jQuery(document).ready(function($) {
     }
     if(allDeselected) {
       $('#embedly-service-select').find('a').removeClass('active');
-      $('#embedly-service-select').find('a.clearselection').addClass('active');      
+      $('#embedly-service-select').find('a.clearselection').addClass('active');
     }
   });
-  
+
   // Define the vars
   var allCheckboxes     = $('.embedly-service-generator li input');
   var photoCheckboxes   = $('.embedly-service-generator li.photo input');
@@ -86,109 +86,109 @@ jQuery(document).ready(function($) {
   var serviceList       = $('#services-source');
   var listClone         = $('#services-source').clone();
   var cnt               = 0;
-  
-  
+
+
   /**
    * Creates providers when ajax update function is run
   **/
-  function create_provider(obj, cnt) {
-    var checked = (obj.selected == 1) ? 'checked="checked"' : '';
-    var li  = '<li class="'+obj.type+'" id="'+obj.name+'" data-type="'+obj.type+'" data-id="id-'+cnt+'"><div class="full-service-wrapper"><label for="'+obj.name+'-checkbox" class="embedly-icon-name">'+obj.displayname+'</label>';
-        li += '<div class="embedly-icon-wrapper"><input type="checkbox" id="'+obj.name+'-checkbox" name="'+obj.name+'" '+checked+'" />';
-        li += '<img src="'+obj.favicon+'" title="'+obj.name+'" alt="'+obj.displayname+'"></div></div></li>';
-    return li;
-  }
-  
-  
+  // function create_provider(obj, cnt) {
+  //   var checked = (obj.selected == 1) ? 'checked="checked"' : '';
+  //   var li  = '<li class="'+obj.type+'" id="'+obj.name+'" data-type="'+obj.type+'" data-id="id-'+cnt+'"><div class="full-service-wrapper"><label for="'+obj.name+'-checkbox" class="embedly-icon-name">'+obj.displayname+'</label>';
+  //       li += '<div class="embedly-icon-wrapper"><input type="checkbox" id="'+obj.name+'-checkbox" name="'+obj.name+'" '+checked+'" />';
+  //       li += '<img src="'+obj.favicon+'" title="'+obj.name+'" alt="'+obj.displayname+'"></div></div></li>';
+  //   return li;
+  // }
+
+
   /**
    * Resets all services to de-selected state
   **/
-  function resetSelected() {
-    allCheckboxes.removeAttr('checked').trigger('change');
-    listClone.find('li').removeClass('service-selected').find('input[type=checkbox]').removeAttr('checked');
-    serviceList.find('li').removeClass('service-selected').find('input[type=checkbox]').removeAttr('checked');
-  }
+  // function resetSelected() {
+  //   allCheckboxes.removeAttr('checked').trigger('change');
+  //   listClone.find('li').removeClass('service-selected').find('input[type=checkbox]').removeAttr('checked');
+  //   serviceList.find('li').removeClass('service-selected').find('input[type=checkbox]').removeAttr('checked');
+  // }
 
 
   /**
    * Adds "filtering" via the Quicksand jQuery plugin
   **/
-  $('#embedly-service-filter li a').click(function(e) {
-    e.preventDefault();
-    var dataValue = $(this).parents('li').attr('data-value');
-    $(this).parents('ul').find('a').removeClass('active');
-    $(this).addClass('active');
-    if($(this).hasClass('all')) {
-      var filteredData = listClone.find('li');
-    }
-    else {
-      var filteredData = listClone.find('li[data-type='+dataValue+']')
-    }
-    serviceList.quicksand(filteredData, {
-      duration: 800,
-      easing: 'swing',
-    });
-  });
+  // $('#embedly-service-filter li a').click(function(e) {
+  //   e.preventDefault();
+  //   var dataValue = $(this).parents('li').attr('data-value');
+  //   $(this).parents('ul').find('a').removeClass('active');
+  //   $(this).addClass('active');
+  //   if($(this).hasClass('all')) {
+  //     var filteredData = listClone.find('li');
+  //   }
+  //   else {
+  //     var filteredData = listClone.find('li[data-type='+dataValue+']')
+  //   }
+  //   serviceList.quicksand(filteredData, {
+  //     duration: 800,
+  //     easing: 'swing',
+  //   });
+  // });
 
 
   /**
    * Function to handle selection/deselection of services onclick
    * Includes CTRL keybind check for joining selections
   **/
-  $('#embedly-service-select li a').click(function(e) {
-    e.preventDefault();
-    var elem_class = $(this).removeClass('active').attr('class');
-    if(elem_class != 'all' && elem_class != 'clearselection') {
-      if(!e.ctrlKey) {
-        resetSelected();
-        $(this).parents('ul').find('a').removeClass('active');
-      }
-      else {
-        if($('#embedly-service-select .all').hasClass('active') || $('#embedly-service-select .clearselection').hasClass('active')) {
-          $('#embedly-service-select .clearselection').add($('#embedly-service-select .all')).removeClass('active');
-        }
-      }
-    }
-    else {
-      $(this).parents('ul').find('a').removeClass('active');
-    }
-    switch(elem_class) {
-      case 'all':
-        allCheckboxes.attr('checked', 'checked').trigger('change');
-        listClone.find('li').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
-        serviceList.find('li').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');      
-      break;
-      case 'clearselection':
-        resetSelected();
-      break;
-      case 'videos':
-        videoCheckboxes.attr('checked', 'checked').trigger('change');
-        listClone.find('li.video').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
-        serviceList.find('li.video').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
-      break;
-      case 'photos':
-        photoCheckboxes.attr('checked', 'checked').trigger('change');
-        listClone.find('li.photo').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
-        serviceList.find('li.photo').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');      
-      break;
-      case 'audio':
-        audioCheckboxes.attr('checked', 'checked').trigger('change');
-        listClone.find('li.audio').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
-        serviceList.find('li.audio').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');      
-      break;
-      case 'rich':
-        richCheckboxes.attr('checked', 'checked').trigger('change');
-        listClone.find('li.rich').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
-        serviceList.find('li.rich').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');      
-      break;
-      case 'products':
-        productCheckboxes.attr('checked', 'checked').trigger('change');
-        listClone.find('li.product').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
-        serviceList.find('li.product').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');      
-      break;
-    }
-    $(this).addClass('active');
-  });
+  // $('#embedly-service-select li a').click(function(e) {
+  //   e.preventDefault();
+  //   var elem_class = $(this).removeClass('active').attr('class');
+  //   if(elem_class != 'all' && elem_class != 'clearselection') {
+  //     if(!e.ctrlKey) {
+  //       resetSelected();
+  //       $(this).parents('ul').find('a').removeClass('active');
+  //     }
+  //     else {
+  //       if($('#embedly-service-select .all').hasClass('active') || $('#embedly-service-select .clearselection').hasClass('active')) {
+  //         $('#embedly-service-select .clearselection').add($('#embedly-service-select .all')).removeClass('active');
+  //       }
+  //     }
+  //   }
+  //   else {
+  //     $(this).parents('ul').find('a').removeClass('active');
+  //   }
+  //   switch(elem_class) {
+  //     case 'all':
+  //       allCheckboxes.attr('checked', 'checked').trigger('change');
+  //       listClone.find('li').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
+  //       serviceList.find('li').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
+  //     break;
+  //     case 'clearselection':
+  //       resetSelected();
+  //     break;
+  //     case 'videos':
+  //       videoCheckboxes.attr('checked', 'checked').trigger('change');
+  //       listClone.find('li.video').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
+  //       serviceList.find('li.video').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
+  //     break;
+  //     case 'photos':
+  //       photoCheckboxes.attr('checked', 'checked').trigger('change');
+  //       listClone.find('li.photo').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
+  //       serviceList.find('li.photo').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
+  //     break;
+  //     case 'audio':
+  //       audioCheckboxes.attr('checked', 'checked').trigger('change');
+  //       listClone.find('li.audio').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
+  //       serviceList.find('li.audio').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
+  //     break;
+  //     case 'rich':
+  //       richCheckboxes.attr('checked', 'checked').trigger('change');
+  //       listClone.find('li.rich').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
+  //       serviceList.find('li.rich').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
+  //     break;
+  //     case 'products':
+  //       productCheckboxes.attr('checked', 'checked').trigger('change');
+  //       listClone.find('li.product').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
+  //       serviceList.find('li.product').addClass('service-selected').find('input[type=checkbox]').attr('checked', 'checked');
+  //     break;
+  //   }
+  //   $(this).addClass('active');
+  // });
 
 
 
@@ -196,48 +196,48 @@ jQuery(document).ready(function($) {
   /**
    * Function to change selected state upon clicking individual services
   **/
-  $('#services-source li').on('click', function(e) {
-    e.preventDefault();
-    var checkBox = $(this).find('input[type=checkbox]');
-    if(checkBox.attr('checked')) {
-      $(this).removeClass('service-selected');
-      checkBox.removeAttr('checked').trigger('change');
-    }
-    else {
-      $(this).addClass('service-selected');
-      checkBox.attr('checked', 'checked').trigger('change');
-    }
-  });
-  
+  // $('#services-source li').on('click', function(e) {
+  //   e.preventDefault();
+  //   var checkBox = $(this).find('input[type=checkbox]');
+  //   if(checkBox.attr('checked')) {
+  //     $(this).removeClass('service-selected');
+  //     checkBox.removeAttr('checked').trigger('change');
+  //   }
+  //   else {
+  //     $(this).addClass('service-selected');
+  //     checkBox.attr('checked', 'checked').trigger('change');
+  //   }
+  // });
+
 
   /**
    * AJAX function that handles retrieving/updating providers from Embed.ly API
   **/
-  $('#embedly_update_providers_form').submit(function(e) {
-    e.preventDefault();
-    $('#embedly-ajax-error').add($('#embedly-ajax-success')).hide();
-    var providers = [];
-    $('.embedly-service-generator li input:checked').each(function(index, elem) {
-      providers.push($(elem).attr('name'));
-    });
-    var data = {
-      action: 'embedly_update_providers'
-    };
-    $.post(ajaxurl, data, function(json) {
-      if(json.hasOwnProperty('error')) {
-        $('#embedly-ajax-error').fadeIn();
-      }
-      else {
-        if($('#services-source').length != 1) {
-          window.location.reload();
-          $('#services-source').html('');
-          $.each(json, function(index, obj) {
-            $('#services-source').append(create_provider(obj, cnt++));
-          });
-        }
-        $('#embedly-ajax-success').fadeIn();
-      }
-    }, 'json');
-  });
+  // $('#embedly_update_providers_form').submit(function(e) {
+  //   e.preventDefault();
+  //   $('#embedly-ajax-error').add($('#embedly-ajax-success')).hide();
+  //   var providers = [];
+  //   $('.embedly-service-generator li input:checked').each(function(index, elem) {
+  //     providers.push($(elem).attr('name'));
+  //   });
+  //   var data = {
+  //     action: 'embedly_update_providers'
+  //   };
+  //   $.post(ajaxurl, data, function(json) {
+  //     if(json.hasOwnProperty('error')) {
+  //       $('#embedly-ajax-error').fadeIn();
+  //     }
+  //     else {
+  //       if($('#services-source').length != 1) {
+  //         window.location.reload();
+  //         $('#services-source').html('');
+  //         $.each(json, function(index, obj) {
+  //           $('#services-source').append(create_provider(obj, cnt++));
+  //         });
+  //       }
+  //       $('#embedly-ajax-success').fadeIn();
+  //     }
+  //   }, 'json');
+  // });
 
 });
