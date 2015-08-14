@@ -4,7 +4,7 @@ Plugin Name: Embedly
 Plugin URI: http://embed.ly
 Description: The Embedly Plugin extends Wordpress's Oembed feature, allowing bloggers to Embed from 230+ services and counting.
 Author: Embed.ly Inc
-Version: 3.2.1
+Version: 3.2.2
 Author URI: http://embed.ly
 License: GPL2
 
@@ -24,7 +24,6 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
-
 /**
  * Define Connstants
  */
@@ -41,12 +40,133 @@ if(!defined('WP_PLUGIN_DIR')) {
   define('WP_PLUGIN_DIR', WP_CONTENT_DIR.'/plugins');
 }
 if(!defined('EMBEDLY_DIR')) {
-  define('EMBEDLY_DIR', WP_PLUGIN_DIR.'/embedly');
+  define('EMBEDLY_DIR', WP_PLUGIN_DIR.'/embedly_wordpress_plugin');
 }
 if(!defined('EMBEDLY_URL')) {
-  define('EMBEDLY_URL', WP_PLUGIN_URL.'/embedly');
+  define('EMBEDLY_URL', WP_PLUGIN_URL.'/embedly_wordpress_plugin');
 }
 
+
+function embedly_add_embed_button() {
+  global $typenow;
+
+  if ( !current_user_can('edit_posts') && !current_user_can('edit_pages') ) {
+  return;
+  }
+
+  if( ! in_array( $typenow, array( 'post', 'page' ) ) )
+      return;
+
+  if ( get_user_option('rich_editing') == 'true') {
+    add_filter("mce_external_plugins", "embedly_add_tinymce_plugin");
+    add_filter('mce_buttons', 'embedly_register_embed_button');
+  }
+
+}
+
+// @ cstiteler -> Some thoughts about WP plugins. Most that I've skimmed throug
+// remain functional, having a class based plugin seems to complicate the php.
+// So far I've stripped out all the php relating to selecting a provider
+
+function embedly_add_tinymce_plugin($plugin_array) {
+  $plugin_array['embedly_embed_button'] = plugins_url( 'js/embedly-button.js', __FILE__ );
+  return $plugin_array;
+}
+
+function embedly_register_embed_button($buttons) {
+  array_push($buttons, "embedly_embed_button");
+  return $buttons;
+}
+
+function embedly_button_css() {
+  wp_enqueue_style('embedly_button.css', plugins_url('css/embedly_button.css', __FILE__));
+}
+
+function embedly_footer_widgets() {
+  echo "<script>
+  (function(w, d){
+   var id='embedly-platform', n = 'script';
+   if (!d.getElementById(id)){
+     w.embedly = w.embedly || function() {(w.embedly.q = w.embedly.q || []).push(arguments);};
+     var e = d.createElement(n); e.id = id; e.async=1;
+     e.src = ('https:' === document.location.protocol ? 'https' : 'http') + '://cdn.embedly.com/widgets/platform.js';
+     var s = d.getElementsByTagName(n)[0];
+     s.parentNode.insertBefore(e, s);
+   }
+ })(window, document);</script>";
+}
+
+function embedly_tinymce_settings( $init ) {
+  global $allowedposttags;
+  $allowedposttags['script'] = array(
+      'type' => array(),
+      'src' => array()
+  );
+
+  $init['allow_html_in_named_anchor'] = 'true';
+  // in order to allow insertion of anchor tags into editor, this secure?
+  $init['valid_elements'] = '*[*]';
+  // $init['extended_valid_elements'] = 'script[charset|defer|language|src|type]';
+  $init['extended_valid_elements'] = '*[*]';
+
+  $initArray['setup'] = <<<JS
+[function(ed){
+  ed.onInit.add(function(ed, evt) {
+    // my attempt at getting the card to load in the rich editor, moving on for now
+    tinymce.dom.ScriptLoader.load('/wordpress-dev/wp-content/plugins/embedly_wordpress_plugin/js/embedly-platform.js').isDone();
+  });
+
+  // Here we can load any of the setup functions in javascript for tinymce
+  // with the tiny_mce_before_init action.
+  // trying to get the a tag from the editor to show up in the visual wysiwyg box
+
+
+  // ed.onLoad.add(function(ed, e){
+  //
+  //     // var tb_name = tinyMCE.activeEditor.id; // The ID of the active editor
+  //     // var script = document.createElement('script');
+  //     // script.type = 'text/javascript';
+  //     // script.src = '../js/embedly-platform.js';
+  //     // tinyMCE.activeEditor.dom.add(script)
+  //
+  // }
+
+  // ed.onPreInit.add(function(ed) {
+  // console.debug('PreInit: ' + ed.id);
+  // console.debug(ed.initialized);
+  // var ec = ed.getDoc();
+  // var head = ec.getElementsByTagName("head")[0];
+  // var script = ec.createElement("script");
+  // script.src = "/wordpress-dev/wp-content/plugins/embedly_wordpress_plugin/js/embedly-platform.js";
+  // script.setAttribute('type','text/javascript');
+  // head.appendChild(script);
+  // });
+
+}][0]
+JS;
+
+  // $init['setup'] = <<<JS
+  // [function(ed) {
+  //     // ed.onInit.add(function(ed, evt) {
+  //     //   tinymce.ScriptLoader.load('../js/embedly-platform.js')
+  //     // });
+  //        ed.onPreInit.add(function(ed) {
+  //        console.debug('PreInit: ' + ed.id);
+  //        console.debug(ed.initialized);
+  //        var ec = ed.getDoc();
+  //        var head = ec.getElementsByTagName("head")[0];
+  //        var script = ec.createElement("script");
+  //        script.src = "http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js";
+  //       //script.text  = "alert('voila!');"
+  //        script.setAttribute('type','text/javascript');
+  //        head.appendChild(script);
+  //   });
+  //  }
+  // ][0]
+  // JS;
+
+  return $init;
+}
 
 /**
  * Embedly WP Class
@@ -69,8 +189,6 @@ class WP_Embedly {
                              'active'   => true,
                               'key'      => '');
 
-
-
     //i18n
     add_action('init', array($this, 'i18n' ) );
 
@@ -87,16 +205,21 @@ class WP_Embedly {
     //Admin settings page actions
     add_action('admin_menu', array($this, 'embedly_add_settings_page'));
     add_action('admin_print_styles', array($this, 'embedly_enqueue_admin'));
-    add_action('admin_print_styles', array($this, 'embedly_menu_icons'));
-    add_action('wp_ajax_embedly_update_providers', array($this, 'embedly_ajax_update_providers'));
-    add_action('admin_head', array($this, 'embedly_footer_widgets'));    
-    add_action('plugins_loaded', array($this, 'add_embedly_providers'));
-
-    //Post page actions
     add_action('wp_head', array($this, 'embedly_enqueue_public'));
     add_action('wp_head', array($this, 'embedly_platform_javascript'), 0);
-    add_action('init', array($this, 'embedly_addbuttons'));
+    // add_action('init', array($this, 'embedly_addbuttons'));
 
+    //Post page actions
+    // NEW:
+    add_action('admin_head', 'embedly_add_embed_button');
+    add_action('admin_head', 'embedly_footer_widgets');
+    add_filter('tiny_mce_before_init', 'embedly_tinymce_settings');
+
+    // this can add the icon via css if nec., when we're ready -> standard is
+    // using dashicons instead of custom images.
+    // add_action('admin_enqueue_scripts', 'embedly_button_css');
+
+    // END NEW
   }
 
   /**
@@ -106,81 +229,13 @@ class WP_Embedly {
     load_plugin_textdomain('embedly', false, dirname(plugin_basename(__FILE__)).'/lang/');
   }
 
-
-  /**
-   * Generates queries to grab providers for Embedly Settings Page.
-   *
-   * @param class   $obj      Object retreived from the API
-   * @param string  $action   The action to take (insert, update, get, or delete)
-   * @param string  $name     Name of the item you wish to modify
-   * @param boolean $selected Whether the service is selected (true or false)
-   * @param string  $scope    Extra parameter so that get/update can use the same switch case (null or selected)
-   * @param boolean $return   Whether to return results or simply run the query
-   *
-  **/
-  function embedly_provider_queries($obj=null, $action=null, $name=null, $selected=false, $scope=null, $return=false) {
-    global $wpdb;
-    $action   = strtolower($action);
-    $sel_val  = ($selected ? 1 : 0);
-
-    switch($action) {
-      case 'insert':
-        $query  = "INSERT INTO "
-          . $this->embedly_options['table']
-          . " (name, selected, displayname, domain, type, favicon, regex, about) "
-          . "VALUES ('"
-          . $wpdb->_escape($obj->name)."',"
-          . "true ,'"
-          . $wpdb->_escape($obj->displayname)."','"
-          . $wpdb->_escape($obj->domain)."','"
-          . $wpdb->_escape($obj->type)."','"
-          . $wpdb->_escape($obj->favicon)."','"
-          . $wpdb->_escape(json_encode($obj->regex))."','"
-          . $wpdb->_escape($obj->about)
-          . "')";
-      break;
-      case 'update':
-        if($scope == 'selected') {
-          $query = "UPDATE ".$this->embedly_options['table']." SET selected=".$wpdb->_escape($sel_val)." WHERE name='".$wpdb->_escape($name)."'";
-        }
-        else {
-          $query = "UPDATE ".$this->embedly_options['table']." SET "
-            . "displayname='".$wpdb->_escape($obj->displayname)."', "
-            . "domain='".$wpdb->_escape($obj->domain)."', "
-            . "type='".$wpdb->_escape($obj->type)."', "
-            . "favicon='".$wpdb->_escape($obj->favicon)."', "
-            . "regex='".$wpdb->_escape(json_encode($obj->regex))."', "
-            . "about='".$wpdb->_escape($obj->about)."' "
-            . "WHERE name='".$wpdb->_escape($obj->name)."'";
-        }
-      break;
-      case 'get':
-        if($scope == 'selected') {
-          $query = $wpdb->get_results("SELECT * FROM ".$this->embedly_options['table']." WHERE selected=true;");
-        }
-        else {
-          $query = $wpdb->get_results("SELECT * FROM ".$this->embedly_options['table']." ORDER BY name;");
-        }
-      break;
-      case 'delete':
-        $query = "DELETE FROM ".$this->embedly_options['table']." WHERE name='".$name."';";
-      break;
-    }
-    if(!$return) {
-      $results = $wpdb->query($query);
-    }
-    else {
-      return $query;
-    }
-  }
-
-
   /**
    * Activation Hook
   **/
   function embedly_activate() {
     global $wpdb;
 
+    # can probably strip most of this out on activate without providers.
     # Table doesn't exist, let's create it
     if($wpdb->get_var("SHOW TABLES LIKE '".$this->embedly_options['table']."'") != $this->embedly_options['table']) {
       $sql = "CREATE TABLE ".$this->embedly_options['table']." (
@@ -204,15 +259,7 @@ class WP_Embedly {
   		$sql     = "TRUNCATE TABLE ".$this->embedly_options['table'].";";
   		$results = $wpdb->query($sql);
     }
-
-    # Grab new data
-    $data     = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/wordpress'));
-    $services = json_decode($data);
-    foreach($services as $service) {
-    	$this->embedly_provider_queries($service, 'insert');
-    }
   }
-
 
   /**
    * Deactivation Hook
@@ -247,20 +294,12 @@ class WP_Embedly {
     return;
   }
 
-  
-  /**
-   * Enqueue menu icon styles globally in admin
-  **/
-  function embedly_menu_icons() {
-    wp_enqueue_style('embedly_menu_icons', EMBEDLY_URL.'/css/embedly-icons.css');
-  }
-
 
   /**
    * Enqueue styles for front-end
   **/
   function embedly_enqueue_public() {
-    wp_enqueue_style('embedly_font_end', EMBEDLY_URL.'/css/embedly-frontend.css');
+    wp_enqueue_style('embedly_front_end', EMBEDLY_URL.'/css/embedly-frontend.css');
   }
 
 
@@ -275,96 +314,6 @@ class WP_Embedly {
 
 
   /**
-   * The list of providers embedly offers is always growing.
-   * This is a dynamic way to pull in new providers.
-  **/
-  function embedly_services_download() {
-    $old_services = $this->embedly_provider_queries(null, 'get', null, false, null, true);
-    $os_names = array();
-    foreach($old_services as $os) {
-    	array_push($os_names, $os->name);
-    }
-    $result   = wp_remote_retrieve_body(wp_remote_get('http://api.embed.ly/1/wordpress'));
-    $services = json_decode($result);
-    if(!$services) {
-      return null;
-    }
-
-    # Add new services
-    $s_names = array();
-    foreach($services as $service) {
-      if(!in_array($service->name, $os_names)) {
-        $this->embedly_provider_queries($service, 'insert');
-      }
-      else{
-        # We need to update the provider if anything has changed.
-        $this->embedly_provider_queries($service, 'update');
-      }
-      array_push($s_names, $service->name);
-    }
-
-    # See if any names dissappered
-    foreach($os_names as $os_name) {
-      if(!in_array($os_name, $s_names)) {
-        $this->embedly_provider_queries($os_name, 'delete');
-      }
-    }
-
-    return $this->embedly_provider_queries(null, 'get', null, false, null, true);
-  }
-
-
-  /**
-   * Updates the selected services
-  **/
-  function update_embedly_service($selected) {
-    $services = $this->embedly_provider_queries(null, 'get', null, false, null, true);
-    foreach($services as $service) {
-      if(in_array($service->name, $selected)) {
-        if(!$service->selected) {
-          $this->embedly_provider_queries(null, 'update', $service->name, true, 'selected', false);
-          $service->selected = true;
-        }
-      }
-      else {
-        if($service->selected) {
-          $this->embedly_provider_queries(null, 'update', $service->name, false, 'selected', false);
-          $service->selected = false;
-        }
-      }
-    }
-    return $services;
-  }
-
-
-  /**
-   * Does the work of adding the Embedly providers to wp_oembed
-  **/
-  function add_embedly_providers() {
-    $selected_services = $this->embedly_provider_queries(null, 'get', null, false, 'selected', true);
-
-    // remove default WP oembed providers
-    add_filter('oembed_providers', create_function('', 'return array();'));
-
-    if($selected_services && $this->embedly_options['active']) {
-      foreach($selected_services as $service) {
-        foreach(json_decode($service->regex) as $sre) {
-          if(!empty($this->embedly_options['key'])) {
-            wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed?key='.$this->embedly_options['key'], true);
-          }
-          else {
-            wp_oembed_add_provider($sre, 'http://api.embed.ly/1/oembed', true);
-          }
-        }
-      }
-    }
-
-    // Since Embedly does not support Twitter, we have to add it back into the mix.
-    wp_oembed_add_provider('#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i', 'https://api.twitter.com/1/statuses/oembed.{format}', true);
-  }
-
-
-  /**
    * Used for data validation upon form submission
   **/
   function embedly_update_selected_services($services) {
@@ -373,21 +322,6 @@ class WP_Embedly {
       return false;
     }
     return true;
-  }
-
-
-  /**
-   * Ajax function that looks at embedly for new providers
-  **/
-  function embedly_ajax_update_providers() {
-    $services = $this->embedly_services_download();
-    if($services == null) {
-      echo json_encode(array('error'=>true));
-    }
-    else {
-      echo json_encode($services);
-    }
-    die();
   }
 
 
@@ -410,67 +344,32 @@ class WP_Embedly {
     }
   }
 
-  /**
-   * Trims $service->displayname to fit within the box
-  **/
-  function embedly_trim_title($title) {
-    if(strlen($title) > 10) {
-      $strcut   = substr($title, 0, 10);
-      $strrev   = strrev($strcut);
-      $lastchar = $strrev{0};
-      if($lastchar == ' ') {
-        echo substr($title, 0, 9).'..';
-      }
-      else {
-        echo substr($title, 0, 10).'..';
-      }
-    }
-    else {
-      echo $title;
-    }
-  }
 
-  /**
-   * Add Embedly TinyMCE Widget functionality
-  **/
-  function embedly_footer_widgets() {
-    $url = plugin_dir_url(__FILE__).'tinymce';
-    echo '<script data-cfasync="false" type="text/javascript">EMBEDLY_TINYMCE = "'.$url.'";';
-    echo 'embedly_key="'.$this->embedly_options['key'].'";';
-    if($this->embedly_acct_has_feature('preview', $this->embedly_options['key'])) {
-      echo 'embedly_endpoint="preview";';
-    }
-    else {
-      echo 'embedly_endpoint="";';
-    }
-    echo '</script>';
-  }
+  // function embedly_addbuttons() {
+  //   if(!current_user_can('edit_posts') && !current_user_can('edit_pages')) {
+  //     return;
+  //   }
+  //   if(get_user_option('rich_editing') == 'true') {
+  //     # turns off embedly's tinyMCE
+  //     // add_filter('mce_external_plugins', array($this, 'add_embedly_tinymce_plugin'));
+  //     // add_filter('mce_buttons', array($this, 'register_embedly_button'));
+  //   }
+  // }
 
 
-  function embedly_addbuttons() {
-    if(!current_user_can('edit_posts') && !current_user_can('edit_pages')) {
-      return;
-    }
-    if(get_user_option('rich_editing') == 'true') {
-      add_filter('mce_external_plugins', array($this, 'add_embedly_tinymce_plugin'));
-      add_filter('mce_buttons', array($this, 'register_embedly_button'));
-    }
-  }
+  // function register_embedly_button($buttons) {
+  //   array_push($buttons, "|", "embedly");
+  //   return $buttons;
+  // }
 
 
-  function register_embedly_button($buttons) {
-    array_push($buttons, "|", "embedly");
-    return $buttons;
-  }
+  // function add_embedly_tinymce_plugin($plugin_array) {
+  //   $url = plugin_dir_url(__FILE__).'tinymce/editor_plugin.js';
+  //   $plugin_array['embedly'] = $url;
+  //   return $plugin_array;
+  // }
 
-
-  function add_embedly_tinymce_plugin($plugin_array) {
-    $url = plugin_dir_url(__FILE__).'tinymce/editor_plugin.js';
-    $plugin_array['embedly'] = $url;
-    return $plugin_array;
-  }
-
-
+  # still can use some of this for later.
   function insert_embedly_dialog() { ?>
 
     <title>{#embedly_dlg.title}</title>
@@ -501,8 +400,8 @@ class WP_Embedly {
                   <div class="generator-card">
                     <span></span>
                     <div id="card"></div>
-                    <textarea style="display:none;" id="snippet" readonly></textarea> 
-                  </div>              
+                    <textarea style="display:none;" id="snippet" readonly></textarea>
+                  </div>
                 </div>
               </fieldset>
       </form>
@@ -536,7 +435,7 @@ class WP_Embedly {
   **/
   function embedly_settings_page() {
     global $wpdb;
-    $services = $this->embedly_provider_queries(null, 'get', null, false, null, true);
+    // $services = $this->embedly_provider_queries(null, 'get', null, false, null, true);
     $selServs = array();
     $cnt      = 0;
 
@@ -578,30 +477,7 @@ class WP_Embedly {
       $keyValid = true;
     }
 
-    #no services available
-    if($services == null) {
-      $errorMessage = __('Hmmm, there were no providers found. Try updating?', 'embedly');
-    }
-    #saving providers selected
-    elseif(isset($_POST['updating_providers'])) {
-      foreach($services as $service) {
-        if(isset($_POST[$service->name])) {
-          $selServs[] .= $service->name;
-        }
-      }
-      # user selected services
-      if(isset($selServs)) {
-        #saved selected services
-        if($this->embedly_update_selected_services($selServs)) {
-          $successMessage = sprintf(__('The providers you chose have been saved to the database. %1$sPlease reload%2$s to reflect the changes.', 'embedly'), '<a href="admin.php?page=embedly">', '</a>');
-        }
-        #failed saving services
-        else {
-          $errorMessage = __("It would appear that we've encountered a problem while updating your providers. Try again?", 'embedly');
-        }
-      }
-    }
-    ?>
+   ?>
     <div class="embedly-wrap">
       <div class="embedly-ui">
         <div class="embedly-ui-header-outer-wrapper">
@@ -626,12 +502,13 @@ class WP_Embedly {
         <div class="embedly-updated embedly-ajax-message embedly-message" id="embedly-ajax-success">
           <p><strong><?php _e("We have sync'd your providers list with our API. Enjoy!", 'embedly'); ?></strong></p>
         </div>
-    <?php if($services != null) { ?>
+    <?php { ?>
         <form id="embedly_key_form" method="POST" action="">
           <div class="embedly-ui-key-wrap">
             <div class="embedly_key_form embedly-ui-key-form">
               <fieldset>
-                <h2 class="section-label"><?php _e('Embedly Key', 'embedly'); ?></h2><span><a href="http://app.embed.ly" target="_new"><?php _e("Lost your key?", 'embedly'); ?></a></span>
+                <h2 class="section-label"><?php _e('Embedly Key', 'embedly'); ?></h2>
+                  <span><a href="http://app.embed.ly" target="_new"><?php _e("Lost your key?", 'embedly'); ?></a></span>
                 <div class="embedly-input-wrapper">
                   <a href="#" class="embedly-lock-control embedly-unlocked" data-unlocked="<?php _e('Lock this field to prevent editing.', 'embedly'); ?>" data-locked="<?php _e('Unlock to edit this field.', 'embedly'); ?>" title=""><?php if(isset($keyValid) && $keyValid){_e('Unlock to edit this field.', 'embedly');}else{_e('Lock this field to prevent editing.', 'embedly');} ?></a>
                   <input <?php if(isset($keyValid) && $keyValid){echo 'readonly="readonly" ';} ?>id="embedly_key" placeholder="<?php _e('Please enter your key...', 'embedly'); ?>" name="embedly_key" type="text" class="<?php if(isset($keyValid) && !$keyValid){echo 'invalid embedly-unlocked-input ';}elseif(!isset($keyValid)){echo 'embedly-unlocked-input ';}else{echo 'embedly-locked-input ';} ?>embedly_key_input" <?php if(!empty($this->embedly_options['key'])){echo 'value="'.$this->embedly_options['key'].'"';} ?> />
@@ -641,58 +518,12 @@ class WP_Embedly {
               </fieldset>
             </div>
           </div>
+        <div class="embedly-ui-providers">
+          <span><a href="http://embed.ly/providers" target="_new"><?php _e("List of supported providers", 'embedly'); ?></a></span>
+        </div>
+
         </form>
-        <form id="embedly_providers_form" method="POST" action="">
-          <div class="pixel-popper"></div>
-          <div class="embedly-ui-service-sorter-wrapper">
-            <div class="embedly-ui-quicksand-wrapper quicksand-left-wrapper">
-              <div class="embedly-ui-quicksand">
-                <p><?php _e('Select', 'embedly'); ?></p>
-                <ul class="embedly-actions embedly-action-select" id="embedly-service-select">
-                  <li><a class="all active" href="#"><?php _e('All', 'embedly'); ?></a></li>
-                  <li><a class="clearselection" href="#"><?php _e('None', 'embedly'); ?></a></li>
-                  <li><a class="videos" href="#"><?php _e('Videos', 'embedly'); ?></a></li>
-                  <li><a class="audio" href="#"><?php _e('Audio', 'embedly'); ?></a></li>
-                  <li><a class="photos" href="#"><?php _e('Photos', 'embedly'); ?></a></li>
-                  <li><a class="rich" href="#"><?php _e('Rich Media', 'embedly'); ?></a></li>
-                  <li><a class="products" href="#"><?php _e('Products', 'embedly'); ?></a></li>
-                </ul>
-              </div>
-            </div>
-            <div class="embedly-ui-quicksand-wrapper quicksand-right-wrapper">
-              <div class="embedly-ui-quicksand">
-                <p><?php _e('Filter', 'embedly'); ?></p>
-                <ul class="embedly-actions embedly-action-filter" id="embedly-service-filter">
-                  <li data-value="all"><a class="all active" href="#"><?php _e('All', 'embedly'); ?></a></li>
-                  <li data-value="video"><a class="videos" href="#"><?php _e('Videos', 'embedly'); ?></a></li>
-                  <li data-value="audio"><a class="audio" href="#"><?php _e('Audio', 'embedly'); ?></a></li>
-                  <li data-value="photo"><a class="photos" href="#"><?php _e('Photos', 'embedly'); ?></a></li>
-                  <li data-value="rich"><a class="rich" href="#"><?php _e('Rich Media', 'embedly'); ?></a></li>
-                  <li data-value="product"><a class="products" href="#"><?php _e('Products', 'embedly'); ?></a></li>
-                </ul>
-              </div>
-            </div>
-            <div class="clear"></div>
-            <ul id="services-source" class="embedly-service-generator">
-    <?php foreach($services as $service) { $cnt++; ?>
-              <li class="<?php echo $service->type; ?>" id="<?php echo $service->name; ?>" data-type="<?php echo $service->type; ?>" data-id="id-<?php echo $cnt; ?>">
-                <div class="full-service-wrapper">
-                  <label for="<?php echo $service->name; ?>-checkbox" class="embedly-icon-name"><?php $this->embedly_trim_title($service->displayname); ?></label>
-                  <div class="embedly-icon-wrapper">
-                    <input type="checkbox" id="<?php echo $service->name; ?>-checkbox" name="<?php echo $service->name; ?>"<?php if($service->selected == 1) { echo " checked=checked"; } ?>><img src="<?php echo $service->favicon; ?>" title="<?php echo $service->name; ?>" alt="<?php echo $service->displayname; ?>">
-                  </div>
-                </div>
-              </li>
     <?php } ?>
-            </ul>
-            <div class="clear"></div>
-            <input type="hidden" name="updating_providers" value="1" />
-            <input class="button-primary embedly_submit embedly_bottom_submit" name="submit" type="submit" value="<?php _e('Save Changes', 'embedly'); ?>"/>
-          </form>
-    <?php } ?>
-          <form id="embedly_update_providers_form"  method="POST" action="." >
-            <input class="button-secondary embedly_submit embedly_bottom_secondary" type="submit" name="submit" value="<?php _e('Update Provider List', 'embedly'); ?>"/>
-          </form>
         </div>
       </div>
     </div>
