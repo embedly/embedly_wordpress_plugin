@@ -211,13 +211,14 @@ class WP_Embedly {
 
     //Post page actions
     // NEW:
+
+    // this may need to be wp_head based on what art mentioned.
     add_action('admin_head', 'embedly_add_embed_button');
     add_action('admin_head', 'embedly_footer_widgets');
     add_filter('tiny_mce_before_init', 'embedly_tinymce_settings');
 
-    // this can add the icon via css if nec., when we're ready -> standard is
-    // using dashicons instead of custom images.
-    // add_action('admin_enqueue_scripts', 'embedly_button_css');
+    // this can add the icon via css if nec.
+    add_action('admin_enqueue_scripts', 'embedly_button_css');
 
     // END NEW
   }
