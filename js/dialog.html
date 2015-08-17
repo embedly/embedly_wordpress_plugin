@@ -13,8 +13,22 @@
              }
             })(window, document);
         </script>
+        <script>
+            window.onload = function() {
+                // params come from windowManager.open() called in embedly-button.js
+                var params = top.tinymce.activeEditor.windowManager.getParams();
+                var cardtag = document.getElementById('cardholder')
+                cardtag.innerHTML = params.card.href;
+                cardtag.setAttribute('href', params.card.href);
+                cardtag.setAttribute('data-card-chrome', params.card.chrome);
+                cardtag.setAttribute('data-card-controls', params.card.controls);
+            }
+        </script>
     </head>
     <body>
-        <div class='cardholder'><a class="embedly-card" href="https://www.youtube.com/watch?v=gnRbXn4-Yis" data-card-chrome="1" data-card-controls="0"></a></div>
+        <blockquote class="embedly-card" >
+         	 	<h4><a id="cardholder" data-card-chrome="" data-card-controls="" href=""></a></h4>
+ 	 	</blockquote>
+        <!-- <a id="cardholder" class="embedly-card" href="" data-card-chrome="" data-card-controls=""></a> -->
     </body>
 </html>
