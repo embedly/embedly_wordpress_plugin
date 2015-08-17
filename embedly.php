@@ -168,6 +168,8 @@ JS;
   return $init;
 }
 
+
+
 /**
  * Embedly WP Class
  */
@@ -220,7 +222,15 @@ class WP_Embedly {
     // this can add the icon via css if nec.
     add_action('admin_enqueue_scripts', 'embedly_button_css');
 
+    // sends the api_key to the tinyMCE jquery ajax call
+    add_action('wp_ajax_embedly_get_api_key', array($this, 'embedly_get_api_key'));
+
     // END NEW
+  }
+
+  function embedly_get_api_key() {
+      echo $this->embedly_options['key'];
+      wp_die(); // required to return response
   }
 
   /**
