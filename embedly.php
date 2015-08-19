@@ -225,9 +225,10 @@ class WP_Embedly
             $protocol = is_ssl() ? 'https' : 'http';
             wp_enqueue_style('embedly_admin_styles', EMBEDLY_URL . '/css/embedly-admin.css');
             wp_enqueue_style('google_fonts', $protocol . '://fonts.googleapis.com/css?family=Cabin:400,600');
-            // wp_enqueue_script('embedly_admin_scripts', EMBEDLY_URL . '/js/embedly.js', array(
-            //     'jquery'
-            // ), '1.0', true);
+            // controls some of the functionality of the settings page, will need to go through embedly.js at some point
+            wp_enqueue_script('embedly_admin_scripts', EMBEDLY_URL . '/js/embedly.js', array(
+                'jquery'
+            ), '1.0', true);
         }
         return;
     }
@@ -451,6 +452,17 @@ class WP_Embedly
                       _e("Lost your key?", 'embedly');
                       ?></a></span>
                     <div class="embedly-input-wrapper">
+
+                    <a href="#" class="embedly-lock-control embedly-unlocked" data-unlocked="<?php
+                        _e('Lock this field to prevent editing.', 'embedly');
+                        ?>" data-locked="<?php
+                        _e('Unlock to edit this field.', 'embedly');
+                        ?>" title=""><?php
+                        if(isset($keyValid) && $keyValid){
+                            _e('Unlock to edit this field.', 'embedly');
+                        }else{
+                            _e('Lock this field to prevent editing.', 'embedly');} ?></a>
+
                       <a href="#" class="embedly-lock-control embedly-unlocked" data-unlocked="<?php
                         _e('Lock this field to prevent editing.', 'embedly');
                         ?>" data-locked="<?php
@@ -462,6 +474,7 @@ class WP_Embedly
                             _e('Lock this field to prevent editing.', 'embedly');
                         }
                         ?></a>
+
                       <input <?php
                         if (isset($keyValid) && $keyValid) {
                             echo 'readonly="readonly" ';
