@@ -91,12 +91,12 @@
                             chrome_value = e.data.chromeless ? '0' : '1'
 
                             // eventually get a nicer placeholder?
-                            card_pre = '&nbsp;<blockquote class="embedly-card"><h7>' + e.data.href '<a '
-                            card_key = ' data-card-key="' + key + '"'
-                            card_href = ' href="' + e.data.href + '"'
-                            card_chrome = ' data-card-chrome="' + chrome_value + '"'
-                            card_share = ' data-card-controls="' + share_value + '"'
-                            card_post = '</a></h7></blockquote>&nbsp;'
+                            card_pre = '&nbsp;<blockquote class="embedly-card"><h7>' + e.data.href + '<a ';
+                            card_key = ' data-card-key="' + key + '"';
+                            card_href = ' href="' + e.data.href + '"';
+                            card_chrome = ' data-card-chrome="' + chrome_value + '"';
+                            card_share = ' data-card-controls="' + share_value + '"';
+                            card_post = '</a></h7><h4>embedly card</h4></blockquote>&nbsp;';
 
                             card = card_pre + card_href + card_chrome + card_share + card_key + card_post
                             console.log(card)
