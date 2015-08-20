@@ -110,17 +110,40 @@ class WP_Embedly
 
 
         // Do we need these to get platform.js to load?
-
         // add_action('wp_head', array(
         //     $this,
         //     'embedly_platform_javascript'
         // ), 0);
-        // add_action('init', array($this, 'embedly_addbuttons'));
 
-        // add_action('admin_head', array(
+        // add_action('wp_enqueue_scripts', array(
         //     $this,
-        //     'embedly_footer_widgets'
+        //     'test_global_injection'
         // ));
+
+        // interesting note here..
+        // by injecting platform into the footer, i believe it's overriding
+        // the attempt to create a new platform from the card, which allows us
+        // to maintain a hook to embedly('default'). if we take out all platform
+        // injection on our end, then the following embedly_global_settings injection
+        // fails because it doesn't have a local reference to platform.
+        add_action('admin_head', array(
+            $this,
+            'embedly_footer_widgets'
+        ));
+        add_action('wp_head', array(
+            $this,
+            'embedly_footer_widgets'
+        ));
+
+        // injects global settings script into admin/wp_headers
+        add_action('wp_head', array(
+            $this,
+            'embedly_global_settings'
+        ));
+        add_action('admin_head', array(
+            $this,
+            'embedly_global_settings'
+        ));
 
         // action notifies user on admin menu if they don't have a key
         add_action( 'admin_menu', array(
@@ -129,6 +152,8 @@ class WP_Embedly
         ));
 
         //////////////////// BEGIN BUTTON STUFF
+
+        // add_action('init', array($this, 'embedly_addbuttons'));
 
         // Turn the button on
         // this may need to be wp_head based on what art mentioned.
@@ -150,20 +175,75 @@ class WP_Embedly
         // ));
 
         //////////////////// END BUTTON STUFF
-
         // action to make embed.ly the sole provider of embeds
         add_action('plugins_loaded', array(
             $this,
             'add_embedly_providers'
         ));
+
+        // jquery ajax handler for global settings on cards
+        // add_action( 'wp_ajax_nopriv_embedly_get_global_card_settings', array(
+        //     $this,
+        //     'embedly_get_global_card_settings'
+        // ));
+        // add_action('wp_ajax_embedly_get_global_card_settings', array(
+        //     $this,
+        //     'embedly_get_global_card_settings'
+        // ));
+
         // END NEW
     }
 
-    function embedly_get_api_key()
-    {
-        echo $this->embedly_options['key'];
-        wp_die(); // required to return response
+    function embedly_global_settings() {
+        // testing for now
+        $chrome = 0;
+        $controls = 0; #shareable
+        $key = $this->embedly_options['key'];
+
+        echo "
+        <script>
+        // testing out defaults..
+        (function(w, d) {
+            w.embedly('defaults', {
+                cards: {
+                    chrome: " . $chrome . ",
+                    controls: " . $controls . ",
+                    key: '" . $key . "',
+                }
+            });
+        })(window, document);
+        </script>
+     ";
     }
+
+    // function test_global_injection() {
+    //     wp_register_script('card_injection', plugins_url('/js/globals.js', __FILE__),
+    //         array('jquery'));
+    //     wp_localize_script('card_injection', 'myajax', array('ajaxurl' => admin_url('admin-ajax.php')));
+    //     wp_enqueue_script('card_injection');
+    // }
+
+    /**
+    *   endpoint for ajax from front end for global settings. Call like this:
+    *   jQuery.post(ajaxurl,{ 'action': 'embedly_get_global_card_settings',}, function(response) {...});
+    **/
+    // function embedly_get_global_card_settings()
+    // {
+    //     echo json_encode(array(
+    //         'api_key' => $this->embedly_options['key'],
+    //         'chrome' => $this->embedly_options['chrome'],
+    //         'social_buttons' => $this->embedly_options['shareable']
+    //     ));
+    //
+    //     wp_die();
+    // }
+
+    // ajax test for api key to anywhere with ajaxurl in context
+    // function embedly_get_api_key()
+    // {
+    //     echo $this->embedly_options['key'];
+    //     wp_die(); // required to return response
+    // }
 
     /**
      * Load plugin translation
@@ -246,11 +326,11 @@ class WP_Embedly
     /**
      * Enqueue platform.js to post for cards.
      **/
-    function embedly_platform_javascript()
-    {
-        $protocol = is_ssl() ? 'https' : 'http';
-        wp_enqueue_script('embedly-platform', $protocol . '://cdn.embedly.com/widgets/platform.js');
-    }
+    // function embedly_platform_javascript()
+    // {
+    //     $protocol = is_ssl() ? 'https' : 'http';
+    //     wp_enqueue_script('embedly-platform', $protocol . '://cdn.embedly.com/widgets/platform.js');
+    // }
 
 
     /**
@@ -260,9 +340,13 @@ class WP_Embedly
     {
         # if user entered key, override providers, else, leave alone, for now.
         if (!empty($this->embedly_options['key'])) {
-
+            // delete all current oembed providers
             add_filter('oembed_providers', create_function('', 'return array();'));
+
+            // we provide for everyone
             wp_oembed_add_provider('#.*#i', 'https://api.embedly.com/1/card?key=' . $this->embedly_options['key'], true);
+
+            // except twitter
             wp_oembed_add_provider('#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i', 'https://api.twitter.com/1/statuses/oembed.{format}', true);
         }
     }
@@ -317,7 +401,8 @@ class WP_Embedly
     // injects platform into the wordpress page, not needed if we get it othwerise
     function embedly_footer_widgets()
     {
-        echo "<script>
+        echo "
+        <script>
       (function(w, d){
        var id='embedly-platform', n = 'script';
        if (!d.getElementById(id)){
@@ -349,6 +434,17 @@ class WP_Embedly
        }
    }
 
+   /**
+   * update embedly_options with saved options/key
+   **/
+   function embedly_save_global_settings($key, $chrome, $shareable)
+   {
+       $this->embedly_options['key'] = $key;
+       $this->embedly_options['chrome'] = $chrome;
+       $this->embedly_options['controls'] = $shareable;
+       update_option('embedly_settings', $this->embedly_options);
+       $this->embedly_options = get_option('embedly_settings');
+   }
 
     /**
      * The Admin Page.
@@ -398,6 +494,7 @@ class WP_Embedly
             $keyValid = true;
         }
 
+        // some scaffolding work for the new design.
         ?>
         <div class="embedly-wrap">
           <div class="embedly-ui">
@@ -407,6 +504,87 @@ class WP_Embedly
                   <a class="embedly-ui-logo" href="http://embed.ly" target="_blank"><?php
                     _e('Embedly', 'embedly');
                     ?></a>
+                </div>
+            </div>
+        </div>
+            <div class="embedly-analytics">
+                <ul>
+
+                    <li><h1>10</h1>People are actively viewing your embeds.
+                    <input class="button-primary embedly_view_realtime" name="View Realtime" type="submit" value="<?php
+                      _e('View Realtime', 'embedly');
+                      ?>"/>
+                    </li>
+
+                    <li><h1>120</h1>People have viewed an embed in the last week.
+                    <input class="button-primary embedly_view_historical" name="View Historical" type="submit" value="<?php
+                      _e('View Historical', 'embedly');
+                      ?>"/>
+                    </li>
+                </ul>
+            </div>
+            <div class="embedly-default-card-settings">
+                <ul>
+                <h3>Advanced Options</h3>
+                <li><input type="checkbox" /> Minimal Design</li>
+                <li><input type="checkbox" /> Social Buttons</li>
+            </div>
+            <div class="embedly-api-key-input-saved">
+                Embedly Key
+                <input <?php
+                  if (isset($keyValid) && $keyValid) {
+                      echo 'readonly="readonly" ';
+                  }
+                  ?>id="embedly_key" placeholder="<?php
+                  _e('Enter your API Key', 'embedly');
+                  ?>" name="embedly_key" type="text" class="<?php
+
+                  ?>embedly_key_input" <?php
+                  if (!empty($this->embedly_options['key'])) {
+                      echo 'value="' . $this->embedly_options['key'] . '"';
+                  }
+                  ?> />
+            </div>
+        </div>
+
+
+          <div class="embedly-ui">
+            <div class="embedly-ui-header-outer-wrapper">
+              <div class="embedly-ui-header-wrapper">
+                <div class="embedly-ui-header">
+                </div>
+            </div>
+        </div>
+            <div class="embedly-api-key-input-new">
+                <input <?php
+                  ?>id="embedly_key" placeholder="<?php
+                  _e('Enter your API Key', 'embedly');
+                  ?>" name="embedly_key" type="text" class="<?php
+                  ?>embedly_key_input" <?php
+                  if (!empty($this->embedly_options['key'])) {
+                      echo 'value="' . $this->embedly_options['key'] . '"';
+                  }
+                  ?> />
+                  <input class="button-primary embedly_view_historical" name="Submit" type="submit" value="<?php
+                    _e('Submit', 'embedly');
+                  ?>"/>
+            </div>
+
+            <div class="embedly-sign-up-hero-text">
+                In order to use the Embedly Wordpress Plugin you need to sign up for an API Key.
+                Don't worry, it takes less than 2 minutes.
+            </div>
+            <div class="embedly-create-account-btn-wrap">
+                <input class="button-primary embedly_view_historical" name="Create Account" type="submit" value="<?php
+                  _e('Create Account', 'embedly');
+                ?>"/>
+          </div>
+
+<!-- OLD EMBEDLY KEY ENTRY BOX  -->
+          <div class="embedly-ui">
+            <div class="embedly-ui-header-outer-wrapper">
+              <div class="embedly-ui-header-wrapper">
+                <div class="embedly-ui-header">
                 </div>
               </div>
             </div>
@@ -514,7 +692,6 @@ class WP_Embedly
               }
               ?>
           </div>
-        </div>
         </div>
         <?php
     }
