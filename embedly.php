@@ -45,6 +45,11 @@ if (!defined('EMBEDLY_DIR')) {
 if (!defined('EMBEDLY_URL')) {
     define('EMBEDLY_URL', WP_PLUGIN_URL . '/embedly_wordpress_plugin');
 }
+if (!defined('EMBEDLY_BASE_URI')) {
+    define('EMBEDLY_BASE_URI', 'https://api.embedly.com/1/card?');
+}
+
+
 
 /**
  * Embedly WP Class
@@ -66,12 +71,9 @@ class WP_Embedly
         self::$instance = $this;
 
         $this->embedly_options = array(
-            'table' => $wpdb->prefix . 'embedly_providers',
             'active' => true,
             'key' => '',
-            'chrome' => false,
-            'controls' => true,
-            'dark' => false,
+            'card_chrome' => false,
         );
 
         //i18n
@@ -85,12 +87,6 @@ class WP_Embedly
 
         //Update options from database
         $this->embedly_options = get_option('embedly_settings');
-
-        //Activate/De-activate Embedly Hooks
-        // register_activation_hook(__FILE__, array(
-        //     $this,
-        //     'embedly_activate'
-        // ));
 
         register_deactivation_hook(__FILE__, array(
             $this,
@@ -111,47 +107,42 @@ class WP_Embedly
             'embedly_enqueue_public'
         ));
 
-
-        // Do we need these to get platform.js to load?
-        // add_action('wp_head', array(
-        //     $this,
-        //     'embedly_platform_javascript'
-        // ), 0);
-
-        // add_action('wp_enqueue_scripts', array(
-        //     $this,
-        //     'test_global_injection'
-        // ));
-
         // interesting note here..
         // by injecting platform into the footer, i believe it's overriding
         // the attempt to create a new platform from the card, which allows us
         // to maintain a hook to embedly('default'). if we take out all platform
         // injection on our end, then the following embedly_global_settings injection
         // fails because it doesn't have a local reference to platform.
-        add_action('admin_head', array(
-            $this,
-            'embedly_footer_widgets'
-        ));
-        add_action('wp_head', array(
-            $this,
-            'embedly_footer_widgets'
-        ));
+        // add_action('admin_head', array(
+        //     $this,
+        //     'embedly_footer_widgets'
+        // ));
+        // add_action('wp_head', array(
+        //     $this,
+        //     'embedly_footer_widgets'
+        // ));
 
-        // injects global settings script into admin/wp_headers
-        add_action('wp_head', array(
-            $this,
-            'embedly_global_settings'
-        ));
-        add_action('admin_head', array(
-            $this,
-            'embedly_global_settings'
-        ));
+        // // injects global settings script into admin/wp_headers
+        // add_action('wp_head', array(
+        //     $this,
+        //     'embedly_global_settings'
+        // ));
+        // add_action('admin_head', array(
+        //     $this,
+        //     'embedly_global_settings'
+        // ));
 
         // action notifies user on admin menu if they don't have a key
         add_action( 'admin_menu', array(
             $this,
             'embedly_notify_user_icon'
+        ));
+
+        // action establishes embed.ly the sole provider of embeds
+        // (except those unsupported)
+        add_action('plugins_loaded', array(
+            $this,
+            'add_embedly_providers'
         ));
 
         //////////////////// BEGIN BUTTON STUFF
@@ -179,76 +170,30 @@ class WP_Embedly
 
         //////////////////// END BUTTON STUFF
 
-        // action establishes embed.ly the sole provider of embeds
-        // (except those unsupported)
-        add_action('plugins_loaded', array(
-            $this,
-            'add_embedly_providers'
-        ));
-
-
-        // jquery ajax handler for global settings on cards
-        // add_action( 'wp_ajax_nopriv_embedly_get_global_card_settings', array(
-        //     $this,
-        //     'embedly_get_global_card_settings'
-        // ));
-        // add_action('wp_ajax_embedly_get_global_card_settings', array(
-        //     $this,
-        //     'embedly_get_global_card_settings'
-        // ));
 
         // END NEW
     }
 
-    function embedly_global_settings() {
-        // testing for now
-        $chrome = 0;
-        $controls = 0; #shareable
-        $key = $this->embedly_options['key'];
+    // function embedly_global_settings() {
+    //     // testing for now
+    //     $chrome = $this->embedly_options['chrome'];
+    //     $controls = $this->embedly_options['controls']; #shareable
+    //     $key = $this->embedly_options['key'];
 
-        echo "
-        <script>
-        // testing out defaults..
-        (function(w, d) {
-            w.embedly('defaults', {
-                cards: {
-                    chrome: " . $chrome . ",
-                    controls: " . $controls . ",
-                    key: '" . $key . "',
-                }
-            });
-        })(window, document);
-        </script>
-     ";
-    }
-
-    // function test_global_injection() {
-    //     wp_register_script('card_injection', plugins_url('/js/globals.js', __FILE__),
-    //         array('jquery'));
-    //     wp_localize_script('card_injection', 'myajax', array('ajaxurl' => admin_url('admin-ajax.php')));
-    //     wp_enqueue_script('card_injection');
-    // }
-
-    /**
-    *   endpoint for ajax from front end for global settings. Call like this:
-    *   jQuery.post(ajaxurl,{ 'action': 'embedly_get_global_card_settings',}, function(response) {...});
-    **/
-    // function embedly_get_global_card_settings()
-    // {
-    //     echo json_encode(array(
-    //         'api_key' => $this->embedly_options['key'],
-    //         'chrome' => $this->embedly_options['chrome'],
-    //         'social_buttons' => $this->embedly_options['shareable']
-    //     ));
-    //
-    //     wp_die();
-    // }
-
-    // ajax test for api key to anywhere with ajaxurl in context
-    // function embedly_get_api_key()
-    // {
-    //     echo $this->embedly_options['key'];
-    //     wp_die(); // required to return response
+    //     echo "
+    //     <script>
+    //     // testing out defaults..
+    //     (function(w, d) {
+    //         w.embedly('defaults', {
+    //             cards: {
+    //                 chrome: " . $chrome . ",
+    //                 controls: " . $controls . ",
+    //                 key: '" . $key . "',
+    //             }
+    //         });
+    //     })(window, document);
+    //     </script>
+    //  ";
     // }
 
     /**
@@ -279,8 +224,8 @@ class WP_Embedly
         global $menu;
         if ( empty($this->embedly_options['key']) ) {
             foreach ( $menu as $key => $value ) {
-                // $list .= $menu[$key][0] . ' ';
                 if ($menu[$key][2] == 'embedly') {
+                    // accesses the menu item html
                     $menu[$key][0] .= ' <span class="update-plugins count-1"><span class="plugin-count">!</span></span>';
                     return;
                 }
@@ -297,7 +242,7 @@ class WP_Embedly
         $this->embedly_settings_page = add_menu_page('Embedly', 'Embedly', 'activate_plugins', 'embedly', array(
             $this,
             'embedly_settings_page'
-        ), 'dashicons-align-center');
+        ), 'dashicons-align-center'); // icon looks generally like an embeded card
     }
 
 
@@ -328,33 +273,68 @@ class WP_Embedly
         wp_enqueue_style('embedly_front_end', EMBEDLY_URL . '/css/embedly-frontend.css');
     }
 
-
-    /**
-     * Enqueue platform.js to post for cards.
-     **/
-    // function embedly_platform_javascript()
-    // {
-    //     $protocol = is_ssl() ? 'https' : 'http';
-    //     wp_enqueue_script('embedly-platform', $protocol . '://cdn.embedly.com/widgets/platform.js');
-    // }
-
-
     /**
      * Does the work of adding the Embedly providers to wp_oembed
      **/
     function add_embedly_providers()
     {
-        # if user entered key, override providers, else, leave alone, for now.
+        # if user entered valid key, override providers, else, do nothing
         if (!empty($this->embedly_options['key'])) {
             // delete all current oembed providers
             add_filter('oembed_providers', create_function('', 'return array();'));
-
-            // we provide for everyone
-            wp_oembed_add_provider('#.*#i', 'https://api.embedly.com/1/card?key=' . $this->embedly_options['key'], true);
-
-            // except twitter
+            // except twitter (@cstiteler, this is not working atm because of our .* handle above, need better regex)
             wp_oembed_add_provider('#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i', 'https://api.twitter.com/1/statuses/oembed.{format}', true);
+            $provider_uri = $this->build_uri_with_options();
+
+            throw new Exception($provider_uri);
+
+            wp_oembed_add_provider('#.*#i', $provider_uri, true);
         }
+    }
+
+    function build_uri_with_options()
+    {
+        // can be a global if easier to find
+        $valid_settings = array(
+            'card_controls', # boolean
+            'card_chrome', # boolean
+            'card_theme', # valid: 'dark' or 'light'
+            'card_width', # valid: int
+            'card_align', # valid: 'left', 'right', 'center'
+            );
+
+        // gets the subset of valid_settings that are actually set in plugin
+        $set_options = array();
+        foreach ($valid_settings as $setting) {
+            // $set_options[] = $setting;
+            if(isset($this->embedly_options[$setting])) {
+                $set_options[] = $setting;
+            }
+        }
+
+        // option params is a list of url_param => value
+        // create a valid $key => $value pair for the url string
+        $option_params = array(); # example: '&card_theme' => 'dark'
+        foreach ($set_options as $option) {
+            $value = $this->embedly_options[$option];
+            if ( is_bool($value) ) {
+                $param = '&' . $option . '=' . ($value ? '1' : '0');
+                $option_params[$option] = $param;
+            }
+            else {
+                $param = '&' . $option . '=' . $value;
+                $option_params[$option] = $param;
+            }
+        }
+
+        $base = EMBEDLY_BASE_URI;
+        $key = 'key=' . $this->embedly_options['key']; // first param
+        $uri = $base . $key;
+        foreach($option_params as $key => $value) {
+            $uri .= $value; # value is the actual uri parameter, at this point
+        }
+
+        return $uri;
     }
 
     function embedly_add_embed_button()
@@ -441,29 +421,16 @@ class WP_Embedly
    }
 
 
-   /**
-   * update embedly_options with a given key: value pair
-   **/
-   function embedly_save_option($key, $value)
-   {
+    /**
+    * update embedly_options with a given key: value pair
+    **/
+    function embedly_save_option($key, $value)
+    {
        $this->embedly_options[$key] = $value;
        update_option('embedly_settings', $this->embedly_options);
        $this->embedly_options = get_option('embedly_settings');
-   }
+    }
 
-
-   // /**
-   // * replaced with embedly_save_option
-   // * update embedly_options with saved options/key
-   // **/
-   // function embedly_save_global_settings($key, $chrome, $shareable)
-   // {
-   //     $this->embedly_options['key'] = $key;
-   //     $this->embedly_options['chrome'] = $chrome;
-   //     $this->embedly_options['controls'] = $shareable;
-   //     update_option('embedly_settings', $this->embedly_options);
-   //     $this->embedly_options = get_option('embedly_settings');
-   // }
 
     /**
      * The Admin Page.
