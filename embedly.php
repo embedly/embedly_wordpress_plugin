@@ -68,7 +68,10 @@ class WP_Embedly
         $this->embedly_options = array(
             'table' => $wpdb->prefix . 'embedly_providers',
             'active' => true,
-            'key' => ''
+            'key' => '',
+            'chrome' => false,
+            'controls' => true,
+            'dark' => false,
         );
 
         //i18n
@@ -175,11 +178,14 @@ class WP_Embedly
         // ));
 
         //////////////////// END BUTTON STUFF
-        // action to make embed.ly the sole provider of embeds
+
+        // action establishes embed.ly the sole provider of embeds
+        // (except those unsupported)
         add_action('plugins_loaded', array(
             $this,
             'add_embedly_providers'
         ));
+
 
         // jquery ajax handler for global settings on cards
         // add_action( 'wp_ajax_nopriv_embedly_get_global_card_settings', array(
@@ -434,17 +440,30 @@ class WP_Embedly
        }
    }
 
+
    /**
-   * update embedly_options with saved options/key
+   * update embedly_options with a given key: value pair
    **/
-   function embedly_save_global_settings($key, $chrome, $shareable)
+   function embedly_save_option($key, $value)
    {
-       $this->embedly_options['key'] = $key;
-       $this->embedly_options['chrome'] = $chrome;
-       $this->embedly_options['controls'] = $shareable;
+       $this->embedly_options[$key] = $value;
        update_option('embedly_settings', $this->embedly_options);
        $this->embedly_options = get_option('embedly_settings');
    }
+
+
+   // /**
+   // * replaced with embedly_save_option
+   // * update embedly_options with saved options/key
+   // **/
+   // function embedly_save_global_settings($key, $chrome, $shareable)
+   // {
+   //     $this->embedly_options['key'] = $key;
+   //     $this->embedly_options['chrome'] = $chrome;
+   //     $this->embedly_options['controls'] = $shareable;
+   //     update_option('embedly_settings', $this->embedly_options);
+   //     $this->embedly_options = get_option('embedly_settings');
+   // }
 
     /**
      * The Admin Page.
