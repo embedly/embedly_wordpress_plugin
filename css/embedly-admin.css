@@ -343,6 +343,14 @@ input.embedly_bottom_secondary {
   bottom:45px;
   right:50px;
 }
+a.create_account_button {
+    -webkit-appearance: button;
+    -moz-appearance: button;
+    appearance: button;
+
+    text-decoration: none;
+    color: initial;
+}
 div.embedly-updated, div.embedly-error{margin: 5px 0 15px;padding:0 0.6em;border-radius: 3px;border-style: solid;border-width: 1px;}
 div.embedly-error{background-color: #ffebe8;border-color: #cc0000;}
 div.embedly-updated{background-color: #ffffe0;border-color: #e6db55;}
