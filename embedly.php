@@ -50,7 +50,7 @@ if (!defined('EMBEDLY_BASE_URI')) {
 }
 
 // DEBUGGING
-$EMBEDLY_DEBUG = false;
+$EMBEDLY_DEBUG = true;
 
 
 /**
@@ -111,31 +111,6 @@ class WP_Embedly
             'embedly_enqueue_public'
         ));
 
-        // interesting note here..
-        // by injecting platform into the footer, i believe it's overriding
-        // the attempt to create a new platform from the card, which allows us
-        // to maintain a hook to embedly('default'). if we take out all platform
-        // injection on our end, then the following embedly_global_settings injection
-        // fails because it doesn't have a local reference to platform.
-        // add_action('admin_head', array(
-        //     $this,
-        //     'embedly_footer_widgets'
-        // ));
-        // add_action('wp_head', array(
-        //     $this,
-        //     'embedly_footer_widgets'
-        // ));
-
-        // // injects global settings script into admin/wp_headers
-        // add_action('wp_head', array(
-        //     $this,
-        //     'embedly_global_settings'
-        // ));
-        // add_action('admin_head', array(
-        //     $this,
-        //     'embedly_global_settings'
-        // ));
-
         // action notifies user on admin menu if they don't have a key
         add_action( 'admin_menu', array(
             $this,
@@ -148,57 +123,7 @@ class WP_Embedly
             $this,
             'add_embedly_providers'
         ));
-
-        //////////////////// BEGIN BUTTON STUFF
-
-        // add_action('init', array($this, 'embedly_addbuttons'));
-
-        // Turn the button on
-        // this may need to be wp_head based on what art mentioned.
-        // add_action('admin_head', array(
-        //     $this,
-        //     'embedly_add_embed_button'
-        // ));
-
-        // add the button's css image
-        // add_action('admin_enqueue_scripts', array(
-        //     $this,
-        //     'embedly_button_css'
-        // ));
-
-        // sends the api_key to the tinyMCE jquery ajax call
-        // add_action('wp_ajax_embedly_get_api_key', array(
-        //     $this,
-        //     'embedly_get_api_key'
-        // ));
-
-        //////////////////// END BUTTON STUFF
-
-
-        // END NEW
     }
-
-    // function embedly_global_settings() {
-    //     // testing for now
-    //     $chrome = $this->embedly_options['chrome'];
-    //     $controls = $this->embedly_options['controls']; #shareable
-    //     $key = $this->embedly_options['key'];
-
-    //     echo "
-    //     <script>
-    //     // testing out defaults..
-    //     (function(w, d) {
-    //         w.embedly('defaults', {
-    //             cards: {
-    //                 chrome: " . $chrome . ",
-    //                 controls: " . $controls . ",
-    //                 key: '" . $key . "',
-    //             }
-    //         });
-    //     })(window, document);
-    //     </script>
-    //  ";
-    // }
 
     /**
      * Load plugin translation
@@ -286,7 +211,7 @@ class WP_Embedly
         if (!empty($this->embedly_options['key'])) {
             // delete all current oembed providers
             add_filter('oembed_providers', create_function('', 'return array();'));
-            // except twitter (@cstiteler, this is not working atm because of our .* handle above, need better regex)
+            // except twitter (@cstiteler: test that this works for twitter)
             wp_oembed_add_provider('#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i', 'https://api.twitter.com/1/statuses/oembed.{format}', true);
             $provider_uri = $this->build_uri_with_options();
             wp_oembed_add_provider('#.*#i', $provider_uri, true);
@@ -295,7 +220,6 @@ class WP_Embedly
 
     function build_uri_with_options()
     {
-        // can be a global if easier to find
         $valid_settings = array(
             'card_controls', # boolean
             'card_chrome', # boolean
@@ -338,75 +262,6 @@ class WP_Embedly
         return $uri;
     }
 
-    /**
-    * Adds the button to the post/page views on the rich editor window
-    **/
-    function embedly_add_embed_button()
-    {
-        global $typenow;
-
-        if (!current_user_can('edit_posts') && !current_user_can('edit_pages')) {
-            return;
-        }
-
-        if (!in_array($typenow, array(
-            'post',
-            'page'
-        )))
-            return;
-
-        if (get_user_option('rich_editing') == 'true') {
-            add_filter("mce_external_plugins", array(
-                $this,
-                'embedly_add_tinymce_plugin'
-            ));
-            add_filter('mce_buttons', array(
-                $this,
-                'embedly_register_embed_button'
-            ));
-        }
-
-    }
-
-    /**
-    *
-    **/
-    function embedly_add_tinymce_plugin($plugin_array)
-    {
-        $plugin_array['embedly_embed_button'] = plugins_url('js/embedly-button.js', __FILE__);
-        return $plugin_array;
-    }
-
-
-    function embedly_register_embed_button($buttons)
-    {
-        array_push($buttons, "embedly_embed_button");
-        return $buttons;
-    }
-
-
-    function embedly_button_css()
-    {
-        wp_enqueue_style('embedly_button.css', plugins_url('css/embedly_button.css', __FILE__));
-    }
-
-
-    // injects platform into the wordpress page, not needed if we get it othwerise
-    function embedly_footer_widgets()
-    {
-        echo "
-        <script>
-      (function(w, d){
-       var id='embedly-platform', n = 'script';
-       if (!d.getElementById(id)){
-         w.embedly = w.embedly || function() {(w.embedly.q = w.embedly.q || []).push(arguments);};
-         var e = d.createElement(n); e.id = id; e.async=1;
-         e.src = ('https:' === document.location.protocol ? 'https' : 'http') + '://cdn.embedly.com/widgets/platform.js';
-         var s = d.getElementsByTagName(n)[0];
-         s.parentNode.insertBefore(e, s);
-       }
-     })(window, document);</script>";
-    }
 
     /**
     * Function to check if account has specific features enabled
@@ -519,6 +374,20 @@ class WP_Embedly
                     <?php
                     global $EMBEDLY_DEBUG;
                     if( isset($EMBEDLY_DEBUG) && ($EMBEDLY_DEBUG) ) { ?>
+
+                        <ul>
+                            <li><h2 class="dashicons-before dashicons-align-none"></h2></li>
+                            <li>
+                                <div class="dashicon-reverse">
+                                    <h2><span class="dashicons dashicons-align-none embedly-img-reverse"></span></h2>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <h2 class="dashicons-before dashicons-align-none embedly-img-reverse"></h2>
+
+
+
                         <h3>
                         MODAL FOR EXISTING USERS
                         <p>
