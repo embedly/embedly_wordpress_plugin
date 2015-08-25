@@ -350,7 +350,6 @@ div.dashicon-reverse {
   -o-transform: scale(-1, 1);
   -ms-transform: scale(-1, 1);
   transform: scale(-1, 1);
-  float: left;
 }
 a.create_account_button {
     -webkit-appearance: button;
@@ -359,6 +358,49 @@ a.create_account_button {
     text-decoration: none;
     color: initial;
 }
+
+
+
+/* TESTING */
+.embedly-di .dashicons {
+    margin:0px;
+    /*line-height: 1;*/
+    padding:3px;
+    vertical-align:middle;
+    color:#000000;
+}
+.embedly-di .dashicons:before {
+    -webkit-font-smoothing: antialiased;
+    font:400 20px/1 dashicons;
+
+}
+.embedly-di .dashicons.di-center {
+    margin:0;
+}
+.embedly-di .dashicons.di-center:before {
+    content:"\f134"
+}
+.embedly-di .dashicons.di-none:before {
+    content:"\f138"
+}
+.embedly-di .dashicons.di-reverse {
+  -moz-transform: scale(-1, 1);
+  -webkit-transform: scale(-1, 1);
+  -o-transform: scale(-1, 1);
+  -ms-transform: scale(-1, 1);
+  transform: scale(-1, 1);
+}
+
+ul.align-select {
+  list-style-type: none;
+  margin: 2000;
+  padding: 0;
+}
+ul.align-select li {
+  display: inline;
+}
+
+/* END TESTING  */
 div.embedly-updated, div.embedly-error{margin: 5px 0 15px;padding:0 0.6em;border-radius: 3px;border-style: solid;border-width: 1px;}
 div.embedly-error{background-color: #ffebe8;border-color: #cc0000;}
 div.embedly-updated{background-color: #ffffe0;border-color: #e6db55;}
