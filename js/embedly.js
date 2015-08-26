@@ -35,6 +35,21 @@ jQuery(document).ready(function($) {
   })();
 
 
+  $('.align-icon').click(function(e) {
+    $(this).children()[0].value = 'checked';
+    $(this).addClass('selected-align-select');
+
+    $.each($(this).parent().siblings(), function(name, obj) {
+      var span = $(obj).children()[0];
+      var hidden = $(span).children()[0];
+      console.log(hidden);
+      hidden.value = 'unchecked';
+      $(span).removeClass('selected-align-select');
+      console.log(hidden);
+    });
+  });
+
+
   if($('#embedly_key').attr('readonly')) {
     $('.embedly-lock-control').removeClass('embedly-unlocked').addClass('embedly-locked');
   }

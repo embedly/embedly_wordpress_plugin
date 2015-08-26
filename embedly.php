@@ -50,7 +50,7 @@ if (!defined('EMBEDLY_BASE_URI')) {
 }
 
 // DEBUGGING
-$EMBEDLY_DEBUG = true;
+$EMBEDLY_DEBUG = false;
 
 /**
  * Embedly WP Class
@@ -142,7 +142,6 @@ class WP_Embedly
             curl_setopt($ch,
                 CURLOPT_URL,
                 "https://narrate.embed.ly/1/series?key=" . $this->embedly_options['key']);
-                // $this->embedly_options['key']);
             //return the transfer as a string
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             // $output contains the output string
@@ -257,35 +256,35 @@ class WP_Embedly
 
     function build_uri_with_options()
     {
-        $valid_settings = array(
-            'card_controls', # boolean
-            'card_chrome', # boolean
-            'card_theme', # valid: 'dark' or 'light'
-            'card_width', # valid: int
-            'card_align', # valid: 'left', 'right', 'center'
-            );
+        // maps local settings key => api param name
+        $settings_map = array(
+            'card_controls' => 'cards_controls',
+            'card_chrome' => 'cards_chrome',
+            'card_theme' => 'cards_theme',
+            'card_width' => 'cards_width',
+            'card_align' => 'cards_align',
+        );
 
-        // gets the subset of valid_settings that are actually set in plugin
+        // gets the subset of settings that are actually set in plugin
         $set_options = array();
-        foreach ($valid_settings as $setting) {
-            // $set_options[] = $setting;
+        foreach ($settings_map as $setting => $api_param) {
             if(isset($this->embedly_options[$setting])) {
-                $set_options[] = $setting;
+                $set_options[$setting] = $api_param;
             }
         }
 
         // option params is a list of url_param => value
-        // create a valid $key => $value pair for the url string
+        // for the url string
         $option_params = array(); # example: '&card_theme' => 'dark'
-        foreach ($set_options as $option) {
+        foreach ($set_options as $option => $api_param) {
             $value = $this->embedly_options[$option];
             if ( is_bool($value) ) {
-                $param = '&' . $option . '=' . ($value ? '1' : '0');
-                $option_params[$option] = $param;
+                $whole_param = '&' . $api_param . '=' . ($value ? '1' : '0');
+                $option_params[$option] = $whole_param;
             }
             else {
-                $param = '&' . $option . '=' . $value;
-                $option_params[$option] = $param;
+                $whole_param = '&' . $api_param . '=' . $value;
+                $option_params[$option] = $whole_param;
             }
         }
 
@@ -334,6 +333,58 @@ class WP_Embedly
        $this->embedly_options = get_option('embedly_settings');
     }
 
+    function embedly_delete_option($key) {
+        unset($this->embedly_options[$key]);
+        update_option('embedly_settings', $this->embedly_options);
+        $this->embedly_options = get_option('embedly_settings');
+    }
+
+
+    /**
+    * handles 'max width' input for card defaults
+    * returns the string corresponding to the correct cards_width
+    * card paramater
+    **/
+    function handle_width_input($input)
+    {
+        // width can be '%' or 'px'
+        // first check if '%',
+        $percent = $this->int_before_substring($input, '%');
+        if ($percent != 0 && $percent <= 100) {
+            return $percent . '%';
+        }
+
+        // try for px:
+        $pixels = $this->int_before_substring($input, 'px');
+        if ($pixels > 0) {
+            return $pixels . 'px';
+        }
+
+        // try solitary int value.
+        $int = intval($input);
+        if ($int > 0) {
+            return $int . 'px';
+        }
+
+        return "";
+    }
+
+    /**
+    * returns valid integer (not inclusive of 0, which indicates failure)
+    * preceding a given token $substring.
+    * given '100%', '%' returns 100
+    * given 'asdf', '%', returns 0
+    **/
+    function int_before_substring($whole, $substring)
+    {
+        $pos = strpos($whole, $substring);
+        if($pos != false) {
+            // get substr up to %
+            $preceding = substr($whole, 0, $pos);
+            return $percent = intval($preceding);
+        }
+    }
+
 
     /**
      * The Admin Page.
@@ -345,9 +396,41 @@ class WP_Embedly
         # Begin processing form data
 
         # Card Defaults
-        if(isset($_POST['embedly_align']) && !empty($_POST['embedly_align'])) {
-            $this->embedly_save_option('card_align', $_POST['embedly_align']);
+
+        #Width:
+        // if width field blank, but option saved, delete
+        if(!isset($_POST['card_width']) && isset($this->embedly_options['card_width'])) {
+            $this->embedly_delete_option('card_width');
         }
+        // if width field is set, try to parse the value
+        // TODO: @cstiteler: warn user if this fails/invalid
+        if(isset($_POST['card_width'])) {
+            $cleaned = $this->handle_width_input($_POST['card_width']);
+            if($cleaned == '') {
+                // eventually make a javascript popup
+                // delete the option (defer to default)
+                $this->embedly_delete_option('card_width');
+            } else {
+                $this->embedly_save_option('card_width', $cleaned);
+            }
+        }
+
+        // for each align selection, if checked, set option to align value
+        if(isset($_POST) && !empty($_POST)) {
+            foreach(
+                array(
+                    'card_align_left' => 'left',
+                    'card_align_center' => 'center',
+                    'card_align_right' => 'right',
+                )
+                as $key => $value)
+            {
+                    if($_POST[$key] == 'checked') {
+                        $this->embedly_save_option('card_align', $value);
+                    }
+            }
+        }
+
         if (isset($_POST['minimal'])) {
             $this->embedly_save_option('card_chrome', $_POST['minimal'] == 'checked' ? false : true );
         }
@@ -357,7 +440,6 @@ class WP_Embedly
         if (isset($_POST['card_dark'])) {
             $this->embedly_save_option('card_theme', $_POST['card_dark'] == 'checked' ? 'dark' : 'light' );
         }
-
         #empty key set when saving
         if (isset($_POST['embedly_key']) && (empty($_POST['embedly_key']) || $_POST['embedly_key'] == __('Please enter your key...', 'embedly'))) {
             $this->embedly_options['key'] = '';
@@ -517,35 +599,40 @@ class WP_Embedly
                                 ?> />Cards for Dark Pages</li>
                               </li>
 
-                            <li>Width <input type="text" placeholder="Responsive"/>
-                            (responsive if left blank)
-                            <!-- TODO: @cstiteler: implement width attr with cleaning -->
+                            <li>
+                                Max Width
+                                <input type="text" name="card_width" placeholder="100%, 300px, etc."/>
+                                (responsive if left blank)
                             </li>
 
-                            <li>
-                            <select name="embedly_align">
-                                <?php
-                                    $align_set = isset($this->embedly_options['card_align']);
-                                ?>
-                                <option value="left" <?php
-                                    if( $align_set ) {
-                                        selected($this->embedly_options['card_align'], 'left' );
-                                    }?>>
-                                    Left
-                                </option>
-                                <option value="center" <?php
-                                    if( $align_set ) {
-                                        selected($this->embedly_options['card_align'], 'center' );
-                                    }?>>
-                                    Center
-                                </option>
-                                <option value="right" <?php
-                                    if( $align_set ) {
-                                        selected($this->embedly_options['card_align'], 'right' );
-                                    }?>>
-                                    Right
-                                </option>
-                            </select></li>
+
+                            <div class="embedly-align-select-container embedly-di">
+                                <ul class="align-select">
+                                    <?php
+                                        $sel = ' selected-align-select "';
+                                        $current_align = 'center'; // default if not set
+                                        if(isset($this->embedly_options['card_align'])) {
+                                            $current_align = $this->embedly_options['card_align'];
+                                        }
+                                    ?>
+                                    <li><span class=
+                                            <?php echo '"dashicons di-none align-icon' . ($current_align == 'left' ? $sel : '"'); ?>
+                                            title="Left">
+                                        <input type='hidden' value='unchecked' name='card_align_left'>
+                                    </span></li>
+                                    <li><span class=
+                                            <?php echo '"dashicons di-center align-icon' . ($current_align == 'center' ? $sel : '"'); ?>
+                                            title="Center">
+                                        <input type='hidden' value='checked' name='card_align_center'>
+                                    </span></li>
+                                    <li><span class=
+                                            <?php echo '"dashicons di-none di-reverse align-icon' . ($current_align == 'right' ? $sel : '"'); ?>
+                                            title="Right">
+                                        <input type='hidden' value='unchecked' name='card_align_right'>
+                                    </span></li>
+                                </ul>
+                            </div>
+
 
                             </ul>
                         </div>

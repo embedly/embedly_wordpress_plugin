@@ -399,6 +399,12 @@ ul.align-select {
 ul.align-select li {
   display: inline;
 }
+span.selected-align-select {
+  outline-width: 2px;
+  outline-style: solid;
+  outline-color: #4DC7E6;
+}
+
 
 /* END TESTING  */
 div.embedly-updated, div.embedly-error{margin: 5px 0 15px;padding:0 0.6em;border-radius: 3px;border-style: solid;border-width: 1px;}
