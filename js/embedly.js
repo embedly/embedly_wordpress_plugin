@@ -42,10 +42,8 @@ jQuery(document).ready(function($) {
     $.each($(this).parent().siblings(), function(name, obj) {
       var span = $(obj).children()[0];
       var hidden = $(span).children()[0];
-      console.log(hidden);
       hidden.value = 'unchecked';
       $(span).removeClass('selected-align-select');
-      console.log(hidden);
     });
   });
 
