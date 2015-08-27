@@ -52,6 +52,7 @@ if (!defined('EMBEDLY_BASE_URI')) {
 // DEBUGGING
 $EMBEDLY_DEBUG = false;
 
+
 /**
  * Embedly WP Class
  */
@@ -62,6 +63,7 @@ class WP_Embedly
     public $embedly_settings_page; //embedly settings page
 
     static $instance; //allows plugin to be called externally without re-constructing
+
 
     /**
      * Register hooks with WP Core
@@ -116,6 +118,7 @@ class WP_Embedly
             $this,
             'embedly_notify_user_icon'
         ));
+        // ajax for analytics data
         add_action('wp_ajax_embedly_analytics_active_viewers', array(
             $this,
             'embedly_ajax_get_active_viewers'
@@ -160,6 +163,7 @@ class WP_Embedly
 
     }
 
+
     /**
      * Load plugin translation
      */
@@ -168,6 +172,7 @@ class WP_Embedly
         load_plugin_textdomain('embedly', false, dirname(plugin_basename(__FILE__)) . '/lang/');
     }
 
+
     /**
      * Deactivation Hook
      **/
@@ -175,6 +180,7 @@ class WP_Embedly
     {
         delete_option('embedly_settings');
     }
+
 
     /**
     * warns user if their key is not set in the settings
@@ -238,6 +244,7 @@ class WP_Embedly
         wp_enqueue_style('embedly_front_end', EMBEDLY_URL . '/css/embedly-frontend.css');
     }
 
+
     /**
      * Does the work of adding the Embedly providers to wp_oembed
      **/
@@ -254,6 +261,10 @@ class WP_Embedly
         }
     }
 
+
+    /**
+    * construct's a oembed endpoint for cards using embedly_options settings
+    **/
     function build_uri_with_options()
     {
         // maps local settings key => api param name
@@ -368,6 +379,7 @@ class WP_Embedly
 
         return "";
     }
+
 
     /**
     * returns valid integer (not inclusive of 0, which indicates failure)
@@ -495,9 +507,6 @@ class WP_Embedly
                     if( isset($EMBEDLY_DEBUG) && ($EMBEDLY_DEBUG) ) { ?>
                         <h4>
                         DEBUGGING:
-
-
-
                         <?php
                             echo "<p>CURRENT URI: " . $this->build_uri_with_options() . "</p>";
                             if( isset($_POST)) {
@@ -535,18 +544,17 @@ class WP_Embedly
                         <div class="embedly-analytics">
                           <ul>
                             <li class="active-viewers">
-                              <h1 class="active-count">0</h1>
+                              <h1 class="active-count">-</h1>
                               People are actively viewing your embeds.
-                              <a href="" target="_blank" class="button-primary view-realtime-button">
-                              <?php _e('View Realtime', 'embedly')?>
-                              </a>
+
+                              <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly');"
+                                value="<?php _e('View Realtime', 'embedly')?>"/>
                             </li>
                             <li>
-                              <h1>120</h1>
+                              <h1 class="weekly-count">-</h1>
                               People have viewed an embed in the last week.
-                              <a href="" target="_blank" class="button-primary view-historical-button">
-                              <?php _e('View Historical', 'embedly')?>
-                              </a>
+                              <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly');"
+                               value="<?php _e('View Historical', 'embedly')?>"/>
                             </li>
                           </ul>
                         </div>
@@ -636,9 +644,9 @@ class WP_Embedly
                           </div>
                         </div>
 
-
+                        <!-- Saving Settings Button -->
                         <div class="embedly-save-settings-input">
-                          <input class="button-primary embedly_submit embedly_top_submit" name="submit" type="submit" value="<?php
+                          <input class="embedly-button" name="submit" type="submit" value="<?php
                             _e('Save', 'embedly');
                             ?>"/>
                         </div>
@@ -684,11 +692,13 @@ class WP_Embedly
                         _e('Submit', 'embedly');?>"/>
                     </div>
                   </div>
+
+                  <!-- Create an embed.ly account -->
                   <div class="embedly-create-account-btn-wrap">
-                    <a href="https://app.embed.ly/login" target="_blank" class="button-primary create_account_button">
-                    <?php _e('Create Account', 'embedly')?>
-                    </a>
+                    <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly/signup');"
+                      value="<?php _e('Create Account', 'embedly')?>"/>
                   </div>
+
                 </form>
               </div>
             </div>
