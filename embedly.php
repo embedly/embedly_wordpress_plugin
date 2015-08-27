@@ -73,6 +73,7 @@ class WP_Embedly
         global $wpdb;
         self::$instance = $this;
 
+        // init settings array
         $this->embedly_options = array(
             'active' => true,
             'key' => '',
@@ -157,7 +158,7 @@ class WP_Embedly
             wp_die();
         } else {
             // there was some key error
-            echo "{active: 'N/A'}";
+            echo "{active: '-'}";
             wp_die();
         }
 
@@ -316,21 +317,26 @@ class WP_Embedly
     **/
    function embedly_acct_has_feature($feature, $key = false)
    {
-       if ($key) {
+        if ($key) {
            $result = wp_remote_retrieve_body(wp_remote_get(
             'http://api.embed.ly/1/feature?feature=' .
             $feature .
             '&key=' .
             $key));
-       } else {
+        } else {
            return false;
-       }
-       $feature_status = json_decode($result);
-       if ($feature_status) {
+        }
+
+        $error_code = 'error_code';
+        $feature_status = json_decode($result);
+        if (isset($feature_status->$error_code)) {
+            return false;
+        }
+        if ($feature_status) {
            return $feature_status->$feature;
-       } else {
+        } else {
            return false;
-       }
+        }
    }
 
 
@@ -407,10 +413,13 @@ class WP_Embedly
         ######## BEGIN PROCESSING ALL FORM DATA #########
 
         #Card Width:
-        // if width field blank, but option saved, delete
-        if(!isset($_POST['card_width']) && isset($this->embedly_options['card_width'])) {
+        // if user deleted width field and then clicked save, delete the card option.
+        // otherise leave it if, say, the page was just refreshed.
+        if(isset($_POST) && !empty($_POST) &&
+            !isset($_POST['card_width']) && isset($this->embedly_options['card_width'])) {
             $this->embedly_delete_option('card_width');
         }
+
         // if width field is set, try to parse the value
         // TODO: @cstiteler: warn user if this fails/invalid
         if(isset($_POST['card_width'])) {
@@ -529,7 +538,7 @@ class WP_Embedly
                         </h4>
             <?php } ?>
                 <!-- END DELETE FOR PRODUCTION -->
-                  <form id="embedly_key_form" method="POST" action="">
+                <form id="embedly_key_form" method="POST" action="">
                   <div class="embedly-ui-header-outer-wrapper">
                     <div class="embedly-ui-header-wrapper">
                       <div class="embedly-ui-header">
@@ -539,6 +548,29 @@ class WP_Embedly
                       </div>
                     </div>
                   </div>
+
+                  <!-- Notifications -->
+                  <?php
+                    if (isset($errorMessage)) { ?>
+                  <div class="embedly-error embedly-message" id="embedly-error">
+                    <p><strong><?php echo $errorMessage;?></strong></p>
+                  </div>
+
+                  <?php } elseif (isset($successMessage) && !isset($errorMessage)) { ?>
+                  <div class="embedly-updated embedly-message" id="embedly-success">
+                    <p><strong><?php echo $successMessage; ?></strong></p>
+                  </div>
+                  <?php } ?>
+
+                  <div class="embedly-error embedly-ajax-message embedly-message" id="embedly-ajax-error">
+                    <p><strong><?php _e('Something went wrong. Please try again later.', 'embedly'); ?></strong></p>
+                  </div>
+
+                  <div class="embedly-updated embedly-ajax-message embedly-message" id="embedly-ajax-success">
+                    <p><strong><?php _e("We have sync'd your providers list with our API. Enjoy!", 'embedly'); ?></strong></p>
+                  </div>
+                  <!-- END Notifications -->
+
                     <div class="embedly-ui-key-wrap">
                       <div class="embedly_key_form embedly-ui-key-form">
                         <div class="embedly-analytics">
@@ -655,182 +687,76 @@ class WP_Embedly
                   </form>
                 <?php
               } else {  ?>
-
-
-            <!-- MODAL FOR NEW ACCOUNTS -->
-                 class="embedly-ui">
-            <div class="embedly-ui-header-outer-wrapper">
-              <div class="embedly-ui-header-wrapper">
-                <div class="embedly-ui-header">
-                  <a class="embedly-ui-logo" href="http://embed.ly" target="_blank">
-                  <?php _e('Embedly', 'embedly'); ?>
-                  </a>
-                </div>
-              </div>
-            </div>
-            <div class="embedly-ui-key-wrap">
-              <div class="embedly_key_form embedly-ui-key-form">
-                <div class="embedly-sign-up-hero-text">
-                  <h2 class="section-label">
-                    <?php _e("In order to use the Embedly Wordpress Plugin you need to sign up for an API Key." .
-                      "Don't worry, it takes less than 2 minutes.", 'embedly');?>
-                  </h2>
-                </div>
-                <form id="embedly_key_form" method="POST" action="">
-                  <div class="embedly-input-wrapper">
-                    <div class="embedly-api-key-input">
-                      <input <?php
-                        ?>id="embedly_key" placeholder="<?php
-                        _e('Enter your API Key', 'embedly');
-                        ?>" name="embedly_key" type="text" class="<?php
-                        ?>embedly_key_input"
-                        <?php
-                          if (!empty($this->embedly_options['key'])) {
-                              echo 'value="' . $this->embedly_options['key'] . '"';
-                          }?>/>
-                      <input class="button-primary" name="Submit" type="submit" value="<?php
-                        _e('Submit', 'embedly');?>"/>
+                  <!-- MODAL FOR NEW ACCOUNTS -->
+                <div class="embedly-ui">
+                  <div class="embedly-ui-header-outer-wrapper">
+                    <div class="embedly-ui-header-wrapper">
+                      <div class="embedly-ui-header">
+                        <a class="embedly-ui-logo" href="http://embed.ly" target="_blank">
+                        <?php _e('Embedly', 'embedly'); ?>
+                        </a>
+                      </div>
                     </div>
                   </div>
+                  <div class="embedly-ui-key-wrap">
+                    <div class="embedly_key_form embedly-ui-key-form">
 
-                  <!-- Create an embed.ly account -->
-                  <div class="embedly-create-account-btn-wrap">
-                    <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly/signup');"
-                      value="<?php _e('Create Account', 'embedly')?>"/>
-                  </div>
+                      <!-- Notifications -->
+                      <?php
+                        if (isset($errorMessage)) { ?>
+                      <div class="embedly-error embedly-message" id="embedly-error">
+                        <p><strong><?php echo $errorMessage;?></strong></p>
+                      </div>
 
-                </form>
-              </div>
-            </div>
-          </div>
-        <?php } ?>
+                      <?php } elseif (isset($successMessage) && !isset($errorMessage)) { ?>
+                      <div class="embedly-updated embedly-message" id="embedly-success">
+                        <p><strong><?php echo $successMessage; ?></strong></p>
+                      </div>
+                      <?php } ?>
 
-<?php
-    global $EMBEDLY_DEBUG;
-    if( isset($EMBEDLY_DEBUG) && ($EMBEDLY_DEBUG) ) { ?>
-<!-- OLD EMBEDLY KEY ENTRY BOX @cstiteler: DELETE FOR PRODUCTION -->
-          <div class="embedly-ui">
-            <div class="embedly-ui-header-outer-wrapper">
-              <div class="embedly-ui-header-wrapper">
-                <div class="embedly-ui-header">
-                </div>
-              </div>
-            </div>
-            <?php
-              if (isset($errorMessage)) {
-              ?>
-            <div class="embedly-error embedly-message" id="embedly-error">
-              <p><strong><?php
-                echo $errorMessage;
-                ?></strong></p>
-            </div>
-            <?php
-              } elseif (isset($successMessage) && !isset($errorMessage)) {
-              ?>
-            <div class="embedly-updated embedly-message" id="embedly-success">
-              <p><strong><?php
-                echo $successMessage;
-                ?></strong></p>
-            </div>
-            <?php
-              }
-              ?>
-            <div class="embedly-error embedly-ajax-message embedly-message" id="embedly-ajax-error">
-              <p><strong><?php
-                _e('Something went wrong. Please try again later.', 'embedly');
-                ?></strong></p>
-            </div>
-            <div class="embedly-updated embedly-ajax-message embedly-message" id="embedly-ajax-success">
-              <p><strong><?php
-                _e("We have sync'd your providers list with our API. Enjoy!", 'embedly');
-                ?></strong></p>
-            </div>
-            <?php {
-              ?>
-            <form id="embedly_key_form" method="POST" action="">
-              <div class="embedly-ui-key-wrap">
-                <div class="embedly_key_form embedly-ui-key-form">
-                  <fieldset>
-                    <h2 class="section-label"><?php
-                      _e('Old Embedly Key Form', 'embedly');
-                      ?></h2>
-                    <span><a href="http://app.embed.ly" target="_new"><?php
-                      _e("Lost your key?", 'embedly');
-                      ?></a></span>
-                    <div class="embedly-input-wrapper">
+                      <div class="embedly-error embedly-ajax-message embedly-message" id="embedly-ajax-error">
+                        <p><strong><?php _e('Something went wrong. Please try again later.', 'embedly'); ?></strong></p>
+                      </div>
 
-                    <a href="#" class="embedly-lock-control embedly-unlocked" data-unlocked="<?php
-                        _e('Lock this field to prevent editing.', 'embedly');
-                        ?>" data-locked="<?php
-                        _e('Unlock to edit this field.', 'embedly');
-                        ?>" title=""><?php
-                        if(isset($keyValid) && $keyValid){
-                            _e('Unlock to edit this field.', 'embedly');
-                        }else{
-                            _e('Lock this field to prevent editing.', 'embedly');} ?></a>
+                      <div class="embedly-updated embedly-ajax-message embedly-message" id="embedly-ajax-success">
+                        <p><strong><?php _e("We have sync'd your providers list with our API. Enjoy!", 'embedly'); ?></strong></p>
+                      </div>
+                      <!-- END Notifications -->
 
+                      <div class="embedly-sign-up-hero-text">
+                        <h2 class="section-label">
+                          <?php _e("In order to use the Embedly Wordpress Plugin you need to sign up for an API Key." .
+                            "Don't worry, it takes less than 2 minutes.", 'embedly');?>
+                        </h2>
+                      </div>
+                      <form id="embedly_key_form" method="POST" action="">
+                        <div class="embedly-input-wrapper">
+                          <div class="embedly-api-key-input">
+                            <input <?php
+                              ?>id="embedly_key" placeholder="<?php
+                              _e('Enter your API Key', 'embedly');
+                              ?>" name="embedly_key" type="text" class="<?php
+                              ?>embedly_key_input"
+                              <?php
+                                if (!empty($this->embedly_options['key'])) {
+                                    echo 'value="' . $this->embedly_options['key'] . '"';
+                                }?>/>
+                            <input class="embedly-button" name="Submit" type="submit" value="<?php
+                              _e('Submit', 'embedly');?>"/>
+                          </div>
+                        </div>
 
-                      <a href="#" class="embedly-lock-control embedly-unlocked" data-unlocked="<?php
-                        _e('Lock this field to prevent editing.', 'embedly');
-                        ?>" data-locked="<?php
-                        _e('Unlock to edit this field.', 'embedly');
-                        ?>" title=""><?php
-                        if (isset($keyValid) && $keyValid) {
-                            _e('Unlock to edit this field.', 'embedly');
-                        } else {
-                            _e('Lock this field to prevent editing.', 'embedly');
-                        }
-                        ?></a>
+                        <!-- Create an embed.ly account -->
+                        <div class="embedly-create-account-btn-wrap">
+                          <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly/signup');"
+                            value="<?php _e('Create Account', 'embedly')?>"/>
+                        </div>
 
-
-                      <input <?php
-                        if (isset($keyValid) && $keyValid) {
-                            echo 'readonly="readonly" ';
-                        }
-                        ?>id="embedly_key" placeholder="<?php
-                        _e('Please enter your key...', 'embedly');
-                        ?>" name="embedly_key" type="text" class="<?php
-                        if (isset($keyValid) && !$keyValid) {
-                            echo 'invalid embedly-unlocked-input ';
-                        } elseif (!isset($keyValid)) {
-                            echo 'embedly-unlocked-input ';
-                        } else {
-                            echo 'embedly-locked-input ';
-                        }
-                        ?>embedly_key_input" <?php
-                        if (!empty($this->embedly_options['key'])) {
-                            echo 'value="' . $this->embedly_options['key'] . '"';
-                        }
-                        ?> />
-
-
-                      <input class="button-primary embedly_submit embedly_top_submit" name="submit" type="submit" value="<?php
-                        _e('Save Key', 'embedly');
-                        ?>"/>
+                      </form>
                     </div>
-
-                    <p><?php
-                      _e('Add your Embedly Key to embed any URL', 'embedly');
-                      ?></p>
-
-                  </fieldset>
+                  </div>
                 </div>
-              </div>
-              <div class="embedly-ui-providers">
-                <span><a href="http://embed.ly/providers" target="_new"><?php
-                  _e("List of supported providers", 'embedly');
-                  ?></a></span>
-              </div>
-            </form>
-            <?php
-              }
-              ?>
-          </div>
-        </div>
-        <!-- END OLD EMBEDLY KEY ENTRY BOX @cstiteler: DELETE FOR PRODUCTION -->
-
-        <?php
-        } // END 'if debug' statement
+              <?php } // END if/else for new/existing account
     } // END settings page function
 } // END WP_Embedly class
 
