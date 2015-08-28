@@ -140,7 +140,16 @@ class WP_Embedly
 
     function embedly_ajax_update_option() {
         // access to the $_POST from the ajax call data object
-        $this->embedly_save_option($_POST['key'], $_POST['value']);
+        if ($_POST['key'] == 'card_width') {
+            $this->embedly_save_option($_POST['key'], $this->handle_width_input($_POST['value']));
+        } else {
+            $this->embedly_save_option($_POST['key'], $_POST['value']);
+        }
+
+        // echo "VALUE IS: " . $_POST['value'];
+        // echo "HANDLE RESPONSE: " . $this->handle_width_input($_POST['value']);
+        echo $this->embedly_options['card_width'];
+
         wp_die();
     }
 
@@ -426,48 +435,48 @@ class WP_Embedly
         #Card Width:
         // if user deleted width field and then clicked save, delete the card option.
         // otherise leave it if, say, the page was just refreshed.
-        if(isset($_POST) && !empty($_POST) &&
-            !isset($_POST['card_width']) && isset($this->embedly_options['card_width'])) {
-            $this->embedly_delete_option('card_width');
-        }
+        // if(isset($_POST) && !empty($_POST) &&
+        //     !isset($_POST['card_width']) && isset($this->embedly_options['card_width'])) {
+        //     $this->embedly_delete_option('card_width');
+        // }
 
         // if width field is set, try to parse the value
         // TODO: @cstiteler: warn user if this fails/invalid
-        if(isset($_POST['card_width'])) {
-            $cleaned = $this->handle_width_input($_POST['card_width']);
-            if($cleaned == '') {
-                // deleting option defaults to responsive cards
-                $this->embedly_delete_option('card_width');
-            } else {
-                $this->embedly_save_option('card_width', $cleaned);
-            }
-        }
+        // if(isset($_POST['card_width'])) {
+        //     $cleaned = $this->handle_width_input($_POST['card_width']);
+        //     if($cleaned == '') {
+        //         // deleting option defaults to responsive cards
+        //         $this->embedly_delete_option('card_width');
+        //     } else {
+        //         $this->embedly_save_option('card_width', $cleaned);
+        //     }
+        // }
 
         // for each align selection, if checked, set option to align value
-        if(isset($_POST) && !empty($_POST)) {
-            foreach(
-                array(
-                    'card_align_left' => 'left',
-                    'card_align_center' => 'center',
-                    'card_align_right' => 'right',
-                )
-                as $key => $value) {
-                    if(isset($_POST[$key]) && $_POST[$key] == 'checked') {
-                        $this->embedly_save_option('card_align', $value);
-                    }
-            }
-        }
+        // if(isset($_POST) && !empty($_POST)) {
+        //     foreach(
+        //         array(
+        //             'card_align_left' => 'left',
+        //             'card_align_center' => 'center',
+        //             'card_align_right' => 'right',
+        //         )
+        //         as $key => $value) {
+        //             if(isset($_POST[$key]) && $_POST[$key] == 'checked') {
+        //                 $this->embedly_save_option('card_align', $value);
+        //             }
+        //     }
+        // }
 
         // Boolean card settings:
-        if (isset($_POST['minimal'])) {
-            $this->embedly_save_option('card_chrome', $_POST['minimal'] == 'checked' ? false : true );
-        }
-        if (isset($_POST['card_controls'])) {
-            $this->embedly_save_option('card_controls', $_POST['card_controls'] == 'checked' ? true : false );
-        }
-        if (isset($_POST['card_dark'])) {
-            $this->embedly_save_option('card_theme', $_POST['card_dark'] == 'checked' ? 'dark' : 'light' );
-        }
+        // if (isset($_POST['minimal'])) {
+        //     $this->embedly_save_option('card_chrome', $_POST['minimal'] == 'checked' ? false : true );
+        // }
+        // if (isset($_POST['card_controls'])) {
+        //     $this->embedly_save_option('card_controls', $_POST['card_controls'] == 'checked' ? true : false );
+        // }
+        // if (isset($_POST['card_dark'])) {
+        //     $this->embedly_save_option('card_theme', $_POST['card_dark'] == 'checked' ? 'dark' : 'light' );
+        // }
 
         // KEY INPUT:
         // empty key set when saving
@@ -631,7 +640,7 @@ class WP_Embedly
 
                           <!-- Width Input Area -->
                           Max Width
-                          <input type="text" name="card_width" placeholder="100%, 300px, etc."
+                          <input class='embedly-max-width' type="textarea" name="card_width" placeholder="100%, 300px, etc."
                             <?php
                               if(isset($this->embedly_options['card_width'])) {
                                   echo 'value="' . $this->embedly_options['card_width'] . '"';

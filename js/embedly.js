@@ -32,7 +32,7 @@ jQuery(document).ready(function($) {
         $(".embedly-analytics .active-viewers .active-count").html(response.active);
     });
 
-    setTimeout(load_actives, 5000);
+    setTimeout(load_actives, 10000);
   })();
 
   // When the alignment is selected, unselect other alignments
@@ -66,13 +66,27 @@ jQuery(document).ready(function($) {
     update_option('card_theme', $(this).is(':checked') ? 'dark' : 'light');
   });
 
+  $('.embedly-max-width').focusout(function(e) {
+    update_option('card_width', $(this).val());
+  });
+
+  $('.embedly-max-width').keypress(function(e) {
+    if(e.which == 13) {
+      update_option('card_width', $(this).val());
+      return false;
+    }
+  });
+
   function update_option(key, value) {
+    console.log("updating: " + key + ": " + value);
     $.post(
       ajaxurl,
       {
         'action': 'embedly_update_option',
         'key': key,
         'value': value,
+      }, function(response) {
+        console.log(response);
       });
   }
 
