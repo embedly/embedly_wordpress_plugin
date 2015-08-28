@@ -125,12 +125,23 @@ class WP_Embedly
             'embedly_ajax_get_active_viewers'
         ));
 
+        add_action('wp_ajax_embedly_update_option', array(
+            $this,
+            'embedly_ajax_update_option'
+        ));
+
         // action establishes embed.ly the sole provider of embeds
         // (except those unsupported)
         add_action('plugins_loaded', array(
             $this,
             'add_embedly_providers'
         ));
+    }
+
+    function embedly_ajax_update_option() {
+        // access to the $_POST from the ajax call data object
+        $this->embedly_save_option($_POST['key'], $_POST['value']);
+        wp_die();
     }
 
 
@@ -598,21 +609,21 @@ class WP_Embedly
                           <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
                           <ul>
                             <li>
-                              <input type='hidden' value='unchecked' name='minimal'>
-                              <input type='checkbox' value='checked' name='minimal' <?php
+<!--                               <input type='hidden' value='unchecked' name='minimal'> -->
+                              <input class='embedly-minimal-checkbox' type='checkbox' value='checked' name='minimal' <?php
                                 // returns 'checked' html attr if option 'card_chrome' is set to false
-                                checked( $this->embedly_options['card_chrome'], false);
+                                checked( $this->embedly_options['card_chrome'], 0);
                                 ?> /> Minimal Design
                             </li>
                             <li>
-                              <input type='hidden' value='unchecked' name='card_controls'>
-                              <input type='checkbox' value='checked' name='card_controls' <?php
+<!--                               <input type='hidden' value='unchecked' name='card_controls'> -->
+                              <input class='embedly-social-checkbox' type='checkbox' value='checked' name='card_controls' <?php
                                 checked( $this->embedly_options['card_controls'], 1);
                                 ?> /> Social Buttons
                             </li>
                             <li>
-                              <input type='hidden' value='unchecked' name='card_dark'>
-                              <input type='checkbox' value='checked' name='card_dark' <?php
+<!--                               <input type='hidden' value='unchecked' name='card_dark'> -->
+                              <input class='embedly-dark-checkbox' type='checkbox' value='checked' name='card_dark' <?php
                                 checked( $this->embedly_options['card_theme'], 'dark');
                                 ?> />Cards for Dark Pages
                             </li>
@@ -641,19 +652,19 @@ class WP_Embedly
                                 ?>
                               <li><span class=
                                 <?php echo '"dashicons di-none align-icon' . ($current_align == 'left' ? $sel : '"'); ?>
-                                title="Left">
+                                title="Left" align-value="left">
                                 <input type='hidden' value='unchecked' name='card_align_left'>
                                 </span>
                               </li>
                               <li><span class=
                                 <?php echo '"dashicons di-center align-icon' . ($current_align == 'center' ? $sel : '"'); ?>
-                                title="Center">
+                                title="Center" align-value="center">
                                 <input type='hidden' value='checked' name='card_align_center'>
                                 </span>
                               </li>
                               <li><span class=
                                 <?php echo '"dashicons di-none di-reverse align-icon' . ($current_align == 'right' ? $sel : '"'); ?>
-                                title="Right">
+                                title="Right" align-value="right">
                                 <input type='hidden' value='unchecked' name='card_align_right'>
                                 </span>
                               </li>

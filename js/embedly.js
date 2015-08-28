@@ -21,7 +21,8 @@ jQuery(document).ready(function($) {
     $(this).parent().addClass("selected").siblings().removeClass("selected");
   });
 
-  // loads the analytics from narrate
+  // loads the analytics from narrate immediately,
+  // and then every N milliseconds
   (function load_actives() {
     $.post(
       ajaxurl,
@@ -35,7 +36,8 @@ jQuery(document).ready(function($) {
   })();
 
   // When the alignment is selected, unselect other alignments
-  $('.align-icon').click(function(e) {
+  $('.align-icon').mousedown(function(e) {
+
     $(this).children()[0].value = 'checked';
     $(this).addClass('selected-align-select');
 
@@ -45,7 +47,34 @@ jQuery(document).ready(function($) {
       hidden.value = 'unchecked';
       $(span).removeClass('selected-align-select');
     });
+
+    var align = $(this).attr('align-value');
+    console.log(align);
+    update_option('card_align', align);
+
   });
+
+  $('.embedly-minimal-checkbox').click(function() {
+    update_option('card_chrome', $(this).is(':checked') ? 0 : 1);
+  });
+
+  $('.embedly-social-checkbox').click(function() {
+    update_option('card_controls', $(this).is(':checked') ? 1 : 0);
+  });
+
+  $('.embedly-dark-checkbox').click(function() {
+    update_option('card_theme', $(this).is(':checked') ? 'dark' : 'light');
+  });
+
+  function update_option(key, value) {
+    $.post(
+      ajaxurl,
+      {
+        'action': 'embedly_update_option',
+        'key': key,
+        'value': value,
+      });
+  }
 
 // END NEW STUFF
 
