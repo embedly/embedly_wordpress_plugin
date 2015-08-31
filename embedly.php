@@ -613,7 +613,7 @@ class WP_Embedly
 
                         <!-- Begin 'Advanced Options' Section -->
                         <div class="embedly-default-card-settings">
-                          <h3>Advanced Options</h3>
+                          <h3>Options</h3>
 
                           <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
                           <ul>
@@ -638,48 +638,59 @@ class WP_Embedly
                             </li>
                           </ul>
 
-                          <!-- Width Input Area -->
-                          Max Width
-                          <input class='embedly-max-width' type="textarea" name="card_width" placeholder="100%, 300px, etc."
-                            <?php
-                              if(isset($this->embedly_options['card_width'])) {
-                                  echo 'value="' . $this->embedly_options['card_width'] . '"';
-                              }
-                              ?>/>
-                          (responsive if left blank)
 
 
-                          <!-- Card Alignment Options (Hidding fields for POST data) -->
-                          <div class="embedly-align-select-container embedly-di">
-                            <ul class="align-select">
-                              <?php
-                                $sel = ' selected-align-select "';
-                                $current_align = 'center'; // default if not set
-                                if(isset($this->embedly_options['card_align'])) {
-                                    $current_align = $this->embedly_options['card_align'];
-                                }
-                                ?>
-                              <li><span class=
-                                <?php echo '"dashicons di-none align-icon' . ($current_align == 'left' ? $sel : '"'); ?>
-                                title="Left" align-value="left">
-                                <input type='hidden' value='unchecked' name='card_align_left'>
-                                </span>
-                              </li>
-                              <li><span class=
-                                <?php echo '"dashicons di-center align-icon' . ($current_align == 'center' ? $sel : '"'); ?>
-                                title="Center" align-value="center">
-                                <input type='hidden' value='checked' name='card_align_center'>
-                                </span>
-                              </li>
-                              <li><span class=
-                                <?php echo '"dashicons di-none di-reverse align-icon' . ($current_align == 'right' ? $sel : '"'); ?>
-                                title="Right" align-value="right">
-                                <input type='hidden' value='unchecked' name='card_align_right'>
-                                </span>
-                              </li>
-                            </ul>
-                          </div>
-                        </div> <!-- END 'Advanced Options' Section -->
+
+                          <div class="advanced-wrapper">
+                            <div class="advanced-body">
+                              <!-- Width Input Area -->
+                              Max Width
+                              <input class='embedly-max-width' type="textarea" name="card_width" placeholder="100%, 300px, etc."
+                                <?php
+                                  if(isset($this->embedly_options['card_width'])) {
+                                      echo 'value="' . $this->embedly_options['card_width'] . '"';
+                                  }
+                                  ?>/>
+                              (responsive if left blank)
+
+
+                              <!-- Card Alignment Options (Hidding fields for POST data) -->
+                              <div class="embedly-align-select-container embedly-di">
+                                <ul class="align-select">
+                                  <?php
+                                    $sel = ' selected-align-select "';
+                                    $current_align = 'center'; // default if not set
+                                    if(isset($this->embedly_options['card_align'])) {
+                                        $current_align = $this->embedly_options['card_align'];
+                                    }
+                                    ?>
+                                  <li><span class=
+                                    <?php echo '"dashicons di-none align-icon' . ($current_align == 'left' ? $sel : '"'); ?>
+                                    title="Left" align-value="left">
+                                    <input type='hidden' value='unchecked' name='card_align_left'>
+                                    </span>
+                                  </li>
+                                  <li><span class=
+                                    <?php echo '"dashicons di-center align-icon' . ($current_align == 'center' ? $sel : '"'); ?>
+                                    title="Center" align-value="center">
+                                    <input type='hidden' value='checked' name='card_align_center'>
+                                    </span>
+                                  </li>
+                                  <li><span class=
+                                    <?php echo '"dashicons di-none di-reverse align-icon' . ($current_align == 'right' ? $sel : '"'); ?>
+                                    title="Right" align-value="right">
+                                    <input type='hidden' value='unchecked' name='card_align_right'>
+                                    </span>
+                                  </li>
+                                </ul>
+                              </div>
+                            </div>
+                            <div class="advanced-header">
+                              <a href="#">Advanced Options</a>
+                            </div>
+                          </div> <!-- END Expandable Options Section -->
+                        </div> <!-- END 'Options' Section -->
+
 
                         <!-- Embedly API Key input Field -->
                         <div class="embedly-input-wrapper">

@@ -15,7 +15,6 @@
 
 jQuery(document).ready(function($) {
 
-
   // NEW STUFF:
   $(".embedly-align-select-container  a").click(function(){
     $(this).parent().addClass("selected").siblings().removeClass("selected");
@@ -76,6 +75,20 @@ jQuery(document).ready(function($) {
       return false;
     }
   });
+
+  $('.advanced-wrapper .advanced-header').find('a[href="#"]').click(function(e) {
+    e.preventDefault();
+    $advanced = $('.advanced-wrapper .advanced-body');
+
+    if($advanced.is(":visible")) {
+      $advanced.hide();
+      $(this).text('Advanced');
+    } else {
+      $advanced.show();
+      $(this).text('Collapse');
+    }
+  });
+
 
   function update_option(key, value) {
     console.log("updating: " + key + ": " + value);

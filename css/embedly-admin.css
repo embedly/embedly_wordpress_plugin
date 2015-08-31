@@ -132,6 +132,13 @@ input[type="checkbox"]:checked:before {
   background:#eee;
   color:#bbb;
 }
+
+/*styles for advanced dropdown*/
+.advanced-wrapper .advanced-body {
+  display: none;
+  padding: 5px;
+}
+
 .embedly-ui-providers {
   padding-left: 30px;
   padding-bottom: 10px;
