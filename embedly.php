@@ -597,105 +597,25 @@ class WP_Embedly
                           <ul>
                             <li class="active-viewers">
                               <h1 class="active-count">-</h1>
-                              People are actively viewing your embeds.
+                              People are <strong>actively viewing</strong> your embeds!
 
                               <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly');"
                                 value="<?php _e('View Realtime', 'embedly')?>"/>
                             </li>
                             <li>
                               <h1 class="weekly-count">-</h1>
-                              People have viewed an embed in the last week.
+                              People have <strong>viewed</strong> an embed in the <strong>last week</strong>.
                               <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly');"
                                value="<?php _e('View Historical', 'embedly')?>"/>
                             </li>
                           </ul>
                         </div>
 
-                        <!-- Begin 'Advanced Options' Section -->
-                        <div class="embedly-default-card-settings">
-                          <h3>Options</h3>
-
-                          <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
-                          <ul>
-                            <li>
-<!--                               <input type='hidden' value='unchecked' name='minimal'> -->
-                              <input class='embedly-minimal-checkbox' type='checkbox' value='checked' name='minimal' <?php
-                                // returns 'checked' html attr if option 'card_chrome' is set to false
-                                checked( $this->embedly_options['card_chrome'], 0);
-                                ?> /> Minimal Design
-                            </li>
-                            <li>
-<!--                               <input type='hidden' value='unchecked' name='card_controls'> -->
-                              <input class='embedly-social-checkbox' type='checkbox' value='checked' name='card_controls' <?php
-                                checked( $this->embedly_options['card_controls'], 1);
-                                ?> /> Social Buttons
-                            </li>
-                            <li>
-<!--                               <input type='hidden' value='unchecked' name='card_dark'> -->
-                              <input class='embedly-dark-checkbox' type='checkbox' value='checked' name='card_dark' <?php
-                                checked( $this->embedly_options['card_theme'], 'dark');
-                                ?> />Cards for Dark Pages
-                            </li>
-                          </ul>
-
-
-
-
-                          <div class="advanced-wrapper">
-                            <div class="advanced-body">
-                              <!-- Width Input Area -->
-                              Max Width
-                              <input class='embedly-max-width' type="textarea" name="card_width" placeholder="100%, 300px, etc."
-                                <?php
-                                  if(isset($this->embedly_options['card_width'])) {
-                                      echo 'value="' . $this->embedly_options['card_width'] . '"';
-                                  }
-                                  ?>/>
-                              (responsive if left blank)
-
-
-                              <!-- Card Alignment Options (Hidding fields for POST data) -->
-                              <div class="embedly-align-select-container embedly-di">
-                                <ul class="align-select">
-                                  <?php
-                                    $sel = ' selected-align-select "';
-                                    $current_align = 'center'; // default if not set
-                                    if(isset($this->embedly_options['card_align'])) {
-                                        $current_align = $this->embedly_options['card_align'];
-                                    }
-                                    ?>
-                                  <li><span class=
-                                    <?php echo '"dashicons di-none align-icon' . ($current_align == 'left' ? $sel : '"'); ?>
-                                    title="Left" align-value="left">
-                                    <input type='hidden' value='unchecked' name='card_align_left'>
-                                    </span>
-                                  </li>
-                                  <li><span class=
-                                    <?php echo '"dashicons di-center align-icon' . ($current_align == 'center' ? $sel : '"'); ?>
-                                    title="Center" align-value="center">
-                                    <input type='hidden' value='checked' name='card_align_center'>
-                                    </span>
-                                  </li>
-                                  <li><span class=
-                                    <?php echo '"dashicons di-none di-reverse align-icon' . ($current_align == 'right' ? $sel : '"'); ?>
-                                    title="Right" align-value="right">
-                                    <input type='hidden' value='unchecked' name='card_align_right'>
-                                    </span>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
-                            <div class="advanced-header">
-                              <a href="#">Advanced Options</a>
-                            </div>
-                          </div> <!-- END Expandable Options Section -->
-                        </div> <!-- END 'Options' Section -->
-
-
-                        <!-- Embedly API Key input Field -->
+                        <!-- BEGIN Embedly API Key input Field -->
+                        <hr>
                         <div class="embedly-input-wrapper">
                           <div class="embedly-api-key-input">
-                            Embedly Key
+                            YOUR EMBEDLY API KEY
                             <input id="embedly_key" placeholder="<?php
                               _e('Enter your API Key', 'embedly');
                               ?>" name="embedly_key" type="text" class="<?php
@@ -706,13 +626,90 @@ class WP_Embedly
                               ?> />
                           </div>
                         </div>
+                        <!-- END Embedly API Key input Field -->
 
-                        <!-- Saving Settings Button -->
-                        <div class="embedly-save-settings-input">
+
+                        <!-- Begin 'Advanced Options' Section -->
+                        <hr>
+
+                        <div class="advanced-wrapper">
+                        <div class="advanced-header">
+                          <a href="#">ADVANCED EMBED SETTINGS
+                          <span class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></a>
+                        </div>
+                        <div class="advanced-body">
+                          <div class="embedly-default-card-settings">
+                            <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
+                            <ul>
+                              <li>
+                                <input class='embedly-minimal-checkbox' type='checkbox' value='checked' name='minimal' <?php
+                                  // returns 'checked' html attr if option 'card_chrome' is set to false
+                                  checked( $this->embedly_options['card_chrome'], 0);
+                                  ?> /> Minimal Design
+                              </li>
+                              <li>
+                                <input class='embedly-social-checkbox' type='checkbox' value='checked' name='card_controls' <?php
+                                  checked( $this->embedly_options['card_controls'], 1);
+                                  ?> /> Social Buttons
+                              </li>
+                              <li>
+                                <input class='embedly-dark-checkbox' type='checkbox' value='checked' name='card_dark' <?php
+                                  checked( $this->embedly_options['card_theme'], 'dark');
+                                  ?> />Cards for Dark Pages
+                              </li>
+                            </ul>
+                            <!-- Width Input Area -->
+                            Max Width
+                            <input class='embedly-max-width' type="textarea" name="card_width" placeholder="100%, 300px, etc."
+                              <?php
+                                if(isset($this->embedly_options['card_width'])) {
+                                    echo 'value="' . $this->embedly_options['card_width'] . '"';
+                                }
+                                ?>/>
+                            (responsive if left blank)
+                            <!-- Card Alignment Options (Hidding fields for POST data) -->
+                            <div class="embedly-align-select-container embedly-di">
+                              <ul class="align-select">
+                                <?php
+                                  $sel = ' selected-align-select "';
+                                  $current_align = 'center'; // default if not set
+                                  if(isset($this->embedly_options['card_align'])) {
+                                      $current_align = $this->embedly_options['card_align'];
+                                  }
+                                  ?>
+                                <li><span class=
+                                  <?php echo '"dashicons di-none align-icon' . ($current_align == 'left' ? $sel : '"'); ?>
+                                  title="Left" align-value="left">
+                                  <!-- <input type='hidden' value='unchecked' name='card_align_left'> -->
+                                  </span>
+                                </li>
+                                <li><span class=
+                                  <?php echo '"dashicons di-center align-icon' . ($current_align == 'center' ? $sel : '"'); ?>
+                                  title="Center" align-value="center">
+                                  <!-- <input type='hidden' value='checked' name='card_align_center'> -->
+                                  </span>
+                                </li>
+                                <li><span class=
+                                  <?php echo '"dashicons di-none di-reverse align-icon' . ($current_align == 'right' ? $sel : '"'); ?>
+                                  title="Right" align-value="right">
+                                  <!-- <input type='hidden' value='unchecked' name='card_align_right'> -->
+                                  </span>
+                                </li>
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- END Expandable Options Section -->
+                        </div> <!-- END 'Options' Section -->
+
+
+
+                        <!-- Saving Settings Button (No longer required.) -->
+<!--                         <div class="embedly-save-settings-input" >
                           <input class="embedly-button" name="submit" type="submit" value="<?php
                             _e('Save', 'embedly');
                             ?>"/>
-                        </div>
+                        </div> -->
                       </div>
                     </div>
                   </form>

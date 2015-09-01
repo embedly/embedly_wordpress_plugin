@@ -53,6 +53,7 @@ jQuery(document).ready(function($) {
 
   });
 
+  // immediate settings
   $('.embedly-minimal-checkbox').click(function() {
     update_option('card_chrome', $(this).is(':checked') ? 0 : 1);
   });
@@ -76,20 +77,41 @@ jQuery(document).ready(function($) {
     }
   });
 
+  // toggles advanced options
   $('.advanced-wrapper .advanced-header').find('a[href="#"]').click(function(e) {
     e.preventDefault();
     $advanced = $('.advanced-wrapper .advanced-body');
+    $arrow = $('.embedly-dropdown');
 
     if($advanced.is(":visible")) {
       $advanced.hide();
-      $(this).text('Advanced');
+      $arrow.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-right-alt2');
+      // $(this).text('ADVANCED EMBED SETTINGS');
     } else {
       $advanced.show();
-      $(this).text('Collapse');
+      // This is going to be a dashicon change.
+      $arrow.removeClass('dashicons-arrow-right-alt2').addClass('dashicons-arrow-down-alt2')
+      // $(this).text('ADVANCED EMBED SETTINGS');
     }
   });
 
+  // toggles advanced options
+  // $('.advanced-wrapper .advanced-header').find('a[href="#"]').click(function(e) {
+  //   e.preventDefault();
+  //   $advanced = $('.advanced-wrapper .advanced-body');
 
+  //   if($advanced.is(":visible")) {
+  //     $advanced.hide();
+  //     $(this).text('ADVANCED EMBED SETTINGS');
+  //   } else {
+  //     $advanced.show();
+  //     // This is going to be a dashicon change.
+  //     $(this).text('ADVANCED EMBED SETTINGS');
+  //   }
+  // });
+
+  // given a key, value pair for a card setting, performs
+  // ajax request to ajaxurl backend to update option
   function update_option(key, value) {
     console.log("updating: " + key + ": " + value);
     $.post(

@@ -1,17 +1,17 @@
 .embedly-wrap {
-  width:60%;
+  width:80%;
   margin:0 auto;
   position:relative;
   padding:20px;
 }
 .embedly-ui {
   background:#fff;
-  border-radius:10px;
-  border:1px solid #d7d7d7;
-  -webkit-box-shadow:inset 0 0 2px rgba(0,0,0,0.2);
-  -moz-box-shadow:inset 0 0 2px rgba(0,0,0,0.2);
-  -ms-box-shadow:inset 0 0 2px rgba(0,0,0,0.2);
-  box-shadow:inset 0 0 2px rgba(0,0,0,0.2);
+  /*border-radius:10px;*/
+  /*border:1px solid #d7d7d7;*/
+  /*-webkit-box-shadow:inset 0 0 2px rgba(0,0,0,0.2);*/
+  /*-moz-box-shadow:inset 0 0 2px rgba(0,0,0,0.2);*/
+  /*-ms-box-shadow:inset 0 0 2px rgba(0,0,0,0.2);*/
+  /*box-shadow:inset 0 0 2px rgba(0,0,0,0.2);*/
 }
 /* Overrides color of checkmarks in checkboxes*/
 input[type="checkbox"]:checked:before {
@@ -66,11 +66,11 @@ input[type="checkbox"]:checked:before {
   margin:30px;
   background:#fff;
   padding:1px;
-  border-radius:5px;
-  -webkit-box-shadow:0 1px 0 #d7d7d7;
+  /*border-radius:5px;*/
+/*  -webkit-box-shadow:0 1px 0 #d7d7d7;
   -moz-box-shadow:0 1px 0 #d7d7d7;
   -ms-box-shadow:0 1px 0 #d7d7d7;
-  box-shadow:0 1px 0 #d7d7d7;
+  box-shadow:0 1px 0 #d7d7d7;*/
 }
 .embedly-ui-key-wrap p {
   font-size:12px;
@@ -81,12 +81,22 @@ input[type="checkbox"]:checked:before {
 }
 .embedly-ui-key-form {
   background:#fff;
-  border:1px solid #fff;
+  /*border:1px solid #fff;*/
   border-radius:0px;
   padding:14px;
 }
 .embedly-input-wrapper {
+  margin-top: 30px;
+  margin-bottom: 30px;
   position:relative;
+}
+.embedly-api-key-input {
+  width:65%;
+  text-align: center;
+}
+.embedly-api-key-input input {
+  display:inline-block;
+  float:center;
 }
 .embedly-lock-control {
   position:absolute;
@@ -153,21 +163,25 @@ input[type="checkbox"]:checked:before {
   cursor: pointer;
   font-family: museo-sans-fontspring,"Helvetica Neue",Helvetica,Arial,sans-serif;
   /*font-weight: 100;*/
-  font-size: 20px;
+  font-size: 14px;
   line-height: normal;
-  /*margin: 0 0 1.25rem;*/
+  margin: 0 0 1.25rem;
   margin-top: 10px;
   margin-bottom: 10px;
   position: relative;
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  padding: 1rem 2rem 1.0625rem;
+  padding: 0.75rem 1rem;
+/*  padding: 1rem 2rem 1.0625rem;*/
   font-size: 1rem;
-  background-color: #4cc6e6;
+  background-color: #36495e;
   border-color: #1eb0d7;
   color: #FFF;
   transition: background-color 300ms ease-out;
+}
+.embedly-button:hover {
+  background-color:#556d82;
 }
 #wpwrap {
   background-color: #FFF;
