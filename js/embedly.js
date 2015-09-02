@@ -114,6 +114,9 @@ jQuery(document).ready(function($) {
         invalid_key();
       } else {
         valid_key();
+        setTimeout(function() {
+            lock_key()
+          }, 5000);
       }
     });
   }
@@ -170,6 +173,7 @@ jQuery(document).ready(function($) {
 
   function lock_key() {
     clear_states();
+    clear_notifications();
     $('#embedly_key_test').prop('readonly', true).parent().addClass('locked_key');
 
     valid_states.forEach(function(item) {
@@ -179,6 +183,7 @@ jQuery(document).ready(function($) {
 
   function unlock_key() {
     clear_states();
+    clear_notifications();
     $('#embedly_key_test').prop('readonly', false).parent().addClass('unlocked_key');
 
     valid_states.forEach(function(item) {

@@ -557,13 +557,36 @@ class WP_Embedly
                       <div class="embedly-api-key-input-wrapper">
                         <h1 class="valid-outer-text">Lookin' Good</h1>
                         <h1 class="invalid-outer-text">Invalid API key. Try again!</h1>
-                        <div class="embedly-api-key-input-container locked_key">
-                          <input id="embedly_key_test" type="text" class="embedly_key_input_test" readonly value="lol"/>
-                          <span class="dashicons key-icon locked-key-icon lock-control-key-icon"></span>
+                        <div
+                          <?php
+                             $valid_key = !empty($this->embedly_options['key']);
+                             $class = 'class="embedly-api-key-input-container';
+                              if ($valid_key) {
+                                  $class .= ' locked_key';
+                              }
+                              $class .= '"';
+                              echo $class;
+                          ?>>
+                          <input id="embedly_key_test" type="text" class="embedly_key_input_test"
+                            <?php
+                              // determine if the key is set already.
+                              if ($valid_key) {
+                                  echo 'value="' . $this->embedly_options['key'] . '"';
+                              }
+                            ?>/>
+                          <span
+                            <?php
+                              $class = 'class="dashicons key-icon lock-control-key-icon';
+                              if ($valid_key) {
+                                  $class .= ' locked-key-icon';
+                              }
+                              $class .= '"';
+                              echo $class;
+                            ?>
+                          ></span>
                         </div>
                         <h1 class="invalid-outer-text">*Required Field</h1>
                       </div>
-
 
                       <!-- Testing key input states -->
                       <hr>

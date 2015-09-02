@@ -333,6 +333,7 @@ div.embedly-error p
   display: inline-block;
   position: relative;
   width: 85%;
+  font-family:monospace;
 }
 .embedly-api-key-input-container input[type="text"], textarea {
   width: 100%;
@@ -393,12 +394,15 @@ div.embedly-error p
 .invalid_key input[type="text"], textarea {
   border-color: #E44E46;
   background-color: #F7DFDF;
+  color: #36495E;
 }
 .valid_key input[type="text"], textarea {
   border-color: #4BBA80;
   background-color: #E5F2ED;
+  color: #36495E;
 }
 .locked_key input[type="text"], textarea {
+  color: #A6A8AB;
   border-color: #A6A8AB;
   background-color: #F1F1F2;
 }
