@@ -53,8 +53,7 @@ if(!defined('SIGNUP_URL')) {
 }
 
 // DEBUGGING
-$EMBEDLY_DEBUG = true;
-
+$EMBEDLY_DEBUG = false;
 
 /**
  * Embedly WP Class
@@ -152,6 +151,7 @@ class WP_Embedly
         $key = $_POST['key'];
         if ( $this->embedly_acct_has_feature('oembed', $key) ) {
             // better than returning some ambiguous boolean type
+            $this->embedly_save_option('key', $key);
             echo 'true';
         } else {
             echo 'false';
@@ -568,6 +568,7 @@ class WP_Embedly
                               echo $class;
                           ?>>
                           <input id="embedly_key_test" type="text" class="embedly_key_input_test"
+                            placeholder="<?php _e('Enter your API Key', 'embedly'); ?>"
                             <?php
                               // determine if the key is set already.
                               if ($valid_key) {
@@ -578,12 +579,13 @@ class WP_Embedly
                             <?php
                               $class = 'class="dashicons key-icon lock-control-key-icon';
                               if ($valid_key) {
+                                  // set the key icon if necessary.
                                   $class .= ' locked-key-icon';
                               }
                               $class .= '"';
                               echo $class;
-                            ?>
-                          ></span>
+                            ?>>
+                          </span>
                         </div>
                         <h1 class="invalid-outer-text">*Required Field</h1>
                       </div>
@@ -656,6 +658,7 @@ class WP_Embedly
                             <li class="active-viewers">
                               <h1 class="active-count">-</h1>
                               People are <strong>actively viewing</strong> your embeds!
+                              <br/> <!-- is this acceptable? need to format my h tags for this page.-->
 
                               <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly');"
                                 value="<?php _e('Realtime Analytics', 'embedly')?>"/>
@@ -663,6 +666,7 @@ class WP_Embedly
                             <li>
                               <h1 class="weekly-count">-</h1>
                               People have <strong>viewed</strong> an embed in the <strong>last week</strong>.
+                              <br/> <!-- is this acceptable? need to format my h tags for this page.-->
                               <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly');"
                                value="<?php _e('Historical Analytics', 'embedly')?>"/>
                             </li>
@@ -670,21 +674,46 @@ class WP_Embedly
                         </div>
 
                         <!-- LIST OF PROVIDERS LINK -->
-                        Check out our <a href='http://embed.ly/providers'>list of providers.</a>
+                        Check out our <strong><a href='http://embed.ly/providers' target="_blank">list of providers</a></strong>.
 
                         <!-- BEGIN Embedly API Key input Field -->
                         <hr>
-                        <div class="embedly-input-wrapper">
-                          <div class="embedly-api-key-input">
-                            YOUR EMBEDLY API KEY
-                            <input id="embedly_key" placeholder="<?php
-                              _e('Enter your API Key', 'embedly');
-                              ?>" name="embedly_key" type="text" class="<?php
-                              ?>embedly_key_input" <?php
-                              if (!empty($this->embedly_options['key'])) {
-                                  echo 'value="' . $this->embedly_options['key'] . '"';
-                              }
-                              ?> />
+                        <div class="embedly-key-body">
+                          <p>YOUR EMBEDLY API KEY</p>
+                          <div class="embedly-api-key-input-wrapper">
+                            <h1 class="valid-outer-text">Lookin' Good</h1>
+                            <h1 class="invalid-outer-text">Invalid API key. Try again!</h1>
+                            <div
+                              <?php
+                                 $valid_key = !empty($this->embedly_options['key']);
+                                 $class = 'class="embedly-api-key-input-container';
+                                  if ($valid_key) {
+                                      $class .= ' locked_key';
+                                  }
+                                  $class .= '"';
+                                  echo $class;
+                              ?>>
+                              <input id="embedly_key_test" type="text" class="embedly_key_input_test"
+                                placeholder="<?php _e('Enter your API Key', 'embedly'); ?>"
+                                <?php
+                                  // determine if the key is set already.
+                                  if ($valid_key) {
+                                      echo 'value="' . $this->embedly_options['key'] . '"';
+                                  }
+                                ?>/>
+                              <span
+                                <?php
+                                  $class = 'class="dashicons key-icon lock-control-key-icon';
+                                  if ($valid_key) {
+                                      // set the key icon if necessary.
+                                      $class .= ' locked-key-icon';
+                                  }
+                                  $class .= '"';
+                                  echo $class;
+                                ?>>
+                              </span>
+                            </div>
+                            <h1 class="invalid-outer-text">*Required Field</h1>
                           </div>
                         </div>
                         <!-- END Embedly API Key input Field -->
@@ -722,7 +751,7 @@ class WP_Embedly
                             </ul>
                             <!-- Width Input Area -->
                             Max Width
-                            <input class='embedly-max-width' type="textarea" name="card_width" placeholder="100%, 300px, etc."
+                            <input class='embedly-max-width' type="text" name="card_width" placeholder="100%, 300px, etc."
                               <?php
                                 if(isset($this->embedly_options['card_width'])) {
                                     echo 'value="' . $this->embedly_options['card_width'] . '"';

@@ -127,8 +127,8 @@ jQuery(document).ready(function($) {
     // For some browsers, `attr` is undefined; for others,
     // `attr` is false.  Check for both.
     if (typeof attr !== typeof undefined && attr !== false) {
-        // the field is readonly.
-        return
+      // the field is readonly.
+      return
     } else if (e.which == 13) {
       key_test($(this).val());
     }
