@@ -48,9 +48,12 @@ if (!defined('EMBEDLY_URL')) {
 if (!defined('EMBEDLY_BASE_URI')) {
     define('EMBEDLY_BASE_URI', 'https://api.embedly.com/1/card?');
 }
+if(!defined('SIGNUP_URL')) {
+    define('SIGNUP_URL', 'https://app.embed.ly/signup/wordpress');
+}
 
 // DEBUGGING
-$EMBEDLY_DEBUG = false;
+$EMBEDLY_DEBUG = true;
 
 
 /**
@@ -130,12 +133,30 @@ class WP_Embedly
             'embedly_ajax_update_option'
         ));
 
+        // ajax for key handling logic
+        add_action('wp_ajax_embedly_key_input', array(
+            $this,
+            'embedly_key_input'
+        ));
+
         // action establishes embed.ly the sole provider of embeds
         // (except those unsupported)
         add_action('plugins_loaded', array(
             $this,
             'add_embedly_providers'
         ));
+    }
+
+    function embedly_key_input() {
+        // receives a key in $_POST, returns on of the valid key states.
+        $key = $_POST['key'];
+        if ( $this->embedly_acct_has_feature('oembed', $key) ) {
+            // better than returning some ambiguous boolean type
+            echo 'true';
+        } else {
+            echo 'false';
+        }
+        wp_die();
     }
 
     function embedly_ajax_update_option() {
@@ -145,9 +166,6 @@ class WP_Embedly
         } else {
             $this->embedly_save_option($_POST['key'], $_POST['value']);
         }
-
-        // echo "VALUE IS: " . $_POST['value'];
-        // echo "HANDLE RESPONSE: " . $this->handle_width_input($_POST['value']);
         echo $this->embedly_options['card_width'];
 
         wp_die();
@@ -276,7 +294,7 @@ class WP_Embedly
             // delete all current oembed providers
             add_filter('oembed_providers', create_function('', 'return array();'));
             // except twitter (@cstiteler: test that this works for twitter)
-            wp_oembed_add_provider('#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i', 'https://api.twitter.com/1/statuses/oembed.{format}', true);
+            // wp_oembed_add_provider('#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i', 'https://api.twitter.com/1/statuses/oembed.{format}', true);
             $provider_uri = $this->build_uri_with_options();
             wp_oembed_add_provider('#.*#i', $provider_uri, true);
         }
@@ -534,6 +552,23 @@ class WP_Embedly
                     <?php
                     global $EMBEDLY_DEBUG;
                     if( isset($EMBEDLY_DEBUG) && ($EMBEDLY_DEBUG) ) { ?>
+
+                    <hr>
+                      <div class="embedly-api-key-input-wrapper">
+                        <h1 class="valid-outer-text">Lookin' Good</h1>
+                        <h1 class="invalid-outer-text">Invalid API key. Try again!</h1>
+                        <div class="embedly-api-key-input-container locked_key">
+                          <input id="embedly_key_test" type="text" class="embedly_key_input_test" readonly value="lol"/>
+                          <span class="dashicons key-icon locked-key-icon lock-control-key-icon"></span>
+                        </div>
+                        <h1 class="invalid-outer-text">*Required Field</h1>
+                      </div>
+
+
+                      <!-- Testing key input states -->
+                      <hr>
+                        <div class="embedly-input-wrapper">
+
                         <h4>
                         DEBUGGING:
                         <?php
@@ -600,16 +635,19 @@ class WP_Embedly
                               People are <strong>actively viewing</strong> your embeds!
 
                               <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly');"
-                                value="<?php _e('View Realtime', 'embedly')?>"/>
+                                value="<?php _e('Realtime Analytics', 'embedly')?>"/>
                             </li>
                             <li>
                               <h1 class="weekly-count">-</h1>
                               People have <strong>viewed</strong> an embed in the <strong>last week</strong>.
                               <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly');"
-                               value="<?php _e('View Historical', 'embedly')?>"/>
+                               value="<?php _e('Historical Analytics', 'embedly')?>"/>
                             </li>
                           </ul>
                         </div>
+
+                        <!-- LIST OF PROVIDERS LINK -->
+                        Check out our <a href='http://embed.ly/providers'>list of providers.</a>
 
                         <!-- BEGIN Embedly API Key input Field -->
                         <hr>
@@ -638,6 +676,7 @@ class WP_Embedly
                           <span class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></a>
                         </div>
                         <div class="advanced-body">
+                          Changing these settings will change how your future embeds appear.
                           <div class="embedly-default-card-settings">
                             <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
                             <ul>
@@ -667,7 +706,7 @@ class WP_Embedly
                                 }
                                 ?>/>
                             (responsive if left blank)
-                            <!-- Card Alignment Options (Hidding fields for POST data) -->
+                            <!-- Card Alignment Options -->
                             <div class="embedly-align-select-container embedly-di">
                               <ul class="align-select">
                                 <?php
@@ -680,19 +719,19 @@ class WP_Embedly
                                 <li><span class=
                                   <?php echo '"dashicons di-none align-icon' . ($current_align == 'left' ? $sel : '"'); ?>
                                   title="Left" align-value="left">
-                                  <!-- <input type='hidden' value='unchecked' name='card_align_left'> -->
+                                  <input type='hidden' value='unchecked' name='card_align_left'>
                                   </span>
                                 </li>
                                 <li><span class=
                                   <?php echo '"dashicons di-center align-icon' . ($current_align == 'center' ? $sel : '"'); ?>
                                   title="Center" align-value="center">
-                                  <!-- <input type='hidden' value='checked' name='card_align_center'> -->
+                                  <input type='hidden' value='checked' name='card_align_center'>
                                   </span>
                                 </li>
                                 <li><span class=
                                   <?php echo '"dashicons di-none di-reverse align-icon' . ($current_align == 'right' ? $sel : '"'); ?>
                                   title="Right" align-value="right">
-                                  <!-- <input type='hidden' value='unchecked' name='card_align_right'> -->
+                                  <input type='hidden' value='unchecked' name='card_align_right'>
                                   </span>
                                 </li>
                               </ul>
@@ -705,11 +744,11 @@ class WP_Embedly
 
 
                         <!-- Saving Settings Button (No longer required.) -->
-<!--                         <div class="embedly-save-settings-input" >
+                        <div class="embedly-save-settings-input" >
                           <input class="embedly-button" name="submit" type="submit" value="<?php
                             _e('Save', 'embedly');
                             ?>"/>
-                        </div> -->
+                        </div>
                       </div>
                     </div>
                   </form>
@@ -753,7 +792,7 @@ class WP_Embedly
 
                       <div class="embedly-sign-up-hero-text">
                         <h2 class="section-label">
-                          <?php _e("In order to use the Embedly Wordpress Plugin you need to sign up for an API Key." .
+                          <?php _e("In order to use the Embedly Wordpress Plugin you need to sign up for an API Key. " .
                             "Don't worry, it takes less than 2 minutes.", 'embedly');?>
                         </h2>
                       </div>
@@ -776,7 +815,8 @@ class WP_Embedly
 
                         <!-- Create an embed.ly account -->
                         <div class="embedly-create-account-btn-wrap">
-                          <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly/signup');"
+                          <input class="embedly-button" type="button" onclick=
+                            <?php echo '"' . "window.open('" . SIGNUP_URL . "');" . '"' ?>
                             value="<?php _e('Create Account', 'embedly')?>"/>
                         </div>
 

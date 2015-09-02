@@ -9,9 +9,6 @@
   * Project site: http://razorjack.net/quicksand
   * Github site: http://github.com/razorjack/quicksand
 **/
-// (function($){$.fn.quicksand=function(collection,customOptions){var options={duration:750,easing:'swing',attribute:'data-id',adjustHeight:'auto',useScaling:true,enhancement:function(c){},selector:'> *',dx:0,dy:0};$.extend(options,customOptions);if($.browser.msie||(typeof($.fn.scale)=='undefined')){options.useScaling=false;}var callbackFunction;if(typeof(arguments[1])=='function'){var callbackFunction=arguments[1];}else if(typeof(arguments[2]=='function')){var callbackFunction=arguments[2];}return this.each(function(i){var val;var animationQueue=[];var $collection=$(collection).clone();var $sourceParent=$(this);var sourceHeight=$(this).css('height');var destHeight;var adjustHeightOnCallback=false;var offset=$($sourceParent).offset();var offsets=[];var $source=$(this).find(options.selector);if($.browser.msie&&$.browser.version.substr(0,1)<7){$sourceParent.html('').append($collection);return;}var postCallbackPerformed=0;var postCallback=function(){if(!postCallbackPerformed){postCallbackPerformed=1;$toDelete=$sourceParent.find('> *');$sourceParent.prepend($dest.find('> *'));$toDelete.remove();if(adjustHeightOnCallback){$sourceParent.css('height',destHeight);}options.enhancement($sourceParent);if(typeof callbackFunction=='function'){callbackFunction.call(this);}}};var $correctionParent=$sourceParent.offsetParent();var correctionOffset=$correctionParent.offset();if($correctionParent.css('position')=='relative'){if($correctionParent.get(0).nodeName.toLowerCase()=='body'){}else{correctionOffset.top+=(parseFloat($correctionParent.css('border-top-width'))||0);correctionOffset.left+=(parseFloat($correctionParent.css('border-left-width'))||0);}}else{correctionOffset.top-=(parseFloat($correctionParent.css('border-top-width'))||0);correctionOffset.left-=(parseFloat($correctionParent.css('border-left-width'))||0);correctionOffset.top-=(parseFloat($correctionParent.css('margin-top'))||0);correctionOffset.left-=(parseFloat($correctionParent.css('margin-left'))||0);}if(isNaN(correctionOffset.left)){correctionOffset.left=0;}if(isNaN(correctionOffset.top)){correctionOffset.top=0;}correctionOffset.left-=options.dx;correctionOffset.top-=options.dy;$sourceParent.css('height',$(this).height());$source.each(function(i){offsets[i]=$(this).offset();});$(this).stop();var dx=0;var dy=0;$source.each(function(i){$(this).stop();var rawObj=$(this).get(0);if(rawObj.style.position=='absolute'){dx=-options.dx;dy=-options.dy;}else{dx=options.dx;dy=options.dy;}rawObj.style.position='absolute';rawObj.style.margin='0';rawObj.style.top=(offsets[i].top-parseFloat(rawObj.style.marginTop)-correctionOffset.top+dy)+'px';rawObj.style.left=(offsets[i].left-parseFloat(rawObj.style.marginLeft)-correctionOffset.left+dx)+'px';});var $dest=$($sourceParent).clone();var rawDest=$dest.get(0);rawDest.innerHTML='';rawDest.setAttribute('id','');rawDest.style.height='auto';rawDest.style.width=$sourceParent.width()+'px';$dest.append($collection);$dest.insertBefore($sourceParent);$dest.css('opacity',0.0);rawDest.style.zIndex=-1;rawDest.style.margin='0';rawDest.style.position='absolute';rawDest.style.top=offset.top-correctionOffset.top+'px';rawDest.style.left=offset.left-correctionOffset.left+'px';if(options.adjustHeight==='dynamic'){$sourceParent.animate({height:$dest.height()},options.duration,options.easing);}else if(options.adjustHeight==='auto'){destHeight=$dest.height();if(parseFloat(sourceHeight)<parseFloat(destHeight)){$sourceParent.css('height',destHeight);}else{adjustHeightOnCallback=true;}}$source.each(function(i){var destElement=[];if(typeof(options.attribute)=='function'){val=options.attribute($(this));$collection.each(function(){if(options.attribute(this)==val){destElement=$(this);return false;}});}else{destElement=$collection.filter('['+options.attribute+'='+$(this).attr(options.attribute)+']');}if(destElement.length){if(!options.useScaling){animationQueue.push({element:$(this),animation:{top:destElement.offset().top-correctionOffset.top,left:destElement.offset().left-correctionOffset.left,opacity:1.0}});}else{animationQueue.push({element:$(this),animation:{top:destElement.offset().top-correctionOffset.top,left:destElement.offset().left-correctionOffset.left,opacity:1.0,scale:'1.0'}});}}else{if(!options.useScaling){animationQueue.push({element:$(this),animation:{opacity:'0.0'}});}else{animationQueue.push({element:$(this),animation:{opacity:'0.0',scale:'0.0'}});}}});$collection.each(function(i){var sourceElement=[];var destElement=[];if(typeof(options.attribute)=='function'){val=options.attribute($(this));$source.each(function(){if(options.attribute(this)==val){sourceElement=$(this);return false;}});$collection.each(function(){if(options.attribute(this)==val){destElement=$(this);return false;}});}else{sourceElement=$source.filter('['+options.attribute+'='+$(this).attr(options.attribute)+']');destElement=$collection.filter('['+options.attribute+'='+$(this).attr(options.attribute)+']');}var animationOptions;if(sourceElement.length===0){if(!options.useScaling){animationOptions={opacity:'1.0'};}else{animationOptions={opacity:'1.0',scale:'1.0'};}d=destElement.clone();var rawDestElement=d.get(0);rawDestElement.style.position='absolute';rawDestElement.style.margin='0';rawDestElement.style.top=destElement.offset().top-correctionOffset.top+'px';rawDestElement.style.left=destElement.offset().left-correctionOffset.left+'px';d.css('opacity',0.0);if(options.useScaling){d.css('transform','scale(0.0)');}d.appendTo($sourceParent);animationQueue.push({element:$(d),animation:animationOptions});}});$dest.remove();options.enhancement($sourceParent);for(i=0;i<animationQueue.length;i++){animationQueue[i].element.animate(animationQueue[i].animation,options.duration,options.easing,postCallback);}});};})(jQuery);
-// (function($){$.fn.sorted=function(customOptions){var options={reversed:false,by:function(a){return a.text();}};$.extend(options,customOptions);$data=$(this);arr=$data.get();arr.sort(function(a,b){var valA=options.by($(a));var valB=options.by($(b));if(options.reversed){return(valA<valB)?1:(valA>valB)?-1:0;}else{return(valA<valB)?-1:(valA>valB)?1:0;}});return $(arr);};})(jQuery);
-
 
 jQuery(document).ready(function($) {
 
@@ -86,29 +83,12 @@ jQuery(document).ready(function($) {
     if($advanced.is(":visible")) {
       $advanced.hide();
       $arrow.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-right-alt2');
-      // $(this).text('ADVANCED EMBED SETTINGS');
     } else {
       $advanced.show();
-      // This is going to be a dashicon change.
       $arrow.removeClass('dashicons-arrow-right-alt2').addClass('dashicons-arrow-down-alt2')
-      // $(this).text('ADVANCED EMBED SETTINGS');
     }
+    return false;
   });
-
-  // toggles advanced options
-  // $('.advanced-wrapper .advanced-header').find('a[href="#"]').click(function(e) {
-  //   e.preventDefault();
-  //   $advanced = $('.advanced-wrapper .advanced-body');
-
-  //   if($advanced.is(":visible")) {
-  //     $advanced.hide();
-  //     $(this).text('ADVANCED EMBED SETTINGS');
-  //   } else {
-  //     $advanced.show();
-  //     // This is going to be a dashicon change.
-  //     $(this).text('ADVANCED EMBED SETTINGS');
-  //   }
-  // });
 
   // given a key, value pair for a card setting, performs
   // ajax request to ajaxurl backend to update option
@@ -124,6 +104,125 @@ jQuery(document).ready(function($) {
         console.log(response);
       });
   }
+
+  function key_test(to_test) {
+    $.post(ajaxurl, {
+      'action': 'embedly_key_input',
+      'key': to_test
+    },  function(response) {
+      if(response == 'false') {
+        invalid_key();
+      } else {
+        valid_key();
+      }
+    });
+  }
+
+  // handle 'return' events inside key input field.
+  $('#embedly_key_test').keypress(function(e) {
+    var attr = $(this).attr('readonly');
+    // For some browsers, `attr` is undefined; for others,
+    // `attr` is false.  Check for both.
+    if (typeof attr !== typeof undefined && attr !== false) {
+        // the field is readonly.
+        return
+    } else if (e.which == 13) {
+      key_test($(this).val());
+    }
+  });
+
+  // also support on focus out for key input
+  $('#embedly_key_test').focusout(function(e) {
+    var attr = $(this).attr('readonly');
+    if (typeof attr == typeof undefined && attr == false) {
+      // the field is NOT readonly, do the test
+      key_test($(this).val());
+    }
+  });
+
+  // valid class prefixes for modulation of key state
+  var valid_states = [
+    'invalid',
+    'valid',
+    'locked',
+    'unlocked',
+    'lock-control',
+  ];
+
+  (function() {
+    // clears any notifications that exist on load
+    clear_notifications();
+  })();
+
+  // clears all notification text
+  function clear_notifications() {
+    valid_states.forEach(function(state) {
+      $('.' + state + '-outer-text').hide(); // notif. text
+    });
+  }
+
+  // clears all embedly-api-key-input-container states
+  function clear_states() {
+    valid_states.forEach(function (state) {
+      $('.embedly-api-key-input-container').removeClass(state + '_key');
+    });
+  }
+
+  function lock_key() {
+    clear_states();
+    $('#embedly_key_test').prop('readonly', true).parent().addClass('locked_key');
+
+    valid_states.forEach(function(item) {
+      $('.key-icon').removeClass(item + '-key-icon').addClass('locked-key-icon');
+    });
+  }
+
+  function unlock_key() {
+    clear_states();
+    $('#embedly_key_test').prop('readonly', false).parent().addClass('unlocked_key');
+
+    valid_states.forEach(function(item) {
+      $('.key-icon').removeClass(item + '-key-icon').addClass('unlocked-key-icon');
+    });
+  }
+
+  function valid_key() {
+    // set valid key
+    // changes the color of the input box
+    clear_states();
+    $('#embedly_key_test').parent().addClass('valid_key');
+
+    clear_notifications();
+    $('.valid-outer-text').show(); // show the notification text
+
+    valid_states.forEach(function(item) {
+      $('.key-icon').removeClass(item + '-key-icon').addClass('valid-key-icon');
+    });
+  }
+
+  function invalid_key() {
+    // set invalid key
+    clear_states();
+    $('#embedly_key_test').parent().addClass('invalid_key');
+    // $('#embedly_key_test').removeClass('valid_key').addClass('invalid_key');
+    valid_states.forEach(function(item) {
+      $('.key-icon').removeClass(item + '-key-icon').addClass('invalid-key-icon');
+    });
+    clear_notifications();
+    $('.invalid-outer-text').show();
+  }
+
+  // action handlers for lock icon click
+  $('.lock-control-key-icon').click(function(e) {
+    e.preventDefault();
+    if($(this).hasClass('locked-key-icon')) {
+      unlock_key();
+      // $(this).removeClass('locked-key-icon').addClass('unlocked-key-icon').parent().removeClass('locked_key').addClass('unlocked_key');
+    } else if ($(this).hasClass('unlocked-key-icon')) {
+      lock_key();
+      // $(this).removeClass('unlocked-key-icon').addClass('locked-key-icon').parent().removeClass('unlocked_key').addClass('locked_key');
+    }
+  });
 
 // END NEW STUFF
 

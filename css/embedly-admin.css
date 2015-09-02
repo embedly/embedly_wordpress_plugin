@@ -15,7 +15,7 @@
 }
 /* Overrides color of checkmarks in checkboxes*/
 input[type="checkbox"]:checked:before {
-  color: #4CC6E6;
+  color: #36495e;
 }
 .embedly-ui .section-label {
   font-family: 'Cabin', sans-serif;
@@ -29,9 +29,9 @@ input[type="checkbox"]:checked:before {
 }
 .embedly-ui a {
   text-decoration:none;
-  color:#008ac4;
-  font-size:11px;
-  font-family:'Cabin', sans-serif;
+  color:#36495e;
+  /*font-size:14px;*/
+  /*font-family:'Cabin', sans-serif;*/
 }
 .embedly-ui-header-outer-wrapper {
   height:101px;
@@ -172,9 +172,8 @@ input[type="checkbox"]:checked:before {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  padding: 0.75rem 1rem;
-/*  padding: 1rem 2rem 1.0625rem;*/
-  font-size: 1rem;
+  padding: 0.50rem 1.5rem;
+  margin:10px;
   background-color: #36495e;
   border-color: #1eb0d7;
   color: #FFF;
@@ -241,6 +240,7 @@ input[type="checkbox"]:checked:before {
 .bottom-input-holder {
   position:relative;
 }
+
 .embedly-di .dashicons {
     margin:0px;
     /*line-height: 1;*/
@@ -283,7 +283,7 @@ ul.align-select li {
 span.selected-align-select {
   outline-width: 2px;
   outline-style: solid;
-  outline-color: #4CC6E6;
+  outline-color: #36495e;
 }
 
 div.embedly-updated, div.embedly-error
@@ -326,3 +326,85 @@ div.embedly-error p
 {
   display: none;
 }
+
+
+/* TESTING FORM STATES */
+.embedly-api-key-input-container {
+  display: inline-block;
+  position: relative;
+  width: 85%;
+}
+.embedly-api-key-input-container input[type="text"], textarea {
+  width: 100%;
+  height: 30px;
+  border: 1px solid #36495E;
+}
+.embedly-api-key-input-wrapper h1 {
+  font-size: 8px;
+  margin: 0px;
+}
+
+.embedly-api-key-input-wrapper .valid-outer-text {
+  color: #4BBA80;
+}
+.embedly-api-key-input-wrapper .invalid-outer-text {
+  color: #E44E46;
+}
+.key-icon {
+  visibility: visible;
+  position: absolute;
+  right: 7px;
+  bottom: 15%;
+}
+.key-icon:before {
+  border: 1px solid #ccc; /* circle border width */
+  border-radius: 50%; /* circle */
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+  color: #fff; /* dashicon color */
+  display: block
+  -webkit-font-smoothing: antialiased;
+  bottom: 15%; /* how to css? */
+}
+.locked-key-icon:before {
+  color: #A6A8AB;
+  content: '\f160';
+  border: 0px;
+}
+.unlocked-key-icon:before {
+  color: #A6A8AB;
+  content: "\f528";
+  border: 0px;
+}
+.valid-key-icon:before {
+  background-color: #4BBA80;
+  content: "\f147";
+}
+.invalid-key-icon:before {
+  content: "\f158";
+  background-color: #E44E46;
+}
+
+.embedly_key_input_test {
+  border: 1px solid;
+  border-radius: 0;
+}
+.invalid_key input[type="text"], textarea {
+  border-color: #E44E46;
+  background-color: #F7DFDF;
+}
+.valid_key input[type="text"], textarea {
+  border-color: #4BBA80;
+  background-color: #E5F2ED;
+}
+.locked_key input[type="text"], textarea {
+  border-color: #A6A8AB;
+  background-color: #F1F1F2;
+}
+.unlocked_key input[type="text"], textarea {
+  border-color: #A6A8AB;
+  background-color: #fff;
+}
+
+
