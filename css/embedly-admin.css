@@ -42,6 +42,7 @@ input[type="checkbox"]:checked:before {
   text-align: center;
   vertical-align: middle;
 }
+
 .embedly-ui-header-outer-wrapper {
   height:101px;
   border-bottom:1px solid #fff;
@@ -156,6 +157,17 @@ input[type="checkbox"]:checked:before {
 .advanced-wrapper .advanced-body {
   display: none;
   padding: 5px;
+}
+
+.advanced-wrapper .advanced-body h3 {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  font-weight: normal;
+  font-size: 14px;
+}
+.advanced-wrapper .advanced-body h4 {
+  font-weight: normal;
+  font-size: 14px;
 }
 
 .embedly-ui-providers {
@@ -359,7 +371,7 @@ hr {
 .embedly-api-key-input-container {
   display: inline-block;
   position: relative;
-  width: 85%;
+  width: 500px;
   font-family:monospace;
 }
 .embedly-max-width input[type="text"], textarea {
@@ -399,6 +411,7 @@ hr {
   color: #A6A8AB;
   content: "\f528";
   border: 0px;
+  font-size: 87%; /* the unlocked dashicon is a bit bigger by default */
 }
 .valid-key-icon:before {
   background-color: #4BBA80;
@@ -408,7 +421,18 @@ hr {
   content: "\f158";
   background-color: #E44E46;
 }
-
+.embedly-align-select-container {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.embedly-default-card-settings ul li {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+.max-width-input-container {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
 .embedly_key_input_test {
   border: 1px solid;
   border-radius: 0;

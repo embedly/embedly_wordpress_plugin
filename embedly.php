@@ -79,7 +79,7 @@ class WP_Embedly
         $this->embedly_options = array(
             'active' => true,
             'key' => '',
-            'card_chrome' => true,
+            'card_chrome' => false,
             'card_controls' => true,
             'card_align' => 'center',
             'card_theme' => 'light',
@@ -671,10 +671,9 @@ class WP_Embedly
                                value="<?php _e('Historical Analytics', 'embedly')?>"/>
                             </li>
                           </ul>
+                          <!-- LIST OF PROVIDERS LINK -->
+                          Check out our <strong><a href='http://embed.ly/providers' target="_blank">list of providers</a></strong>.
                         </div>
-
-                        <!-- LIST OF PROVIDERS LINK -->
-                        Check out our <strong><a href='http://embed.ly/providers' target="_blank">list of providers</a></strong>.
 
                         <!-- BEGIN Embedly API Key input Field -->
                         <hr>
@@ -698,7 +697,7 @@ class WP_Embedly
                                 <?php
                                   // determine if the key is set already.
                                   if ($valid_key) {
-                                      echo 'value="' . $this->embedly_options['key'] . '"';
+                                      echo 'value="' . $this->embedly_options['key'] . '" readonly';
                                   }
                                 ?>/>
                               <span
@@ -728,7 +727,7 @@ class WP_Embedly
                           <span class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></a>
                         </div>
                         <div class="advanced-body">
-                          Changing these settings will change how your future embeds appear.
+                          <h3>Changing these settings will change how your future embeds appear.</h3>
                           <div class="embedly-default-card-settings">
                             <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
                             <ul>
@@ -746,18 +745,21 @@ class WP_Embedly
                               <li>
                                 <input class='embedly-dark-checkbox' type='checkbox' value='checked' name='card_dark' <?php
                                   checked( $this->embedly_options['card_theme'], 'dark');
-                                  ?> />Cards for Dark Pages
+                                  ?> /> Light Text
                               </li>
                             </ul>
                             <!-- Width Input Area -->
-                            Max Width
-                            <input class='embedly-max-width' type="text" name="card_width" placeholder="100%, 300px, etc."
-                              <?php
-                                if(isset($this->embedly_options['card_width'])) {
-                                    echo 'value="' . $this->embedly_options['card_width'] . '"';
-                                }
-                                ?>/>
-                            (responsive if left blank)
+                            <div class="max-width-input-container">
+                              Max Width
+                              <input class='embedly-max-width' type="text" name="card_width" placeholder="100%, 300px, etc."
+                                <?php
+                                  if(isset($this->embedly_options['card_width'])) {
+                                      echo 'value="' . $this->embedly_options['card_width'] . '"';
+                                  }
+                                  ?>/>
+                              (responsive if left blank)
+                            </div>
+
                             <!-- Card Alignment Options -->
                             <div class="embedly-align-select-container embedly-di">
                               <ul class="align-select">
@@ -796,7 +798,7 @@ class WP_Embedly
 
 
                         <!-- Saving Settings Button (No longer required.) -->
-                        <div class="embedly-save-settings-input" >
+                        <div class="embedly-save-settings-input" hidden>
                           <input class="embedly-button" name="submit" type="submit" value="<?php
                             _e('Save', 'embedly');
                             ?>"/>

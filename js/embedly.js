@@ -123,21 +123,25 @@ jQuery(document).ready(function($) {
 
   // handle 'return' events inside key input field.
   $('#embedly_key_test').keypress(function(e) {
-    var attr = $(this).attr('readonly');
+    var attr = $(this).prop('readonly');
+    console.log(attr)
     // For some browsers, `attr` is undefined; for others,
     // `attr` is false.  Check for both.
     if (typeof attr !== typeof undefined && attr !== false) {
       // the field is readonly.
+      console.log('field is readonly')
       return
     } else if (e.which == 13) {
+      e.preventDefault();
       key_test($(this).val());
     }
   });
 
   // also support on focus out for key input
   $('#embedly_key_test').focusout(function(e) {
-    var attr = $(this).attr('readonly');
-    if (typeof attr == typeof undefined && attr == false) {
+    console.log('focusing out');
+    var attr = $(this).prop('readonly');
+    if (typeof attr != typeof undefined && attr == false) {
       // the field is NOT readonly, do the test
       key_test($(this).val());
     }
