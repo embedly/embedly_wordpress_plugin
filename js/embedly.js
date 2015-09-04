@@ -9,6 +9,14 @@
   * Project site: http://razorjack.net/quicksand
   * Github site: http://github.com/razorjack/quicksand
 **/
+  // valid class prefixes for modulation of key state
+var valid_states = [
+  'invalid',
+  'valid',
+  'locked',
+  'unlocked',
+  'lock-control',
+];
 
 jQuery(document).ready(function($) {
 
@@ -45,7 +53,6 @@ jQuery(document).ready(function($) {
     });
 
     var align = $(this).attr('align-value');
-    console.log(align);
     update_option('card_align', align);
 
   });
@@ -93,7 +100,6 @@ jQuery(document).ready(function($) {
   // given a key, value pair for a card setting, performs
   // ajax request to ajaxurl backend to update option
   function update_option(key, value) {
-    console.log("updating: " + key + ": " + value);
     $.post(
       ajaxurl,
       {
@@ -124,12 +130,10 @@ jQuery(document).ready(function($) {
   // handle 'return' events inside key input field.
   $('#embedly_key_test').keypress(function(e) {
     var attr = $(this).prop('readonly');
-    console.log(attr)
     // For some browsers, `attr` is undefined; for others,
     // `attr` is false.  Check for both.
     if (typeof attr !== typeof undefined && attr !== false) {
       // the field is readonly.
-      console.log('field is readonly')
       return
     } else if (e.which == 13) {
       e.preventDefault();
@@ -139,22 +143,12 @@ jQuery(document).ready(function($) {
 
   // also support on focus out for key input
   $('#embedly_key_test').focusout(function(e) {
-    console.log('focusing out');
     var attr = $(this).prop('readonly');
     if (typeof attr != typeof undefined && attr == false) {
       // the field is NOT readonly, do the test
       key_test($(this).val());
     }
   });
-
-  // valid class prefixes for modulation of key state
-  var valid_states = [
-    'invalid',
-    'valid',
-    'locked',
-    'unlocked',
-    'lock-control',
-  ];
 
   (function() {
     // clears any notifications that exist on load
@@ -213,6 +207,8 @@ jQuery(document).ready(function($) {
     // set invalid key
     clear_states();
     $('#embedly_key_test').parent().addClass('invalid_key');
+
+    clear_notifications();
     // $('#embedly_key_test').removeClass('valid_key').addClass('invalid_key');
     valid_states.forEach(function(item) {
       $('.key-icon').removeClass(item + '-key-icon').addClass('invalid-key-icon');

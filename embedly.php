@@ -440,6 +440,59 @@ class WP_Embedly
         }
     }
 
+    /////////////////////////// BEGIN TEMPLATE FUNCTIONS FOR FORM LOGIC
+    function get_class_embedly_api_key_input_container() {
+         $class = 'class="embedly-api-key-input-container';
+          if ($this->valid_key()) {
+              $class .= ' locked_key';
+          }
+          $class .= '"';
+          echo $class;
+    }
+
+    function get_value_embedly_key_test() {
+        if ($this->valid_key()) {
+          echo 'value="' . $this->embedly_options['key'] . '" readonly';
+        }
+    }
+
+    function get_class_key_icon_span() {
+        $class = 'class="dashicons key-icon lock-control-key-icon';
+        if ($this->valid_key()) {
+            // set the key icon if necessary.
+            $class .= ' locked-key-icon';
+        }
+        $class .= '"';
+        echo $class;
+    }
+
+    function valid_key() {
+        return !empty($this->embedly_options['key']);
+    }
+
+    function get_class_api_key_input_container() {
+        $class = 'class="embedly-api-key-input-container';
+         if ($this->valid_key()) {
+             $class .= ' locked_key';
+         }
+         $class .= '"';
+         echo $class;
+    }
+
+    function get_value_embedly_max_width() {
+        if(isset($this->embedly_options['card_width'])) {
+            echo 'value="' . $this->embedly_options['card_width'] . '"';
+        }
+    }
+
+    function get_current_align() {
+        $current_align = 'center'; // default if not set
+        if(isset($this->embedly_options['card_align'])) {
+          $current_align = $this->embedly_options['card_align'];
+        }
+        return $current_align;
+    }
+    /////////////////////////// END TEMPLATE FUNCTIONS FOR FORM LOGIC
 
     /**
      * The Admin Page. Abandon all hope, all ye' who enter here.
@@ -449,52 +502,6 @@ class WP_Embedly
         global $wpdb;
 
         ######## BEGIN PROCESSING ALL FORM DATA #########
-
-        #Card Width:
-        // if user deleted width field and then clicked save, delete the card option.
-        // otherise leave it if, say, the page was just refreshed.
-        // if(isset($_POST) && !empty($_POST) &&
-        //     !isset($_POST['card_width']) && isset($this->embedly_options['card_width'])) {
-        //     $this->embedly_delete_option('card_width');
-        // }
-
-        // if width field is set, try to parse the value
-        // TODO: @cstiteler: warn user if this fails/invalid
-        // if(isset($_POST['card_width'])) {
-        //     $cleaned = $this->handle_width_input($_POST['card_width']);
-        //     if($cleaned == '') {
-        //         // deleting option defaults to responsive cards
-        //         $this->embedly_delete_option('card_width');
-        //     } else {
-        //         $this->embedly_save_option('card_width', $cleaned);
-        //     }
-        // }
-
-        // for each align selection, if checked, set option to align value
-        // if(isset($_POST) && !empty($_POST)) {
-        //     foreach(
-        //         array(
-        //             'card_align_left' => 'left',
-        //             'card_align_center' => 'center',
-        //             'card_align_right' => 'right',
-        //         )
-        //         as $key => $value) {
-        //             if(isset($_POST[$key]) && $_POST[$key] == 'checked') {
-        //                 $this->embedly_save_option('card_align', $value);
-        //             }
-        //     }
-        // }
-
-        // Boolean card settings:
-        // if (isset($_POST['minimal'])) {
-        //     $this->embedly_save_option('card_chrome', $_POST['minimal'] == 'checked' ? false : true );
-        // }
-        // if (isset($_POST['card_controls'])) {
-        //     $this->embedly_save_option('card_controls', $_POST['card_controls'] == 'checked' ? true : false );
-        // }
-        // if (isset($_POST['card_dark'])) {
-        //     $this->embedly_save_option('card_theme', $_POST['card_dark'] == 'checked' ? 'dark' : 'light' );
-        // }
 
         // KEY INPUT:
         // empty key set when saving
@@ -546,8 +553,7 @@ class WP_Embedly
                 <div class="embedly-ui">
         <?php
             // Decide which modal to display.
-            if( isset($this->embedly_options['key']) && !empty($this->embedly_options['key']) ) {  ?>
-
+            if( isset($this->embedly_options['key']) && !empty($this->embedly_options['key']) ) { ?>
                     <!-- DELETE FOR PRODUCTION -->
                     <?php
                     global $EMBEDLY_DEBUG;
@@ -559,21 +565,23 @@ class WP_Embedly
                         <h1 class="invalid-outer-text">Invalid API key. Try again!</h1>
                         <div
                           <?php
-                             $valid_key = !empty($this->embedly_options['key']);
-                             $class = 'class="embedly-api-key-input-container';
-                              if ($valid_key) {
-                                  $class .= ' locked_key';
-                              }
-                              $class .= '"';
-                              echo $class;
+                             $this->get_class_api_key_input_container();
+                             // $valid_key = !empty($this->embedly_options['key']);
+                             // $class = 'class="embedly-api-key-input-container';
+                             //  if ($valid_key) {
+                             //      $class .= ' locked_key';
+                             //  }
+                             //  $class .= '"';
+                             //  echo $class;
                           ?>>
                           <input id="embedly_key_test" type="text" class="embedly_key_input_test"
                             placeholder="<?php _e('Enter your API Key', 'embedly'); ?>"
                             <?php
+                              $this->get_value_embedly_key_test();
                               // determine if the key is set already.
-                              if ($valid_key) {
-                                  echo 'value="' . $this->embedly_options['key'] . '"';
-                              }
+                              // if ($valid_key) {
+                              //     echo 'value="' . $this->embedly_options['key'] . '"';
+                              // }
                             ?>/>
                           <span
                             <?php
@@ -683,32 +691,35 @@ class WP_Embedly
                             <h1 class="valid-outer-text">Lookin' Good</h1>
                             <h1 class="invalid-outer-text">Invalid API key. Try again!</h1>
                             <div
+                              <?php $this->get_class_embedly_api_key_input_container(); ?>
                               <?php
-                                 $valid_key = !empty($this->embedly_options['key']);
-                                 $class = 'class="embedly-api-key-input-container';
-                                  if ($valid_key) {
-                                      $class .= ' locked_key';
-                                  }
-                                  $class .= '"';
-                                  echo $class;
+                                 // $valid_key = !empty($this->embedly_options['key']);
+                                 // $class = 'class="embedly-api-key-input-container';
+                                 //  if ($valid_key) {
+                                 //      $class .= ' locked_key';
+                                 //  }
+                                 //  $class .= '"';
+                                 //  echo $class;
                               ?>>
                               <input id="embedly_key_test" type="text" class="embedly_key_input_test"
                                 placeholder="<?php _e('Enter your API Key', 'embedly'); ?>"
                                 <?php
+                                  $this->get_value_embedly_key_test();
                                   // determine if the key is set already.
-                                  if ($valid_key) {
-                                      echo 'value="' . $this->embedly_options['key'] . '" readonly';
-                                  }
+                                  // if ($valid_key) {
+                                  //     echo 'value="' . $this->embedly_options['key'] . '" readonly';
+                                  // }
                                 ?>/>
                               <span
                                 <?php
-                                  $class = 'class="dashicons key-icon lock-control-key-icon';
-                                  if ($valid_key) {
-                                      // set the key icon if necessary.
-                                      $class .= ' locked-key-icon';
-                                  }
-                                  $class .= '"';
-                                  echo $class;
+                                  $this->get_class_key_icon_span();
+                                  // $class = 'class="dashicons key-icon lock-control-key-icon';
+                                  // if ($valid_key) {
+                                  //     // set the key icon if necessary.
+                                  //     $class .= ' locked-key-icon';
+                                  // }
+                                  // $class .= '"';
+                                  // echo $class;
                                 ?>>
                               </span>
                             </div>
@@ -753,9 +764,10 @@ class WP_Embedly
                               Max Width
                               <input class='embedly-max-width' type="text" name="card_width" placeholder="100%, 300px, etc."
                                 <?php
-                                  if(isset($this->embedly_options['card_width'])) {
-                                      echo 'value="' . $this->embedly_options['card_width'] . '"';
-                                  }
+                                  $this->get_value_embedly_max_width();
+                                  // if(isset($this->embedly_options['card_width'])) {
+                                  //     echo 'value="' . $this->embedly_options['card_width'] . '"';
+                                  // }
                                   ?>/>
                               (responsive if left blank)
                             </div>
@@ -764,11 +776,12 @@ class WP_Embedly
                             <div class="embedly-align-select-container embedly-di">
                               <ul class="align-select">
                                 <?php
+                                  $current_align = $this->get_current_align();
                                   $sel = ' selected-align-select "';
-                                  $current_align = 'center'; // default if not set
-                                  if(isset($this->embedly_options['card_align'])) {
-                                      $current_align = $this->embedly_options['card_align'];
-                                  }
+                                  // $current_align = 'center'; // default if not set
+                                  // if(isset($this->embedly_options['card_align'])) {
+                                  //     $current_align = $this->embedly_options['card_align'];
+                                  // }
                                   ?>
                                 <li><span class=
                                   <?php echo '"dashicons di-none align-icon' . ($current_align == 'left' ? $sel : '"'); ?>
@@ -859,9 +872,11 @@ class WP_Embedly
                               ?>" name="embedly_key" type="text" class="<?php
                               ?>embedly_key_input"
                               <?php
-                                if (!empty($this->embedly_options['key'])) {
-                                    echo 'value="' . $this->embedly_options['key'] . '"';
-                                }?>/>
+                                $this->get_value_embedly_key_test();
+                                // if (!empty($this->embedly_options['key'])) {
+                                //     echo 'value="' . $this->embedly_options['key'] . '"';
+                                // }
+                                ?>/>
                             <input class="embedly-button" name="Submit" type="submit" value="<?php
                               _e('Submit', 'embedly');?>"/>
                           </div>
