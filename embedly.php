@@ -126,6 +126,10 @@ class WP_Embedly
             $this,
             'embedly_ajax_get_active_viewers'
         ));
+        add_action('wp_ajax_embedly_analytics_historical_viewers', array(
+            $this,
+            'embedly_ajax_get_historical_viewers'
+        ));
 
         add_action('wp_ajax_embedly_update_option', array(
             $this,
@@ -172,18 +176,64 @@ class WP_Embedly
     }
 
 
-    /**
-    * Makes a call for realtime analytics, and returns data to front end
-    **/
-    function embedly_ajax_get_active_viewers()
+    function embedly_ajax_get_historical_viewers()
     {
-        if (isset($this->embedly_options['key']) && !empty($this->embedly_options['key'])) {
+        // begin delete after impl. analytics key
+        // until analytics key implemented.. just return an error
+        echo '{"err": true}';
+        wp_die();
+        // end delete after impl. analytics key
+
+        // will eventually need to check also if analytics key exists..
+        if($this->valid_key()) {
+            $end = date("Ymd");
+            $lastweek = time() - (7 * 24 * 60 * 60);
+            $start = date("Ymd", $lastweek);
+            // turn off till analytics
+            $analytics_key = $this->embedly_options['analytics_key'];
+
+            $historical_url =
+                "https://t.embed.ly/2/analytics/stats?".
+                "start=" . $start .
+                "&end=" . $end .
+                "&key=" . $analytics_key;
+
             // create curl resource
             $ch = curl_init();
             // set url
             curl_setopt($ch,
                 CURLOPT_URL,
-                "https://narrate.embed.ly/1/series?key=" . $this->embedly_options['key']);
+                $historical_url);
+            //return the transfer as a string
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            // $output contains the output string
+            $output = curl_exec($ch);
+            // close curl resource to free up system resources
+            curl_close($ch);
+            // send output to frontend
+            echo $output;
+            // done ajax call
+            wp_die();
+        } else {
+            // there was some key error
+            echo '{"err": true}';
+            wp_die();
+        }
+    }
+
+    /**
+    * Makes a call for realtime analytics, and returns data to front end
+    **/
+    function embedly_ajax_get_active_viewers()
+    {
+        if ($this->valid_key()) {
+            $narrate_url = "https://narrate.embed.ly/1/series?key=" . $this->embedly_options['key'];
+            // create curl resource
+            $ch = curl_init();
+            // set url
+            curl_setopt($ch,
+                CURLOPT_URL,
+                $narrate_url);
             //return the transfer as a string
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             // $output contains the output string
@@ -202,7 +252,6 @@ class WP_Embedly
 
     }
 
-
     /**
      * Load plugin translation
      */
@@ -210,7 +259,6 @@ class WP_Embedly
     {
         load_plugin_textdomain('embedly', false, dirname(plugin_basename(__FILE__)) . '/lang/');
     }
-
 
     /**
      * Deactivation Hook
@@ -241,7 +289,6 @@ class WP_Embedly
             }
         }
     }
-
 
     /**
      * Adds toplevel Embedly settings page
@@ -624,12 +671,12 @@ class WP_Embedly
                               <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly');"
                                 value="<?php _e('Realtime Analytics', 'embedly')?>"/>
                             </li>
-                            <li>
-                              <h1 class="weekly-count">-</h1>
+                            <li class="historical-viewers">
+                              <h1 class="weekly-count">Computing...</h1>
                               People have <strong>viewed</strong> an embed in the <strong>last week</strong>.
                               <br/> <!-- is this acceptable? need to format my h tags for this page.-->
-                              <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly');"
-                               value="<?php _e('Historical Analytics', 'embedly')?>"/>
+<!--                               <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly');"
+                               value="<?php _e('Historical Analytics', 'embedly')?>"/> -->
                             </li>
                           </ul>
                           <!-- LIST OF PROVIDERS LINK -->

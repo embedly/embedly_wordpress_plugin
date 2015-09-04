@@ -39,6 +39,31 @@ jQuery(document).ready(function($) {
     setTimeout(load_actives, 10000);
   })();
 
+  (function load_historical() {
+    $.post(
+      ajaxurl,
+      {'action': 'embedly_analytics_historical_viewers'},
+      function(response) {
+        var times = JSON.parse(response);
+        if(times.err) {
+          impr = "No Analytics"
+        } else {
+          var impr = 0;
+          times.forEach(function(item) {
+            impr += item.actions.load;
+          });
+        }
+        $(".embedly-analytics .historical-viewers .weekly-count").html(add_commas(impr));
+      });
+  })();
+
+  function add_commas(val){
+    while (/(\d+)(\d{3})/.test(val.toString())){
+      val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
+    }
+    return val;
+  }
+
   // When the alignment is selected, unselect other alignments
   $('.align-icon').mousedown(function(e) {
 
