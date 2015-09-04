@@ -467,7 +467,7 @@ class WP_Embedly
     }
 
     function valid_key() {
-        return !empty($this->embedly_options['key']);
+        return isset($this->embedly_options['key']) && !empty($this->embedly_options['key']);
     }
 
     function get_class_api_key_input_container() {
@@ -500,60 +500,13 @@ class WP_Embedly
     function embedly_settings_page()
     {
         global $wpdb;
-
-        ######## BEGIN PROCESSING ALL FORM DATA #########
-
-        // KEY INPUT:
-        // empty key set when saving
-        if (isset($_POST['embedly_key']) && (empty($_POST['embedly_key']) || $_POST['embedly_key'] == __('Please enter your key...', 'embedly'))) {
-            $this->embedly_options['key'] = '';
-            update_option('embedly_settings', $this->embedly_options);
-            $successMessage = __("You didn't enter a key to validate, so for now you only have basic capabilities.", 'embedly');
-        }
-
-        // user inputted key when saving
-        elseif (isset($_POST['embedly_key']) && !empty($_POST['embedly_key'])) {
-            // user key is valid
-            $key = trim($_POST['embedly_key']);
-
-            // check if key is valid with embedly_acct_has_feature
-            if ($this->embedly_acct_has_feature('oembed', $key)) {
-                $this->embedly_options['key'] = $key;
-                update_option('embedly_settings', $this->embedly_options);
-                $this->embedly_options = get_option('embedly_settings');
-                $successMessage        = __('Your API key is now tucked away for safe keeping.', 'embedly');
-                $keyValid              = true;
-            }
-            else {
-                $keyValid     = false;
-                $errorMessage = __('You have entered an invalid API key. Please try again.', 'embedly');
-            }
-        }
-
-        // key is already saved
-        elseif (!isset($_POST['embedly_key']) && isset($this->embedly_options['key']) && !empty($this->embedly_options['key'])) {
-            $keyValid = true;
-        }
-
-        // key was set in older version, needs to be resaved.
-        elseif (get_option('embedly_key') && (!isset($this->embedly_options['key']) || empty($this->embedly_options['key']))) {
-            // Backwards compatible
-            $this->embedly_options['key'] = get_option('embedly_key');
-            update_option('embedly_settings', $this->embedly_options);
-            $this->embedly_options = get_option('embedly_settings');
-            delete_option('embedly_key');
-            $keyValid = true;
-        }
-
-        ######## END PROCESSING ALL FORM DATA #########
-
         ######## BEGIN FORM HTML #########
         ?>
             <div class="embedly-wrap">
                 <div class="embedly-ui">
         <?php
             // Decide which modal to display.
-            if( isset($this->embedly_options['key']) && !empty($this->embedly_options['key']) ) { ?>
+            if( $this->valid_key() ) { ?>
                     <!-- DELETE FOR PRODUCTION -->
                     <?php
                     global $EMBEDLY_DEBUG;
@@ -691,37 +644,11 @@ class WP_Embedly
                             <h1 class="valid-outer-text">Lookin' Good</h1>
                             <h1 class="invalid-outer-text">Invalid API key. Try again!</h1>
                             <div
-                              <?php $this->get_class_embedly_api_key_input_container(); ?>
-                              <?php
-                                 // $valid_key = !empty($this->embedly_options['key']);
-                                 // $class = 'class="embedly-api-key-input-container';
-                                 //  if ($valid_key) {
-                                 //      $class .= ' locked_key';
-                                 //  }
-                                 //  $class .= '"';
-                                 //  echo $class;
-                              ?>>
+                              <?php $this->get_class_embedly_api_key_input_container(); ?>>
                               <input id="embedly_key_test" type="text" class="embedly_key_input_test"
                                 placeholder="<?php _e('Enter your API Key', 'embedly'); ?>"
-                                <?php
-                                  $this->get_value_embedly_key_test();
-                                  // determine if the key is set already.
-                                  // if ($valid_key) {
-                                  //     echo 'value="' . $this->embedly_options['key'] . '" readonly';
-                                  // }
-                                ?>/>
-                              <span
-                                <?php
-                                  $this->get_class_key_icon_span();
-                                  // $class = 'class="dashicons key-icon lock-control-key-icon';
-                                  // if ($valid_key) {
-                                  //     // set the key icon if necessary.
-                                  //     $class .= ' locked-key-icon';
-                                  // }
-                                  // $class .= '"';
-                                  // echo $class;
-                                ?>>
-                              </span>
+                                <?php $this->get_value_embedly_key_test(); ?>/>
+                              <span <?php $this->get_class_key_icon_span(); ?>> </span>
                             </div>
                             <h1 class="invalid-outer-text">*Required Field</h1>
                           </div>
@@ -744,7 +671,6 @@ class WP_Embedly
                             <ul>
                               <li>
                                 <input class='embedly-minimal-checkbox' type='checkbox' value='checked' name='minimal' <?php
-                                  // returns 'checked' html attr if option 'card_chrome' is set to false
                                   checked( $this->embedly_options['card_chrome'], 0);
                                   ?> /> Minimal Design
                               </li>
@@ -763,12 +689,7 @@ class WP_Embedly
                             <div class="max-width-input-container">
                               Max Width
                               <input class='embedly-max-width' type="text" name="card_width" placeholder="100%, 300px, etc."
-                                <?php
-                                  $this->get_value_embedly_max_width();
-                                  // if(isset($this->embedly_options['card_width'])) {
-                                  //     echo 'value="' . $this->embedly_options['card_width'] . '"';
-                                  // }
-                                  ?>/>
+                                <?php $this->get_value_embedly_max_width(); ?>/>
                               (responsive if left blank)
                             </div>
 
@@ -778,11 +699,7 @@ class WP_Embedly
                                 <?php
                                   $current_align = $this->get_current_align();
                                   $sel = ' selected-align-select "';
-                                  // $current_align = 'center'; // default if not set
-                                  // if(isset($this->embedly_options['card_align'])) {
-                                  //     $current_align = $this->embedly_options['card_align'];
-                                  // }
-                                  ?>
+                                ?>
                                 <li><span class=
                                   <?php echo '"dashicons di-none align-icon' . ($current_align == 'left' ? $sel : '"'); ?>
                                   title="Left" align-value="left">
@@ -819,7 +736,7 @@ class WP_Embedly
                       </div>
                     </div>
                   </form>
-                <?php
+                <?php  // ELSE: Key is not entered
               } else {  ?>
                   <!-- MODAL FOR NEW ACCOUNTS -->
                 <div class="embedly-ui">
@@ -834,9 +751,9 @@ class WP_Embedly
                   </div>
                   <div class="embedly-ui-key-wrap">
                     <div class="embedly_key_form embedly-ui-key-form">
-
                       <!-- Notifications -->
                       <?php
+                        get_notification();
                         if (isset($errorMessage)) { ?>
                       <div class="embedly-error embedly-message" id="embedly-error">
                         <p><strong><?php echo $errorMessage;?></strong></p>
