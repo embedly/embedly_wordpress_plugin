@@ -18,8 +18,15 @@ var valid_states = [
   'lock-control',
 ];
 
-jQuery(document).ready(function($) {
+var preview_map = {
+  'card_chrome': 'data-card-chrome',
+  'card_controls': 'data-card-controls',
+  'card_width': 'data-card-width',
+  'card_theme': 'data-card-theme',
+  'card_align': 'data-card-align',
+}
 
+jQuery(document).ready(function($) {
   // NEW STUFF:
   $(".embedly-align-select-container  a").click(function(){
     $(this).parent().addClass("selected").siblings().removeClass("selected");
@@ -86,37 +93,30 @@ jQuery(document).ready(function($) {
 
     var align = $(this).attr('align-value');
     update_option('card_align', align);
-    update_preview('data-card-align', align);
   });
 
   // immediate settings
   $('.traditional-card-checkbox').click(function() {
     update_option('card_chrome', $(this).is(':checked') ? 1 : 0);
-    update_preview('data-card-chrome', $(this).is(':checked') ? '1' : '0');
   });
 
   $('.embedly-social-checkbox').click(function() {
     update_option('card_controls', $(this).is(':checked') ? 1 : 0);
-    update_preview('data-card-controls', $(this).is(':checked') ? '1' : '0');
   });
 
   $('.embedly-dark-checkbox').click(function() {
     value = $(this).is(':checked') ? 'dark' : 'light';
     update_option('card_theme', value);
-    update_preview('data-card-theme', value);
-
   });
 
   $('.embedly-max-width').focusout(function(e) {
-    update_option('card_width', $(this).val());
-    // how will I error handle this? logic is in backend.. pass value back out?
-    update_preview('data-card-width', $(this).val());
+    valid_width = update_option('card_width', $(this).val());
   });
 
   $('.embedly-max-width').keypress(function(e) {
     if(e.which == 13) {
-      update_option('card_width', $(this).val());
-      update_preview('data-card-width', $(this).val());
+      valid_width = update_option('card_width', $(this).val());
+      console.log('valid width: ' + valid_width);
       return false;
     }
   });
@@ -148,6 +148,12 @@ jQuery(document).ready(function($) {
         'value': value,
       }, function(response) {
         console.log(response);
+        if( key == 'card_width' ) {
+          value = response;
+        }
+        // returns valid card width after validation, if nec.
+        update_preview(preview_map[key], String(value));
+        // return response;
       });
   }
 
@@ -170,8 +176,6 @@ jQuery(document).ready(function($) {
   // handle 'return' events inside key input field.
   $('#embedly_key_test').keypress(function(e) {
     var attr = $(this).prop('readonly');
-    // For some browsers, `attr` is undefined; for others,
-    // `attr` is false.  Check for both.
     if (typeof attr !== typeof undefined && attr !== false) {
       // the field is readonly.
       return
@@ -269,11 +273,6 @@ jQuery(document).ready(function($) {
     }
   });
 
-  var current_card = {
-    "data-card-chrome": '1',
-    "data-card-controls": '0',
-  };
-
   function build_card() {
     // clone the template
     clone = $('a.embedly-card-template').clone();
@@ -293,6 +292,19 @@ jQuery(document).ready(function($) {
     // then render the new card
     build_card();
   }
+
+  (function initialize_preview() {
+    Object.keys(preview_map).forEach(function(key) {
+      // current card is set globally server side.
+      // contains a map of "card_chrome" => "1" for all set options
+      // if set, update the template for the initial card.
+      if(current_card[key]) {
+        update_preview(preview_map[key], current_card[key]);
+      }
+    });
+    // when done, build it.
+    build_card();
+  })();
 
 
 // END NEW STUFF

@@ -110,7 +110,7 @@ input[type="checkbox"]:checked:before {
   margin-bottom: 30px;
 }
 .card-preview-container {
-  width: 75%;
+  width: 70%;
   float: right;
   vertical-align: middle;
 }

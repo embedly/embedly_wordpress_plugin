@@ -55,6 +55,15 @@ if(!defined('SIGNUP_URL')) {
 // DEBUGGING
 $EMBEDLY_DEBUG = false;
 
+// maps local settings key => api param name
+$settings_map = array(
+    'card_controls' => 'cards_controls',
+    'card_chrome' => 'cards_chrome',
+    'card_theme' => 'cards_theme',
+    'card_width' => 'cards_width',
+    'card_align' => 'cards_align',
+);
+
 /**
  * Embedly WP Class
  */
@@ -170,6 +179,7 @@ class WP_Embedly
         } else {
             $this->embedly_save_option($_POST['key'], $_POST['value']);
         }
+        // return the width of the card (only back end validated input)
         echo $this->embedly_options['card_width'];
 
         wp_die();
@@ -352,15 +362,7 @@ class WP_Embedly
     **/
     function build_uri_with_options()
     {
-        // maps local settings key => api param name
-        $settings_map = array(
-            'card_controls' => 'cards_controls',
-            'card_chrome' => 'cards_chrome',
-            'card_theme' => 'cards_theme',
-            'card_width' => 'cards_width',
-            'card_align' => 'cards_align',
-        );
-
+        global $settings_map;
         // gets the subset of settings that are actually set in plugin
         $set_options = array();
         foreach ($settings_map as $setting => $api_param) {
@@ -538,6 +540,19 @@ class WP_Embedly
         }
         return $current_align;
     }
+
+    // builds a <script> tag that globalizes the current card settings for preview init
+    function get_script_embedly_current_card() {
+        global $settings_map;
+        $current_card_script = "<script> var current_card = {";
+        foreach ($settings_map as $setting => $api_param) {
+          if(isset($this->embedly_options[$setting])) {
+            $current_card_script .= "'" . $setting . "': '" . $this->embedly_options[$setting] . "',";
+          }
+        }
+        $current_card_script .= '}</script>';
+        echo $current_card_script;
+    }
     /////////////////////////// END TEMPLATE FUNCTIONS FOR FORM LOGIC
 
     /**
@@ -549,6 +564,7 @@ class WP_Embedly
         ######## BEGIN FORM HTML #########
         ?>
         <head>
+          <?php $this->get_script_embedly_current_card(); ?>
           <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
         <head>
 
@@ -751,7 +767,9 @@ class WP_Embedly
                             </div>
                             <!-- preview card.. work in progress -->
                             <div class="card-preview-container">
-                              <a class="embedly-card-template" href="https://vimeo.com/135768853"></a>
+                              <a class="embedly-card-template"
+                                href="https://vimeo.com/80836225">
+                              </a>
                             </div>
                           </div>
                         </div> <!-- END 'Options' Section -->
