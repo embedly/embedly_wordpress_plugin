@@ -852,6 +852,12 @@ class WP_Embedly
                   </div>
                 </div>
               <?php } // END if/else for new/existing account
+              ?>
+                <footer class="embedly-footer">
+                  &copy; <?php _e(date('Y') . ' All Rights Reserved ', 'embedly'); ?>
+                  <span class="dashicons dashicons-heart"></span>
+                  Built in Boston
+                </footer> <?php
     } // END settings page function
 } // END WP_Embedly class
 
