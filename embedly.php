@@ -778,7 +778,7 @@ class WP_Embedly
                       </div>
                     </div>
                   </div>
-                  <div class="embedly-ui-key-wrap">
+                  <div class="embedly-ui-key-wrap embedly-new-user-modal">
                     <div class="embedly_key_form embedly-ui-key-form">
                       <!-- Notifications -->
                       <?php
@@ -803,17 +803,32 @@ class WP_Embedly
                       </div>
                       <!-- END Notifications -->
 
-                      <div class="embedly-sign-up-hero-text">
-                        <h2 class="section-label">
-                          <?php _e("In order to use the Embedly Wordpress Plugin you need to sign up for an API Key. " .
-                            "Don't worry, it takes less than 2 minutes.", 'embedly');?>
-                        </h2>
+
+                      <!-- HERO TEXT -->
+                      <h1><strong>Embed content from any site!</strong></h1>
+
+
+                      <!-- Blurb -->
+                      <h3>
+                        <span class="dashicons dashicons-twitter"></span>
+                        We now support <strong>Twitter</strong>! Check out our
+                        <a href="http://embed.ly/providers" target="_blank"><strong>long list of providers</strong>.</a>
+                      </h3>
+                        <h3>Getting started? <strong>Learn more above</strong> about embedly cards for Wordpress.</h3>
+
+                      <!-- Create an embed.ly account button -->
+                      <div class="embedly-create-account-btn-wrap">
+                        <input class="embedly-button" type="button" onclick=
+                          <?php echo '"' . "window.open('" . SIGNUP_URL . "');" . '"' ?>
+                          value="<?php _e('GET API KEY', 'embedly')?>"/>
                       </div>
 
+
+                      &nbsp;
+
                         <!-- BEGIN Embedly API Key input Field -->
-                        <hr>
                         <div class="embedly-key-body">
-                          <h3>YOUR EMBEDLY API KEY</h3>
+                          <h3><?php _e('GOT YOUR API KEY? PASTE IT HERE', 'embedly'); ?></h3>
                           <div class="embedly-api-key-input-wrapper">
                             <h1 class="valid-outer-text">Lookin' Good</h1>
                             <h1 class="invalid-outer-text">Invalid API key. Try again!</h1>
@@ -827,34 +842,12 @@ class WP_Embedly
                             <h1 class="invalid-outer-text">*Required Field</h1>
                           </div>
                         </div>
-                        <!-- END Embedly API Key input Field -->
-<!--                       <form id="embedly_key_form" method="POST" action="">
-                        <div class="embedly-input-wrapper">
-                          <div class="embedly-api-key-input">
-                            <input <?php
-                              ?>id="embedly_key" placeholder="<?php
-                              _e('Enter your API Key', 'embedly');
-                              ?>" name="embedly_key" type="text" class="<?php
-                              ?>embedly_key_input"
-                              <?php
-                                $this->get_value_embedly_key_test();
-                                // if (!empty($this->embedly_options['key'])) {
-                                //     echo 'value="' . $this->embedly_options['key'] . '"';
-                                // }
-                                ?>/>
-                            <input class="embedly-button" name="Submit" type="submit" value="<?php
-                              _e('Submit', 'embedly');?>"/>
-                          </div>
-                        </div> -->
 
-                        <!-- Create an embed.ly account -->
-                        <div class="embedly-create-account-btn-wrap">
-                          <input class="embedly-button" type="button" onclick=
-                            <?php echo '"' . "window.open('" . SIGNUP_URL . "');" . '"' ?>
-                            value="<?php _e('Create Account', 'embedly')?>"/>
-                        </div>
-
+                      <form id="embedly_key_form" method="POST" action="">
+                        <input class="embedly-button" name="Submit" type="submit" value="<?php
+                          _e('ACTIVATE PLUGIN', 'embedly');?>"/>
                       </form>
+
                     </div>
                   </div>
                 </div>

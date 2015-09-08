@@ -6,19 +6,13 @@
 }
 .embedly-ui {
   background:#fff;
-  /*border-radius:10px;*/
-  /*border:1px solid #d7d7d7;*/
-  /*-webkit-box-shadow:inset 0 0 2px rgba(0,0,0,0.2);*/
-  /*-moz-box-shadow:inset 0 0 2px rgba(0,0,0,0.2);*/
-  /*-ms-box-shadow:inset 0 0 2px rgba(0,0,0,0.2);*/
-  /*box-shadow:inset 0 0 2px rgba(0,0,0,0.2);*/
 }
 /* Overrides color of checkmarks in checkboxes*/
 input[type="checkbox"]:checked:before {
   color: #36495e;
 }
 
-.embedly-ui .section-label {
+/*.embedly-ui .section-label {
   font-family: 'Cabin', sans-serif;
   color:#7b7b7b;
   font-size:18px;
@@ -27,7 +21,7 @@ input[type="checkbox"]:checked:before {
   margin:0 0 14px;
   width:78%;
   float:left;
-}
+}*/
 .embedly-ui a {
   text-decoration:none;
   color:#36495e;
@@ -76,11 +70,6 @@ input[type="checkbox"]:checked:before {
   margin:30px;
   background:#fff;
   padding:1px;
-  /*border-radius:5px;*/
-/*  -webkit-box-shadow:0 1px 0 #d7d7d7;
-  -moz-box-shadow:0 1px 0 #d7d7d7;
-  -ms-box-shadow:0 1px 0 #d7d7d7;
-  box-shadow:0 1px 0 #d7d7d7;*/
 }
 .embedly-ui-key-wrap p {
   font-size:12px;
@@ -95,20 +84,20 @@ input[type="checkbox"]:checked:before {
   border-radius:0px;
   padding:14px;
 }
-.embedly-input-wrapper {
+/*.embedly-input-wrapper {
   margin-top: 30px;
   margin-bottom: 30px;
   position:relative;
-}
+}*/
 .embedly-api-key-input {
   width:65%;
   text-align: center;
 }
-.embedly-api-key-input input {
+/*.embedly-api-key-input input {
   display:inline-block;
   float:center;
-}
-.embedly-lock-control {
+}*/
+/*.embedly-lock-control {
   position:absolute;
   top:23px;
   right:15.6%;
@@ -117,14 +106,14 @@ input[type="checkbox"]:checked:before {
   width:15px;
   background:url('../img/lock.png') no-repeat 0 0;
   text-indent:-9999em;
-}
-.embedly-unlocked {
+}*/
+/*.embedly-unlocked {
   background-position:0 0;
-}
-.embedly-locked {
+}*/
+/*.embedly-locked {
   background-position: 0 -19px;
-}
-.embedly-ui-key-form input.embedly_key_input {
+}*/
+/*.embedly-ui-key-form input.embedly_key_input {
   width:85%;
   background:#fcfcfc;
   height:32px;
@@ -138,8 +127,8 @@ input[type="checkbox"]:checked:before {
   color:#7b7b7b;
   font-family:monospace;
   font-size:14px;
-}
-.embedly-ui-key-form input.embedly_key_input.invalid {
+}*/
+/*.embedly-ui-key-form input.embedly_key_input.invalid {
   background: rgba(255,0,0,0.1);
   border-color:rgba(255,0,0,0.4);
   color:rgba(255,0,0,0.6);
@@ -147,12 +136,11 @@ input[type="checkbox"]:checked:before {
   -moz-box-shadow:inset 0 0 4px rgba(255,0,0,0.4);
   -ms-box-shadow:inset 0 0 4px rgba(255,0,0,0.4);
   box-shadow:inset 0 0 4px rgba(255,0,0,0.4);
-}
-.embedly-ui-key-form input.embedly_key_input.embedly-locked-input {
+}*/
+/*.embedly-ui-key-form input.embedly_key_input.embedly-locked-input {
   background:#eee;
   color:#bbb;
-}
-
+}*/
 /*styles for advanced dropdown*/
 .advanced-wrapper .advanced-body {
   display: none;
@@ -162,16 +150,15 @@ input[type="checkbox"]:checked:before {
   margin-top: 30px;
   margin-bottom: 30px;
 }
-.advanced-wrapper .advanced-body h4 {
+/*.advanced-wrapper .advanced-body h4 {
   font-weight: normal;
   font-size: 14px;
-}
+}*/
 
-.embedly-ui-providers {
+/*.embedly-ui-providers {
   padding-left: 30px;
   padding-bottom: 10px;
-  /*padding: 7px;*/
-}
+}*/
 .embedly-button {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -210,14 +197,14 @@ input[type="checkbox"]:checked:before {
 #wpbody-content {
   background-color:#FFF;
 }
-.embedly-icon-wrapper {
+/*.embedly-icon-wrapper {
   width:100%;
   height:100%;
   position:relative;
   top:0;
   left:0;
-}
-.embedly-icon-wrapper img {
+}*/
+/*.embedly-icon-wrapper img {
   height:16px;
   width:16px;
   position:absolute;
@@ -230,11 +217,11 @@ input[type="checkbox"]:checked:before {
   -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
-}
-.embedly-icon-wrapper input {
+}*/
+/*.embedly-icon-wrapper input {
   display:none;
-}
-.embedly-icon-name {
+}*/
+/*.embedly-icon-name {
   height:16px;
   position:absolute;
   bottom:6px;
@@ -249,14 +236,14 @@ input[type="checkbox"]:checked:before {
   -o-user-select: none;
   user-select: none;
   font-size:10px;
-}
-.overlay-expanded {
+}*/
+/*.overlay-expanded {
   z-index:999 !important;
   border-color:#aaa;
-}
-.bottom-input-holder {
+}*/
+/*.bottom-input-holder {
   position:relative;
-}
+}*/
 
 .embedly-di .dashicons {
     margin:0px;
@@ -309,6 +296,18 @@ span.selected-align-select:hover {
   outline-color: #4CC6E6; /* outline color */
 }
 
+/* BEGIN STYLES FOR NEW USER MODAL */
+.embedly-new-user-modal {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.dashicons-twitter:before {
+  color: #55acee;
+}
+
+/* END STYLES FOR NEW USER MODAL */
+
 div.embedly-updated, div.embedly-error
 {
   border-radius: 3px;
@@ -324,7 +323,6 @@ div.embedly-error
 }
 div.embedly-updated
 {
-  /* Steph: Pick this green! */
   background: rgba(0, 193, 73, 0.3);
   border-color: #00933B;
 }
@@ -424,18 +422,10 @@ hr {
   content: "\f158";
   background-color: #E44E46;
 }
-/*.embedly-align-select-container {
-  margin-top: 30px;
-  margin-bottom: 30px;
-}*/
 .embedly-default-card-settings ul li {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-/*.max-width-input-container {
-  margin-top: 30px;
-  margin-bottom: 30px;
-}*/
 .embedly_key_input_test {
   border: 1px solid;
   border-radius: 0;
