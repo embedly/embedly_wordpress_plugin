@@ -11,22 +11,9 @@
 input[type="checkbox"]:checked:before {
   color: #36495e;
 }
-
-/*.embedly-ui .section-label {
-  font-family: 'Cabin', sans-serif;
-  color:#7b7b7b;
-  font-size:18px;
-  font-weight:normal;
-  text-shadow:0 1px 0 #fff;
-  margin:0 0 14px;
-  width:78%;
-  float:left;
-}*/
 .embedly-ui a {
   text-decoration:none;
   color:#36495e;
-  /*font-size:14px;*/
-  /*font-family:'Cabin', sans-serif;*/
 }
 .embedly-analytics {
   text-align: center;
@@ -88,87 +75,48 @@ input[type="checkbox"]:checked:before {
   text-align: center;
   vertical-align: middle;
   font-size: 12px;
+  float:bottom;
   color: #A6A8AB;
 }
 .embedly-footer .dashicons:before {
   color: #A6A8AB;
 }
+#footer {
+    clear: both;
+    position: relative;
+    z-index: 10;
+    height: 3em;
+    margin-top: -3em;
+}
 
-/*.embedly-input-wrapper {
-  margin-top: 30px;
-  margin-bottom: 30px;
-  position:relative;
-}*/
+
 .embedly-api-key-input {
   width:65%;
   text-align: center;
 }
-/*.embedly-api-key-input input {
-  display:inline-block;
-  float:center;
-}*/
-/*.embedly-lock-control {
-  position:absolute;
-  top:23px;
-  right:15.6%;
-  display:block;
-  height:19px;
-  width:15px;
-  background:url('../img/lock.png') no-repeat 0 0;
-  text-indent:-9999em;
-}*/
-/*.embedly-unlocked {
-  background-position:0 0;
-}*/
-/*.embedly-locked {
-  background-position: 0 -19px;
-}*/
-/*.embedly-ui-key-form input.embedly_key_input {
-  width:85%;
-  background:#fcfcfc;
-  height:32px;
-  border:1px solid #cfcfcf;
-  -webkit-box-shadow:inset 0 0 1px rgba(0,0,0,0.2);
-  -moz-box-shadow:inset 0 0 1px rgba(0,0,0,0.2);
-  -ms-box-shadow:inset 0 0 1px rgba(0,0,0,0.2);
-  box-shadow:inset 0 0 1px rgba(0,0,0,0.2);
-  margin:0;
-  padding:2px 5px;
-  color:#7b7b7b;
-  font-family:monospace;
-  font-size:14px;
-}*/
-/*.embedly-ui-key-form input.embedly_key_input.invalid {
-  background: rgba(255,0,0,0.1);
-  border-color:rgba(255,0,0,0.4);
-  color:rgba(255,0,0,0.6);
-  -webkit-box-shadow:inset 0 0 4px rgba(255,0,0,0.4);
-  -moz-box-shadow:inset 0 0 4px rgba(255,0,0,0.4);
-  -ms-box-shadow:inset 0 0 4px rgba(255,0,0,0.4);
-  box-shadow:inset 0 0 4px rgba(255,0,0,0.4);
-}*/
-/*.embedly-ui-key-form input.embedly_key_input.embedly-locked-input {
-  background:#eee;
-  color:#bbb;
-}*/
+
+
 /*styles for advanced dropdown*/
-.advanced-wrapper .advanced-body {
+.advanced-body {
   display: none;
   padding: 5px;
+}
+.advanced-selections {
+  float: left;
+  width: 25%;
 }
 .advanced-wrapper .advanced-body li {
   margin-top: 30px;
   margin-bottom: 30px;
 }
-/*.advanced-wrapper .advanced-body h4 {
-  font-weight: normal;
-  font-size: 14px;
-}*/
+.card-preview-container {
+  width: 75%;
+  float: right;
+  vertical-align: middle;
+}
+/* end styles for advanced dropdown menu*/
 
-/*.embedly-ui-providers {
-  padding-left: 30px;
-  padding-bottom: 10px;
-}*/
+
 .embedly-button {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -177,10 +125,8 @@ input[type="checkbox"]:checked:before {
   border-width: 0;
   cursor: pointer;
   font-family: museo-sans-fontspring,"Helvetica Neue",Helvetica,Arial,sans-serif;
-  /*font-weight: 100;*/
   font-size: 14px;
   line-height: normal;
-  /*margin: 0 0 1.25rem;*/
   margin-top: 40px;
   margin-bottom: 40px;
   position: relative;
@@ -207,57 +153,8 @@ input[type="checkbox"]:checked:before {
 #wpbody-content {
   background-color:#FFF;
 }
-/*.embedly-icon-wrapper {
-  width:100%;
-  height:100%;
-  position:relative;
-  top:0;
-  left:0;
-}*/
-/*.embedly-icon-wrapper img {
-  height:16px;
-  width:16px;
-  position:absolute;
-  top:50%;
-  left:50%;
-  margin-left:-8px;
-  margin-top:-16px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  user-select: none;
-}*/
-/*.embedly-icon-wrapper input {
-  display:none;
-}*/
-/*.embedly-icon-name {
-  height:16px;
-  position:absolute;
-  bottom:6px;
-  left:50%;
-  display:block;
-  line-height:16px;
-  cursor:pointer;
-  white-space:nowrap;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  user-select: none;
-  font-size:10px;
-}*/
-/*.overlay-expanded {
-  z-index:999 !important;
-  border-color:#aaa;
-}*/
-/*.bottom-input-holder {
-  position:relative;
-}*/
-
 .embedly-di .dashicons {
     margin:0px;
-    /*line-height: 1;*/
     padding:3px;
     vertical-align:middle;
     color:#000000;
@@ -317,7 +214,6 @@ span.selected-align-select:hover {
 }
 
 /* END STYLES FOR NEW USER MODAL */
-
 div.embedly-updated, div.embedly-error
 {
   border-radius: 3px;
@@ -421,8 +317,6 @@ hr {
   content: "\f528";
   border: 0px;
   bottom: 0%;
-  /*font-size: 90%;  the unlocked dashicon is a bit bigger by default */
-  /*.. but changing it's size changes it's pos. fix later? or big by design? */
 }
 .valid-key-icon:before {
   background-color: #4BBA80;
@@ -431,6 +325,9 @@ hr {
 .invalid-key-icon:before {
   content: "\f158";
   background-color: #E44E46;
+}
+.embedly-default-card-settings {
+  width: 50%;
 }
 .embedly-default-card-settings ul li {
   margin-top: 15px;

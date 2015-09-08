@@ -548,6 +548,10 @@ class WP_Embedly
         global $wpdb;
         ######## BEGIN FORM HTML #########
         ?>
+        <head>
+          <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+        <head>
+
             <div class="embedly-wrap">
                 <div class="embedly-ui">
         <?php
@@ -560,17 +564,12 @@ class WP_Embedly
 
                       <!-- Testing settings preview card -->
                       <div class="embedly-settings-test-container">
+                      <!-- <a class="embedly-card-template"></a> -->
                       <!-- insert a blockquote here, just update it's values with the settings
                       selections. does platform refresh automatically? -->
-                      <a class="embedly-card" href="https://www.youtube.com/watch?v=hY3tzNUjoHc"></a>
-                      <!--<a class="embedly-card"
-                        data-card-key=<?php echo '"' . $this->get_value_embedly_key_test() . '"'?>
-                        data-card-chrome=<?php echo '"' . $this->embedly_options['card_chrome'] . '"' ?>
-                        data-card-controls=<? echo '"' . $this->embedly_options['card_controls'] . '"' ?>
-                        href="https://www.youtube.com/watch?v=hY3tzNUjoHc">
-                            Justin Bieber and Questlove Drum-Off
-                      </a> -->
-                        <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+                        <!-- <a class="embedly-card-template" href="https://www.youtube.com/watch?v=CQ2noSR1qdY"></a> -->
+
+                        <!-- <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script> -->
                       </div>
 
                       <!-- Testing key input states -->
@@ -682,78 +681,79 @@ class WP_Embedly
                         <hr>
 
                         <div class="advanced-wrapper">
-                        <div class="advanced-header">
-                          <a href="#"><h3>ADVANCED EMBED SETTINGS
-                          <span class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
-                        </div>
-                        <div class="advanced-body">
-                          Changing these settings will change how your future embeds appear.
-                          <div class="embedly-default-card-settings">
-                            <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
-                            <ul>
-                              <li>
-                                <h3>DESIGN</h3>
-                                <input class='traditional-card-checkbox' type='checkbox' value='checked' name='minimal' <?php
-                                  checked( $this->embedly_options['card_chrome'], 1);
-                                  ?> /> TRADITIONAL CARD
-                              </li>
-                              <li>
-                                <h3>TEXT</h3>
-                                <input class='embedly-dark-checkbox' type='checkbox' value='checked' name='card_dark' <?php
-                                  checked( $this->embedly_options['card_theme'], 'dark');
-                                  ?> /> LIGHT TEXT
-                              </li>
-                              <li>
-                                <h3>BUTTONS</h3>
-                                <input class='embedly-social-checkbox' type='checkbox' value='checked' name='card_controls' <?php
-                                  checked( $this->embedly_options['card_controls'], 1);
-                                  ?> /> SHARING BUTTONS
-                              </li>
-
-                              <li><!-- Width Input Area -->
-                                <div class="max-width-input-container">
-                                  <h3>WIDTH</h3>
-                                  <input class='embedly-max-width' type="text" name="card_width" placeholder="example: 400px"
-                                    <?php $this->get_value_embedly_max_width(); ?>/>
-                                  <p>(responsive if left blank)</p>
-                                </div>
-                              </li>
-                              <li>
-                                <!-- Card Alignment Options -->
-                                <h3>ALIGNMENT</h3>
-                                <div class="embedly-align-select-container embedly-di">
-                                  <ul class="align-select">
-                                    <?php
-                                      $current_align = $this->get_current_align();
-                                      $sel = ' selected-align-select "';
-                                    ?>
-                                    <li><span class=
-                                      <?php echo '"dashicons di-none align-icon' . ($current_align == 'left' ? $sel : '"'); ?>
-                                      title="Left" align-value="left">
-                                      <input type='hidden' value='unchecked' name='card_align_left'>
-                                      </span>
-                                    </li>
-                                    <li><span class=
-                                      <?php echo '"dashicons di-center align-icon' . ($current_align == 'center' ? $sel : '"'); ?>
-                                      title="Center" align-value="center">
-                                      <input type='hidden' value='checked' name='card_align_center'>
-                                      </span>
-                                    </li>
-                                    <li><span class=
-                                      <?php echo '"dashicons di-none di-reverse align-icon' . ($current_align == 'right' ? $sel : '"'); ?>
-                                      title="Right" align-value="right">
-                                      <input type='hidden' value='unchecked' name='card_align_right'>
-                                      </span>
-                                    </li>
-                                  </ul>
-                                </div>
-                              </li>
-                            </ul>
-
-
+                          <div class="advanced-header">
+                            <a href="#"><h3>ADVANCED EMBED SETTINGS
+                            <span class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
                           </div>
-                        </div>
-                        <!-- END Expandable Options Section -->
+                          <div class="advanced-body">
+                            <div class="advanced-selections">
+                              <p>Changing these settings will change how your future embeds appear.</p>
+                              <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
+                              <ul>
+                                <li>
+                                  <h3>DESIGN</h3>
+                                  <input class='traditional-card-checkbox' type='checkbox' value='checked' name='minimal' <?php
+                                    checked( $this->embedly_options['card_chrome'], 1);
+                                    ?> /> TRADITIONAL CARD
+                                </li>
+                                <li>
+                                  <h3>TEXT</h3>
+                                  <input class='embedly-dark-checkbox' type='checkbox' value='checked' name='card_dark' <?php
+                                    checked( $this->embedly_options['card_theme'], 'dark');
+                                    ?> /> LIGHT TEXT
+                                </li>
+                                <li>
+                                  <h3>BUTTONS</h3>
+                                  <input class='embedly-social-checkbox' type='checkbox' value='checked' name='card_controls' <?php
+                                    checked( $this->embedly_options['card_controls'], 1);
+                                    ?> /> SHARING BUTTONS
+                                </li>
+
+                                <li><!-- Width Input Area -->
+                                  <div class="max-width-input-container">
+                                    <h3>WIDTH</h3>
+                                    <input class='embedly-max-width' type="text" name="card_width" placeholder="example: 400px"
+                                      <?php $this->get_value_embedly_max_width(); ?>/>
+                                    <p>(responsive if left blank)</p>
+                                  </div>
+                                </li>
+                                <li>
+                                  <!-- Card Alignment Options -->
+                                  <h3>ALIGNMENT</h3>
+                                  <div class="embedly-align-select-container embedly-di">
+                                    <ul class="align-select">
+                                      <?php
+                                        $current_align = $this->get_current_align();
+                                        $sel = ' selected-align-select "';
+                                      ?>
+                                      <li><span class=
+                                        <?php echo '"dashicons di-none align-icon' . ($current_align == 'left' ? $sel : '"'); ?>
+                                        title="Left" align-value="left">
+                                        <input type='hidden' value='unchecked' name='card_align_left'>
+                                        </span>
+                                      </li>
+                                      <li><span class=
+                                        <?php echo '"dashicons di-center align-icon' . ($current_align == 'center' ? $sel : '"'); ?>
+                                        title="Center" align-value="center">
+                                        <input type='hidden' value='checked' name='card_align_center'>
+                                        </span>
+                                      </li>
+                                      <li><span class=
+                                        <?php echo '"dashicons di-none di-reverse align-icon' . ($current_align == 'right' ? $sel : '"'); ?>
+                                        title="Right" align-value="right">
+                                        <input type='hidden' value='unchecked' name='card_align_right'>
+                                        </span>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </li>
+                              </ul>
+                            </div>
+                            <!-- preview card.. work in progress -->
+                            <div class="card-preview-container">
+                              <a class="embedly-card-template" href="https://vimeo.com/135768853"></a>
+                            </div>
+                          </div>
                         </div> <!-- END 'Options' Section -->
 
                         <!-- Saving Settings Button (No longer required.) -->
@@ -853,11 +853,13 @@ class WP_Embedly
                 </div>
               <?php } // END if/else for new/existing account
               ?>
-                <footer class="embedly-footer">
-                  &copy; <?php _e(date('Y') . ' All Rights Reserved ', 'embedly'); ?>
-                  <span class="dashicons dashicons-heart"></span>
-                  Built in Boston
-                </footer> <?php
+                <div id="footer">
+                  <footer class="embedly-footer">
+                    &copy; <?php _e(date('Y') . ' All Rights Reserved ', 'embedly'); ?>
+                    <span class="dashicons dashicons-heart"></span>
+                    Built in Boston
+                  </footer>
+                </div> <?php
     } // END settings page function
 } // END WP_Embedly class
 

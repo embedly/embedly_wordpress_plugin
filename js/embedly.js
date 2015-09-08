@@ -39,6 +39,13 @@ jQuery(document).ready(function($) {
     setTimeout(load_actives, 10000);
   })();
 
+  // forces first render of preview card.
+  // with current settings
+  (function() {
+    update_preview('data');
+    build_card();
+  })();
+
   (function load_historical() {
     $.post(
       ajaxurl,
@@ -79,29 +86,37 @@ jQuery(document).ready(function($) {
 
     var align = $(this).attr('align-value');
     update_option('card_align', align);
-
+    update_preview('data-card-align', align);
   });
 
   // immediate settings
   $('.traditional-card-checkbox').click(function() {
     update_option('card_chrome', $(this).is(':checked') ? 1 : 0);
+    update_preview('data-card-chrome', $(this).is(':checked') ? '1' : '0');
   });
 
   $('.embedly-social-checkbox').click(function() {
     update_option('card_controls', $(this).is(':checked') ? 1 : 0);
+    update_preview('data-card-controls', $(this).is(':checked') ? '1' : '0');
   });
 
   $('.embedly-dark-checkbox').click(function() {
-    update_option('card_theme', $(this).is(':checked') ? 'dark' : 'light');
+    value = $(this).is(':checked') ? 'dark' : 'light';
+    update_option('card_theme', value);
+    update_preview('data-card-theme', value);
+
   });
 
   $('.embedly-max-width').focusout(function(e) {
     update_option('card_width', $(this).val());
+    // how will I error handle this? logic is in backend.. pass value back out?
+    update_preview('data-card-width', $(this).val());
   });
 
   $('.embedly-max-width').keypress(function(e) {
     if(e.which == 13) {
       update_option('card_width', $(this).val());
+      update_preview('data-card-width', $(this).val());
       return false;
     }
   });
@@ -259,65 +274,51 @@ jQuery(document).ready(function($) {
     "data-card-controls": '0',
   };
 
-  (function () {
-    build_test_card();
-  })();
+  function build_card() {
+    // clone the template
+    clone = $('a.embedly-card-template').clone();
+    clone.removeClass('embedly-card-template').addClass('embedly-card-preview');
+    // remove the old card
+    $('.embedly-card').remove();
+    // insert the new card template
+    clone.insertAfter('a.embedly-card-template')[0];
+    // cardify it.
+    card = embedly.card($('a.embedly-card-preview')[0]);
+  }
 
-  // have to do some JS that updates the card when we
-  // change the settings like in app.. gotta look.
-  // function build_test_card() {
+  // function that updates the template card with the key value pair
+  function update_preview(key, value) {
+    // update the template first
+    $template = $('a.embedly-card-template').attr(key, value);
+    // then render the new card
+    build_card();
+  }
 
-  //   // var new_card = $(document.createElement('a'));
-  //   // new_card.addClass('embedly-card');
-  //   // for (var key in current_card) {
-  //   //   console.log('key: ' + key + " " + "value: " + current_card[key]);
-  //   //   new_card.attr(key, current_card[key]);
-  //   // }
-  //   // console.log(new_card);
-  //   // $('.embedly-settings-test-container').html(new_card);
-  //   // console.log($('.embedly-card'));
-  //   embedly("defaults", {
-  //     cards: {
-  //       width: 100,
-  //       align: 'left',
-  //       chrome: 1,
-  //     }
-  //   });
-  //   setTimeout(function() {
-  //     console.log('doing defaults again');
-  //     embedly("defaults", {
-  //       cards: {
-  //         width: 200,
-  //       }
-  //     });
-  //   }, 5000);
-  // }
 
 // END NEW STUFF
-
-  if($('#embedly_key').attr('readonly')) {
-    $('.embedly-lock-control').removeClass('embedly-unlocked').addClass('embedly-locked');
-  }
-  else {
-    $('.embedly-lock-control').removeClass('embedly-locked').addClass('embedly-unlocked');
-  }
-  $('.embedly-lock-control').click(function(e) {
-    e.preventDefault();
-    if($(this).hasClass('embedly-locked')) {
-      $(this).removeClass('embedly-locked').addClass('embedly-unlocked').siblings('#embedly_key').removeClass('embedly-locked-input').removeAttr('readonly');
-    }
-    else {
-      $(this).removeClass('embedly-unlocked').addClass('embedly-locked').siblings('#embedly_key').addClass('embedly-locked-input').attr('readonly', 'readonly');
-    }
-  }).hover(function() {
-    if($(this).hasClass('embedly-locked')) {
-      $(this).attr('title', $(this).attr('data-locked'));
-    }
-    else {
-      $(this).attr('title', $(this).attr('data-unlocked'));
-    }
-  }, function() {
-    $(this).attr('title', '');
-  });
+  // if($('#embedly_key').attr('readonly')) {
+  //   $('.embedly-lock-control').removeClass('embedly-unlocked').addClass('embedly-locked');
+  // }
+  // else {
+  //   $('.embedly-lock-control').removeClass('embedly-locked').addClass('embedly-unlocked');
+  // }
+  // $('.embedly-lock-control').click(function(e) {
+  //   e.preventDefault();
+  //   if($(this).hasClass('embedly-locked')) {
+  //     $(this).removeClass('embedly-locked').addClass('embedly-unlocked').siblings('#embedly_key').removeClass('embedly-locked-input').removeAttr('readonly');
+  //   }
+  //   else {
+  //     $(this).removeClass('embedly-unlocked').addClass('embedly-locked').siblings('#embedly_key').addClass('embedly-locked-input').attr('readonly', 'readonly');
+  //   }
+  // }).hover(function() {
+  //   if($(this).hasClass('embedly-locked')) {
+  //     $(this).attr('title', $(this).attr('data-locked'));
+  //   }
+  //   else {
+  //     $(this).attr('title', $(this).attr('data-unlocked'));
+  //   }
+  // }, function() {
+  //   $(this).attr('title', '');
+  // });
 
 });
