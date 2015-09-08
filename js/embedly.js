@@ -46,7 +46,7 @@ jQuery(document).ready(function($) {
       function(response) {
         var times = JSON.parse(response);
         if(times.err) {
-          impr = "No Analytics"
+          impr = "No Analytics";
         } else {
           var impr = 0;
           times.forEach(function(item) {
@@ -83,8 +83,8 @@ jQuery(document).ready(function($) {
   });
 
   // immediate settings
-  $('.embedly-minimal-checkbox').click(function() {
-    update_option('card_chrome', $(this).is(':checked') ? 0 : 1);
+  $('.traditional-card-checkbox').click(function() {
+    update_option('card_chrome', $(this).is(':checked') ? 1 : 0);
   });
 
   $('.embedly-social-checkbox').click(function() {
@@ -253,6 +253,45 @@ jQuery(document).ready(function($) {
       // $(this).removeClass('unlocked-key-icon').addClass('locked-key-icon').parent().removeClass('unlocked_key').addClass('locked_key');
     }
   });
+
+  var current_card = {
+    "data-card-chrome": '1',
+    "data-card-controls": '0',
+  };
+
+  (function () {
+    build_test_card();
+  })();
+
+  // have to do some JS that updates the card when we
+  // change the settings like in app.. gotta look.
+  // function build_test_card() {
+
+  //   // var new_card = $(document.createElement('a'));
+  //   // new_card.addClass('embedly-card');
+  //   // for (var key in current_card) {
+  //   //   console.log('key: ' + key + " " + "value: " + current_card[key]);
+  //   //   new_card.attr(key, current_card[key]);
+  //   // }
+  //   // console.log(new_card);
+  //   // $('.embedly-settings-test-container').html(new_card);
+  //   // console.log($('.embedly-card'));
+  //   embedly("defaults", {
+  //     cards: {
+  //       width: 100,
+  //       align: 'left',
+  //       chrome: 1,
+  //     }
+  //   });
+  //   setTimeout(function() {
+  //     console.log('doing defaults again');
+  //     embedly("defaults", {
+  //       cards: {
+  //         width: 200,
+  //       }
+  //     });
+  //   }, 5000);
+  // }
 
 // END NEW STUFF
 

@@ -175,7 +175,6 @@ class WP_Embedly
         wp_die();
     }
 
-
     function embedly_ajax_get_historical_viewers()
     {
         // begin delete after impl. analytics key
@@ -559,43 +558,19 @@ class WP_Embedly
                     global $EMBEDLY_DEBUG;
                     if( isset($EMBEDLY_DEBUG) && ($EMBEDLY_DEBUG) ) { ?>
 
-                    <hr>
-                      <div class="embedly-api-key-input-wrapper">
-                        <h1 class="valid-outer-text">Lookin' Good</h1>
-                        <h1 class="invalid-outer-text">Invalid API key. Try again!</h1>
-                        <div
-                          <?php
-                             $this->get_class_api_key_input_container();
-                             // $valid_key = !empty($this->embedly_options['key']);
-                             // $class = 'class="embedly-api-key-input-container';
-                             //  if ($valid_key) {
-                             //      $class .= ' locked_key';
-                             //  }
-                             //  $class .= '"';
-                             //  echo $class;
-                          ?>>
-                          <input id="embedly_key_test" type="text" class="embedly_key_input_test"
-                            placeholder="<?php _e('Enter your API Key', 'embedly'); ?>"
-                            <?php
-                              $this->get_value_embedly_key_test();
-                              // determine if the key is set already.
-                              // if ($valid_key) {
-                              //     echo 'value="' . $this->embedly_options['key'] . '"';
-                              // }
-                            ?>/>
-                          <span
-                            <?php
-                              $class = 'class="dashicons key-icon lock-control-key-icon';
-                              if ($valid_key) {
-                                  // set the key icon if necessary.
-                                  $class .= ' locked-key-icon';
-                              }
-                              $class .= '"';
-                              echo $class;
-                            ?>>
-                          </span>
-                        </div>
-                        <h1 class="invalid-outer-text">*Required Field</h1>
+                      <!-- Testing settings preview card -->
+                      <div class="embedly-settings-test-container">
+                      <!-- insert a blockquote here, just update it's values with the settings
+                      selections. does platform refresh automatically? -->
+                      <a class="embedly-card" href="https://www.youtube.com/watch?v=hY3tzNUjoHc"></a>
+                      <!--<a class="embedly-card"
+                        data-card-key=<?php echo '"' . $this->get_value_embedly_key_test() . '"'?>
+                        data-card-chrome=<?php echo '"' . $this->embedly_options['card_chrome'] . '"' ?>
+                        data-card-controls=<? echo '"' . $this->embedly_options['card_controls'] . '"' ?>
+                        href="https://www.youtube.com/watch?v=hY3tzNUjoHc">
+                            Justin Bieber and Questlove Drum-Off
+                      </a> -->
+                        <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
                       </div>
 
                       <!-- Testing key input states -->
@@ -686,7 +661,7 @@ class WP_Embedly
                         <!-- BEGIN Embedly API Key input Field -->
                         <hr>
                         <div class="embedly-key-body">
-                          <p>YOUR EMBEDLY API KEY</p>
+                          <h3>YOUR EMBEDLY API KEY</h3>
                           <div class="embedly-api-key-input-wrapper">
                             <h1 class="valid-outer-text">Lookin' Good</h1>
                             <h1 class="invalid-outer-text">Invalid API key. Try again!</h1>
@@ -708,71 +683,78 @@ class WP_Embedly
 
                         <div class="advanced-wrapper">
                         <div class="advanced-header">
-                          <a href="#">ADVANCED EMBED SETTINGS
-                          <span class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></a>
+                          <a href="#"><h3>ADVANCED EMBED SETTINGS
+                          <span class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
                         </div>
                         <div class="advanced-body">
-                          <h3>Changing these settings will change how your future embeds appear.</h3>
+                          Changing these settings will change how your future embeds appear.
                           <div class="embedly-default-card-settings">
                             <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
                             <ul>
                               <li>
-                                <input class='embedly-minimal-checkbox' type='checkbox' value='checked' name='minimal' <?php
-                                  checked( $this->embedly_options['card_chrome'], 0);
-                                  ?> /> Minimal Design
+                                <h3>DESIGN</h3>
+                                <input class='traditional-card-checkbox' type='checkbox' value='checked' name='minimal' <?php
+                                  checked( $this->embedly_options['card_chrome'], 1);
+                                  ?> /> TRADITIONAL CARD
                               </li>
                               <li>
-                                <input class='embedly-social-checkbox' type='checkbox' value='checked' name='card_controls' <?php
-                                  checked( $this->embedly_options['card_controls'], 1);
-                                  ?> /> Social Buttons
-                              </li>
-                              <li>
+                                <h3>TEXT</h3>
                                 <input class='embedly-dark-checkbox' type='checkbox' value='checked' name='card_dark' <?php
                                   checked( $this->embedly_options['card_theme'], 'dark');
-                                  ?> /> Light Text
+                                  ?> /> LIGHT TEXT
+                              </li>
+                              <li>
+                                <h3>BUTTONS</h3>
+                                <input class='embedly-social-checkbox' type='checkbox' value='checked' name='card_controls' <?php
+                                  checked( $this->embedly_options['card_controls'], 1);
+                                  ?> /> SHARING BUTTONS
+                              </li>
+
+                              <li><!-- Width Input Area -->
+                                <div class="max-width-input-container">
+                                  <h3>WIDTH</h3>
+                                  <input class='embedly-max-width' type="text" name="card_width" placeholder="example: 400px"
+                                    <?php $this->get_value_embedly_max_width(); ?>/>
+                                  <p>(responsive if left blank)</p>
+                                </div>
+                              </li>
+                              <li>
+                                <!-- Card Alignment Options -->
+                                <h3>ALIGNMENT</h3>
+                                <div class="embedly-align-select-container embedly-di">
+                                  <ul class="align-select">
+                                    <?php
+                                      $current_align = $this->get_current_align();
+                                      $sel = ' selected-align-select "';
+                                    ?>
+                                    <li><span class=
+                                      <?php echo '"dashicons di-none align-icon' . ($current_align == 'left' ? $sel : '"'); ?>
+                                      title="Left" align-value="left">
+                                      <input type='hidden' value='unchecked' name='card_align_left'>
+                                      </span>
+                                    </li>
+                                    <li><span class=
+                                      <?php echo '"dashicons di-center align-icon' . ($current_align == 'center' ? $sel : '"'); ?>
+                                      title="Center" align-value="center">
+                                      <input type='hidden' value='checked' name='card_align_center'>
+                                      </span>
+                                    </li>
+                                    <li><span class=
+                                      <?php echo '"dashicons di-none di-reverse align-icon' . ($current_align == 'right' ? $sel : '"'); ?>
+                                      title="Right" align-value="right">
+                                      <input type='hidden' value='unchecked' name='card_align_right'>
+                                      </span>
+                                    </li>
+                                  </ul>
+                                </div>
                               </li>
                             </ul>
-                            <!-- Width Input Area -->
-                            <div class="max-width-input-container">
-                              Max Width
-                              <input class='embedly-max-width' type="text" name="card_width" placeholder="100%, 300px, etc."
-                                <?php $this->get_value_embedly_max_width(); ?>/>
-                              (responsive if left blank)
-                            </div>
 
-                            <!-- Card Alignment Options -->
-                            <div class="embedly-align-select-container embedly-di">
-                              <ul class="align-select">
-                                <?php
-                                  $current_align = $this->get_current_align();
-                                  $sel = ' selected-align-select "';
-                                ?>
-                                <li><span class=
-                                  <?php echo '"dashicons di-none align-icon' . ($current_align == 'left' ? $sel : '"'); ?>
-                                  title="Left" align-value="left">
-                                  <input type='hidden' value='unchecked' name='card_align_left'>
-                                  </span>
-                                </li>
-                                <li><span class=
-                                  <?php echo '"dashicons di-center align-icon' . ($current_align == 'center' ? $sel : '"'); ?>
-                                  title="Center" align-value="center">
-                                  <input type='hidden' value='checked' name='card_align_center'>
-                                  </span>
-                                </li>
-                                <li><span class=
-                                  <?php echo '"dashicons di-none di-reverse align-icon' . ($current_align == 'right' ? $sel : '"'); ?>
-                                  title="Right" align-value="right">
-                                  <input type='hidden' value='unchecked' name='card_align_right'>
-                                  </span>
-                                </li>
-                              </ul>
-                            </div>
+
                           </div>
                         </div>
                         <!-- END Expandable Options Section -->
                         </div> <!-- END 'Options' Section -->
-
-
 
                         <!-- Saving Settings Button (No longer required.) -->
                         <div class="embedly-save-settings-input" hidden>
@@ -800,7 +782,7 @@ class WP_Embedly
                     <div class="embedly_key_form embedly-ui-key-form">
                       <!-- Notifications -->
                       <?php
-                        get_notification();
+                        // get_notification();
                         if (isset($errorMessage)) { ?>
                       <div class="embedly-error embedly-message" id="embedly-error">
                         <p><strong><?php echo $errorMessage;?></strong></p>
@@ -827,7 +809,26 @@ class WP_Embedly
                             "Don't worry, it takes less than 2 minutes.", 'embedly');?>
                         </h2>
                       </div>
-                      <form id="embedly_key_form" method="POST" action="">
+
+                        <!-- BEGIN Embedly API Key input Field -->
+                        <hr>
+                        <div class="embedly-key-body">
+                          <h3>YOUR EMBEDLY API KEY</h3>
+                          <div class="embedly-api-key-input-wrapper">
+                            <h1 class="valid-outer-text">Lookin' Good</h1>
+                            <h1 class="invalid-outer-text">Invalid API key. Try again!</h1>
+                            <div
+                              <?php $this->get_class_embedly_api_key_input_container(); ?>>
+                              <input id="embedly_key_test" type="text" class="embedly_key_input_test"
+                                placeholder="<?php _e('Enter your API Key', 'embedly'); ?>"
+                                <?php $this->get_value_embedly_key_test(); ?>/>
+                              <span <?php $this->get_class_key_icon_span(); ?>> </span>
+                            </div>
+                            <h1 class="invalid-outer-text">*Required Field</h1>
+                          </div>
+                        </div>
+                        <!-- END Embedly API Key input Field -->
+<!--                       <form id="embedly_key_form" method="POST" action="">
                         <div class="embedly-input-wrapper">
                           <div class="embedly-api-key-input">
                             <input <?php
@@ -844,7 +845,7 @@ class WP_Embedly
                             <input class="embedly-button" name="Submit" type="submit" value="<?php
                               _e('Submit', 'embedly');?>"/>
                           </div>
-                        </div>
+                        </div> -->
 
                         <!-- Create an embed.ly account -->
                         <div class="embedly-create-account-btn-wrap">
