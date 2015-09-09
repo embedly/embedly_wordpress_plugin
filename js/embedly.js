@@ -9,7 +9,7 @@
   * Project site: http://razorjack.net/quicksand
   * Github site: http://github.com/razorjack/quicksand
 **/
-  // valid class prefixes for modulation of key state
+// valid class prefixes for modulation of key state
 var valid_states = [
   'invalid',
   'valid',
@@ -18,6 +18,7 @@ var valid_states = [
   'lock-control',
 ];
 
+// for mapping backend data to preview card data-card-* attrs
 var preview_map = {
   'card_chrome': 'data-card-chrome',
   'card_controls': 'data-card-controls',
@@ -39,6 +40,7 @@ jQuery(document).ready(function($) {
       ajaxurl,
       {'action': 'embedly_analytics_active_viewers'},
       function(response) {
+        console.log(response);
         var response = JSON.parse(response);
         $(".embedly-analytics .active-viewers .active-count").html(response.active);
     });
@@ -59,7 +61,7 @@ jQuery(document).ready(function($) {
       {'action': 'embedly_analytics_historical_viewers'},
       function(response) {
         var times = JSON.parse(response);
-        if(times.err) {
+        if(times["err"]) {
           impr = "No Analytics";
         } else {
           var impr = 0;
@@ -96,8 +98,8 @@ jQuery(document).ready(function($) {
   });
 
   // immediate settings
-  $('.traditional-card-checkbox').click(function() {
-    update_option('card_chrome', $(this).is(':checked') ? 1 : 0);
+  $('.chrome-card-checkbox').click(function() {
+    update_option('card_chrome', $(this).is(':checked') ? 0 : 1);
   });
 
   $('.embedly-social-checkbox').click(function() {
@@ -266,12 +268,20 @@ jQuery(document).ready(function($) {
     e.preventDefault();
     if($(this).hasClass('locked-key-icon')) {
       unlock_key();
-      // $(this).removeClass('locked-key-icon').addClass('unlocked-key-icon').parent().removeClass('locked_key').addClass('unlocked_key');
     } else if ($(this).hasClass('unlocked-key-icon')) {
       lock_key();
-      // $(this).removeClass('unlocked-key-icon').addClass('locked-key-icon').parent().removeClass('unlocked_key').addClass('locked_key');
     }
-  });
+  }).hover(function() {
+      console.log('hovering..')
+      if($(this).hasClass('locked-key-icon')) {
+        $(this).attr('title', $(this).attr('data-locked'));
+      }
+      else {
+        $(this).attr('title', $(this).attr('data-unlocked'));
+      }
+    }, function() {
+      $(this).attr('title', '');
+    });
 
   function build_card() {
     // clone the template
@@ -306,31 +316,124 @@ jQuery(document).ready(function($) {
     build_card();
   })();
 
+  // sean's connect button, integration
+  var app = {
+    _ready: false,
+    _iframe: null,
+    _callbacks: []
+  };
 
-// END NEW STUFF
-  // if($('#embedly_key').attr('readonly')) {
-  //   $('.embedly-lock-control').removeClass('embedly-unlocked').addClass('embedly-locked');
-  // }
-  // else {
-  //   $('.embedly-lock-control').removeClass('embedly-locked').addClass('embedly-unlocked');
-  // }
-  // $('.embedly-lock-control').click(function(e) {
-  //   e.preventDefault();
-  //   if($(this).hasClass('embedly-locked')) {
-  //     $(this).removeClass('embedly-locked').addClass('embedly-unlocked').siblings('#embedly_key').removeClass('embedly-locked-input').removeAttr('readonly');
-  //   }
-  //   else {
-  //     $(this).removeClass('embedly-unlocked').addClass('embedly-locked').siblings('#embedly_key').addClass('embedly-locked-input').attr('readonly', 'readonly');
-  //   }
-  // }).hover(function() {
-  //   if($(this).hasClass('embedly-locked')) {
-  //     $(this).attr('title', $(this).attr('data-locked'));
-  //   }
-  //   else {
-  //     $(this).attr('title', $(this).attr('data-unlocked'));
-  //   }
-  // }, function() {
-  //   $(this).attr('title', '');
-  // });
+  app.init = function () {
+    window.addEventListener('message', function (e) {
+      try {
+        data = JSON.parse(e.data);
+      } catch (err) {
+        return false;
+      }
+      if (!data) {
+        return false;
+      }
+      if (data.method === 'connect' && data.context === 'embedly-app') {
+        app.message(data);
+      }
+    });
 
+    var iframe = document.createElement('iframe');
+    app._iframe = iframe;
+
+    iframe.addEventListener('load', function () {
+      app._ready = true;
+      app.connect();
+    });
+
+    iframe.frameborder = '0';
+    iframe.style.width = '1px';
+    iframe.style.border = 'none';
+    iframe.style.position = 'absolute';
+    iframe.style.top = '-9999em';
+    iframe.style.width = '10px';
+    iframe.style.height = '10px';
+    iframe.src = 'https://app.embed.ly/api/connect';
+    document.body.appendChild(iframe);
+  };
+
+  app.message = function (data) {
+    if (app._callback) {
+      app._callback.call(window, data);
+    }
+  }
+
+  // connection code
+  app.connect = function (callback) {
+    app._callback = callback;
+    msg = JSON.stringify({
+      method: 'connect'
+    });
+    app._iframe.contentWindow.postMessage(msg, '*');
+  };
+
+  app.init();
+
+  var button = document.getElementById('connect-button');
+
+  button.addEventListener('click', function () {
+    // if the user clicks twice, make sure div is empty
+    $('#embedly-which').empty();
+
+    console.log('click');
+    app.connect(function (data) {
+      console.log(data);
+      if (data.error === false) {
+
+        if (data.organizations.length === 1) {
+          var org = data.organizations[0]
+          button.innerHTML = 'connected';
+          save_account(org.api_key, org.analytics_key, org.name);
+          // alert('connected ' + org.name + ' ' + org.api_key + ' ' + org.analytics_key);
+        } else {
+          // selects the div containing accounts to connect
+          var which = document.getElementById('embedly-which');
+          which.style.display = 'block';
+
+          var selected = function (org) {
+            return function () {
+              button.innerHTML = 'connected';
+              save_account(org.api_key, org.analytics_key, org.name);
+              // alert('connected ' + org.name + ' ' + org.api_key + ' ' + org.analytics_key);
+              which.style.display = 'none';
+              // clear html after selection in case of reselection
+              which.innerHTML = '';
+            }
+          }
+            for (var i = 0; i < data.organizations.length; i++) {
+              var a = document.createElement('a'),
+                org = data.organizations[i];
+              a.innerHTML = org.name;
+              a.addEventListener('click', selected(org));
+              which.appendChild(a);
+            }
+          }
+      } else {
+        alert('Please log into Embedly');
+      }
+    });
+  });
+
+  function save_account(api_key, analytics_key, name) {
+    $.post(
+      ajaxurl,
+      {
+        'action': 'embedly_save_account',
+        'api_key': api_key,
+        'analytics_key': analytics_key,
+        'org_name': name,
+      },
+      function(response) {
+        // should warn user if something went wrong here..
+        console.log(response);
+    });
+  }
 });
+
+
+

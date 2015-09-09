@@ -53,7 +53,7 @@ if(!defined('SIGNUP_URL')) {
 }
 
 // DEBUGGING
-$EMBEDLY_DEBUG = false;
+$EMBEDLY_DEBUG = true;
 
 // maps local settings key => api param name
 $settings_map = array(
@@ -88,6 +88,7 @@ class WP_Embedly
         $this->embedly_options = array(
             'active' => true,
             'key' => '',
+            'analytics_key' => '',
             'card_chrome' => false,
             'card_controls' => true,
             'card_align' => 'center',
@@ -151,6 +152,11 @@ class WP_Embedly
             'embedly_key_input'
         ));
 
+        add_action('wp_ajax_embedly_save_account', array(
+            $this,
+            'embedly_save_account',
+        ));
+
         // action establishes embed.ly the sole provider of embeds
         // (except those unsupported)
         add_action('plugins_loaded', array(
@@ -159,6 +165,32 @@ class WP_Embedly
         ));
     }
 
+    function embedly_save_account() {
+        $api_key = $_POST['api_key'];
+        $analytics_key=$_POST['analytics_key'];
+        $name = $_POST['org_name'];
+
+        // not validating the analytics_key for security reasons.
+        // analytics calls will just fail if it's invalid.
+        if ($this->embedly_acct_has_feature('oembed', $api_key)) {
+
+            $this->embedly_save_option('key', $api_key);
+            $this->embedly_save_option('analytics_key', $analytics_key);
+            $this->embedly_save_option('org_name', $name);
+            // do we need to save the name?
+            // would not need the redirect, if so, I can just build a uri
+            // maybe we can personalize the settings page a bit?
+            // or just don't store it for privacy.
+
+            // better than returning some ambiguous boolean type
+            echo 'true';
+        } else {
+            echo 'false';
+        }
+        wp_die();
+    }
+
+    // deprecated if we continue with the connect button only
     function embedly_key_input() {
         // receives a key in $_POST, returns on of the valid key states.
         $key = $_POST['key'];
@@ -176,23 +208,18 @@ class WP_Embedly
         // access to the $_POST from the ajax call data object
         if ($_POST['key'] == 'card_width') {
             $this->embedly_save_option($_POST['key'], $this->handle_width_input($_POST['value']));
+            // return the width of the card (only back end validated input)
+            echo $this->embedly_options['card_width'];
         } else {
             $this->embedly_save_option($_POST['key'], $_POST['value']);
         }
-        // return the width of the card (only back end validated input)
-        echo $this->embedly_options['card_width'];
+
 
         wp_die();
     }
 
     function embedly_ajax_get_historical_viewers()
     {
-        // begin delete after impl. analytics key
-        // until analytics key implemented.. just return an error
-        echo '{"err": true}';
-        wp_die();
-        // end delete after impl. analytics key
-
         // will eventually need to check also if analytics key exists..
         if($this->valid_key()) {
             $end = date("Ymd");
@@ -255,7 +282,7 @@ class WP_Embedly
             wp_die();
         } else {
             // there was some key error
-            echo "{active: '-'}";
+            echo '{"active": "-"}';
             wp_die();
         }
 
@@ -553,6 +580,20 @@ class WP_Embedly
         $current_card_script .= '}</script>';
         echo $current_card_script;
     }
+
+    /**
+    * Builds an href for the Realtime Analytics button
+    */
+    function get_onclick_analytics_button() {
+        if($this->valid_key()) {
+            echo ' onclick="' . 'window.open(' . "'" .
+                'https://app.embed.ly/r' . '?api_key=' . $this->embedly_options['key'] .
+                '&path=analytics' . "'" . ');"';
+        } else {
+            // how to fail gracefully here? (should always have key)
+            echo ' onclick="window.open(' . "'" . 'http://app.embed.ly' . "'" . ');" ';
+        }
+    }
     /////////////////////////// END TEMPLATE FUNCTIONS FOR FORM LOGIC
 
     /**
@@ -570,23 +611,17 @@ class WP_Embedly
 
             <div class="embedly-wrap">
                 <div class="embedly-ui">
-        <?php
-            // Decide which modal to display.
-            if( $this->valid_key() ) { ?>
+
                     <!-- DELETE FOR PRODUCTION -->
                     <?php
                     global $EMBEDLY_DEBUG;
                     if( isset($EMBEDLY_DEBUG) && ($EMBEDLY_DEBUG) ) { ?>
 
-                      <!-- Testing settings preview card -->
-                      <div class="embedly-settings-test-container">
-                      <!-- <a class="embedly-card-template"></a> -->
-                      <!-- insert a blockquote here, just update it's values with the settings
-                      selections. does platform refresh automatically? -->
-                        <!-- <a class="embedly-card-template" href="https://www.youtube.com/watch?v=CQ2noSR1qdY"></a> -->
+                        <button id="connect-button" class="embedly-button">Connect</button>
+                        <div id="embedly-which">
+                          <h4>Which Project Would you Like to Connect?</h4>
+                        </div>
 
-                        <!-- <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script> -->
-                      </div>
 
                       <!-- Testing key input states -->
                       <hr>
@@ -616,6 +651,12 @@ class WP_Embedly
                         </h4>
             <?php } ?>
                 <!-- END DELETE FOR PRODUCTION -->
+
+
+        <?php
+            // Decide which modal to display.
+            if( $this->valid_key() ) { ?>
+
                 <form id="embedly_key_form" method="POST" action="">
                   <div class="embedly-ui-header-outer-wrapper">
                     <div class="embedly-ui-header-wrapper">
@@ -658,7 +699,8 @@ class WP_Embedly
                               People are <strong>actively viewing</strong> your embeds!
                               <br/> <!-- is this acceptable? need to format my h tags for this page.-->
 
-                              <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly');"
+                              <input class="embedly-button" type="button" 
+                                <?php $this->get_onclick_analytics_button(); ?>
                                 value="<?php _e('Realtime Analytics', 'embedly')?>"/>
                             </li>
                             <li class="historical-viewers">
@@ -708,9 +750,9 @@ class WP_Embedly
                               <ul>
                                 <li>
                                   <h3>DESIGN</h3>
-                                  <input class='traditional-card-checkbox' type='checkbox' value='checked' name='minimal' <?php
-                                    checked( $this->embedly_options['card_chrome'], 1);
-                                    ?> /> TRADITIONAL CARD
+                                  <input class='chrome-card-checkbox' type='checkbox' value='checked' name='minimal' <?php
+                                    checked( $this->embedly_options['card_chrome'], 0);
+                                    ?> /> MINIMAL
                                 </li>
                                 <li>
                                   <h3>TEXT</h3>

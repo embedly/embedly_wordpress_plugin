@@ -19,11 +19,6 @@ input[type="checkbox"]:checked:before {
   text-align: center;
   vertical-align: middle;
 }
-.embedly-key-body {
-  text-align: center;
-  vertical-align: middle;
-}
-
 .embedly-ui-header-outer-wrapper {
   height:101px;
   border-bottom:1px solid #fff;
@@ -259,9 +254,15 @@ hr {
 }
 
 /* TESTING FORM STATES */
-.embedly-api-key-input-wrapper {
-  margin-top: 20px;
-  margin-bottom: 20px;
+.embedly-key-body {
+  text-align: center;
+  vertical-align: middle;
+}
+.embedly-api-key-input-container {
+  position: relative;
+  width: 500px;
+  margin: 0 auto;
+  font-family:monospace;
 }
 .embedly-api-key-input-wrapper h1 {
   font-size: 8px;
@@ -273,12 +274,7 @@ hr {
 .embedly-api-key-input-wrapper .invalid-outer-text {
   color: #E44E46;
 }
-.embedly-api-key-input-container {
-  display: inline-block;
-  position: relative;
-  width: 500px;
-  font-family:monospace;
-}
+
 .embedly-max-width input[type="text"], textarea {
   width: 40px;
   height: 30px;
@@ -355,6 +351,19 @@ hr {
 .unlocked_key input[type="text"], textarea {
   border-color: #A6A8AB;
   background-color: #fff;
+}
+
+
+/* integrating sean's things */
+#embedly-which {
+  display: none;
+}
+#embedly-which a {
+  text-decoration: none;
+  display: block;
+  margin: 10px 20px;
+  color: #4CC6E6;
+  text-decoration: underline;
 }
 
 
