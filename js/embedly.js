@@ -40,7 +40,6 @@ jQuery(document).ready(function($) {
       ajaxurl,
       {'action': 'embedly_analytics_active_viewers'},
       function(response) {
-        console.log(response);
         var response = JSON.parse(response);
         $(".embedly-analytics .active-viewers .active-count").html(response.active);
     });
@@ -127,7 +126,7 @@ jQuery(document).ready(function($) {
   $('.advanced-wrapper .advanced-header').find('a[href="#"]').click(function(e) {
     e.preventDefault();
     $advanced = $('.advanced-wrapper .advanced-body');
-    $arrow = $('.embedly-dropdown');
+    $arrow = $('#advanced-arrow');
 
     if($advanced.is(":visible")) {
       $advanced.hide();
@@ -138,6 +137,26 @@ jQuery(document).ready(function($) {
     }
     return false;
   });
+
+  // toggles tutorial
+  $('.tutorial-wrapper .tutorial-header').find('a[href="#"]').click(function(e) {
+    e.preventDefault();
+    $tutorial = $('.tutorial-wrapper .tutorial-body');
+    $arrow = $('#tutorial-arrow');
+
+    if($tutorial.is(":visible")) {
+      console.log("hiding");
+      $tutorial.hide();
+      $arrow.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-right-alt2');
+    } else {
+      console.log('showing');
+      $tutorial.show();
+      // build_tutorial();
+      $arrow.removeClass('dashicons-arrow-right-alt2').addClass('dashicons-arrow-down-alt2')
+    }
+    return false;
+  });
+
 
   // given a key, value pair for a card setting, performs
   // ajax request to ajaxurl backend to update option
@@ -151,11 +170,11 @@ jQuery(document).ready(function($) {
       }, function(response) {
         console.log(response);
         if( key == 'card_width' ) {
+          // if the input was invalid for width,
+          // the value will default to previous value
           value = response;
         }
-        // returns valid card width after validation, if nec.
         update_preview(preview_map[key], String(value));
-        // return response;
       });
   }
 
@@ -283,12 +302,24 @@ jQuery(document).ready(function($) {
       $(this).attr('title', '');
     });
 
+  (function () {
+    build_tutorial();
+  })();
+
+  function build_tutorial() {
+    console.log('building tutorial');
+    // $('.tutorial-body .embedly-tutorial-container .embedly-card').remove();
+    console.log('link is: ' + $('#embedly-tutorial-card'));
+    card = embedly.card($('#embedly-tutorial-card'));
+    console.log('card is: ' + card);
+  };
+
   function build_card() {
     // clone the template
     clone = $('a.embedly-card-template').clone();
     clone.removeClass('embedly-card-template').addClass('embedly-card-preview');
     // remove the old card
-    $('.embedly-card').remove();
+    $('.card-preview-container .embedly-card').remove();
     // insert the new card template
     clone.insertAfter('a.embedly-card-template')[0];
     // cardify it.

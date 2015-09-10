@@ -53,7 +53,7 @@ if(!defined('SIGNUP_URL')) {
 }
 
 // DEBUGGING
-$EMBEDLY_DEBUG = true;
+$EMBEDLY_DEBUG = false;
 
 // maps local settings key => api param name
 $settings_map = array(
@@ -157,12 +157,28 @@ class WP_Embedly
             'embedly_save_account',
         ));
 
+        add_action('plugins_loaded', array(
+          $this,
+          'check_api_key'
+        ));
+
         // action establishes embed.ly the sole provider of embeds
         // (except those unsupported)
         add_action('plugins_loaded', array(
             $this,
             'add_embedly_providers'
         ));
+    }
+
+    /**
+    * makes sure the key is always valid (in case user, say, deletes their acct)
+    **/
+    function validate_api_key() {
+        if($this->embedly_acct_has_feature('oembed', $this->embedly_options['key'])) {
+            $this->update_option('key_valid?', true);
+        } else {
+            $this->update_option('key_valid?', false);
+        }
     }
 
     function embedly_save_account() {
@@ -373,7 +389,7 @@ class WP_Embedly
     function add_embedly_providers()
     {
         # if user entered valid key, override providers, else, do nothing
-        if (!empty($this->embedly_options['key'])) {
+        if (!empty($this->embedly_options['key']) && valid_key()) {
             // delete all current oembed providers
             add_filter('oembed_providers', create_function('', 'return array();'));
             // except twitter (@cstiteler: test that this works for twitter)
@@ -542,7 +558,20 @@ class WP_Embedly
     }
 
     function valid_key() {
-        return isset($this->embedly_options['key']) && !empty($this->embedly_options['key']);
+      if (!isset($this->embedly_options['key'])) {
+        return false;
+      }
+      if (empty($this->embedly_options['key'])) {
+        return false;
+      }
+      if(!isset($this->embedly_options['key_valid?'])) {
+        return false;
+      }
+      if (!$this->embedly_options['key_valid?']) {
+        return false;
+      }
+
+      return true;
     }
 
     function get_class_api_key_input_container() {
@@ -606,51 +635,45 @@ class WP_Embedly
         ?>
         <head>
           <?php $this->get_script_embedly_current_card(); ?>
-          <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+          <script src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
         <head>
 
-            <div class="embedly-wrap">
-                <div class="embedly-ui">
+          <div class="embedly-wrap">
+            <div class="embedly-ui">
 
-                    <!-- DELETE FOR PRODUCTION -->
-                    <?php
-                    global $EMBEDLY_DEBUG;
-                    if( isset($EMBEDLY_DEBUG) && ($EMBEDLY_DEBUG) ) { ?>
+              <!-- DELETE FOR PRODUCTION -->
+              <?php
+              global $EMBEDLY_DEBUG;
+              if( isset($EMBEDLY_DEBUG) && ($EMBEDLY_DEBUG) ) { ?>
 
-                        <button id="connect-button" class="embedly-button">Connect</button>
-                        <div id="embedly-which">
-                          <h4>Which Project Would you Like to Connect?</h4>
-                        </div>
+                <!-- Testing key input states -->
+                <hr>
+                  <div class="embedly-input-wrapper">
 
+                  <h4>
+                  DEBUGGING:
+                  <?php
+                      echo "<p>CURRENT URI: " . $this->build_uri_with_options() . "</p>";
+                      if( isset($_POST)) {
+                          $output = '';
+                          foreach ($_POST as $key => $value) {
+                              if ( is_array($value) ) {
+                                  $output .= "POST[" . $key . "]: ";
+                                  foreach($value as $element) {
+                                      // throw new Exception($element);
+                                      $output .= '[' . $element . ']';
+                                  }
+                              }else {
+                                  $output .= "POST[" . $key . "]: " . $value . ", ";
+                              }
 
-                      <!-- Testing key input states -->
-                      <hr>
-                        <div class="embedly-input-wrapper">
-
-                        <h4>
-                        DEBUGGING:
-                        <?php
-                            echo "<p>CURRENT URI: " . $this->build_uri_with_options() . "</p>";
-                            if( isset($_POST)) {
-                                $output = '';
-                                foreach ($_POST as $key => $value) {
-                                    if ( is_array($value) ) {
-                                        $output .= "POST[" . $key . "]: ";
-                                        foreach($value as $element) {
-                                            // throw new Exception($element);
-                                            $output .= '[' . $element . ']';
-                                        }
-                                    }else {
-                                        $output .= "POST[" . $key . "]: " . $value . ", ";
-                                    }
-
-                                }
-                                echo $output;
-                            }
-                        ?>
-                        </h4>
-            <?php } ?>
-                <!-- END DELETE FOR PRODUCTION -->
+                          }
+                          echo $output;
+                      }
+                  ?>
+                  </h4>
+      <?php } ?>
+          <!-- END DELETE FOR PRODUCTION -->
 
 
         <?php
@@ -669,7 +692,7 @@ class WP_Embedly
                   </div>
 
                   <!-- Notifications -->
-                  <?php
+<!--                   <?php
                     if (isset($errorMessage)) { ?>
                   <div class="embedly-error embedly-message" id="embedly-error">
                     <p><strong><?php echo $errorMessage;?></strong></p>
@@ -687,7 +710,7 @@ class WP_Embedly
 
                   <div class="embedly-updated embedly-ajax-message embedly-message" id="embedly-ajax-success">
                     <p><strong><?php _e("We have sync'd your providers list with our API. Enjoy!", 'embedly'); ?></strong></p>
-                  </div>
+                  </div> -->
                   <!-- END Notifications -->
 
                     <div class="embedly-ui-key-wrap">
@@ -741,7 +764,7 @@ class WP_Embedly
                         <div class="advanced-wrapper">
                           <div class="advanced-header">
                             <a href="#"><h3>ADVANCED EMBED SETTINGS
-                            <span class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
+                            <span id="advanced-arrow" class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
                           </div>
                           <div class="advanced-body">
                             <div class="advanced-selections">
@@ -816,12 +839,30 @@ class WP_Embedly
                           </div>
                         </div> <!-- END 'Options' Section -->
 
+
+                        <!-- BEGIN TUTORIAL EXPANDER -->
+                        <div class="tutorial-wrapper">
+                          <div class="tutorial-header">
+                            <a href="#"><h3>TUTORIAL
+                            <span id="tutorial-arrow" class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
+                          </div>
+                          <div class="tutorial-body">
+                            <div class="embedly-tutorial-container">
+                              <a id="embedly-tutorial-card"
+                                href="https://vimeo.com/60718161"
+                                data-card-controls="0" data-card-chrome="0">
+                              </a>
+                            </div>
+                          </div>
+                        </div> <!-- END 'Tutorial' Section -->
+
+
                         <!-- Saving Settings Button (No longer required.) -->
-                        <div class="embedly-save-settings-input" hidden>
+<!--                         <div class="embedly-save-settings-input" hidden>
                           <input class="embedly-button" name="submit" type="submit" value="<?php
                             _e('Save', 'embedly');
                             ?>"/>
-                        </div>
+                        </div> -->
                       </div>
                     </div>
                   </form>
@@ -840,8 +881,9 @@ class WP_Embedly
                   </div>
                   <div class="embedly-ui-key-wrap embedly-new-user-modal">
                     <div class="embedly_key_form embedly-ui-key-form">
+
                       <!-- Notifications -->
-                      <?php
+<!--                       <?php
                         // get_notification();
                         if (isset($errorMessage)) { ?>
                       <div class="embedly-error embedly-message" id="embedly-error">
@@ -860,12 +902,20 @@ class WP_Embedly
 
                       <div class="embedly-updated embedly-ajax-message embedly-message" id="embedly-ajax-success">
                         <p><strong><?php _e("We have sync'd your providers list with our API. Enjoy!", 'embedly'); ?></strong></p>
-                      </div>
+                      </div> -->
                       <!-- END Notifications -->
 
+                      <!-- Tutorial Video -->
+                      <div class="embedly-tutorial-container">
+                        <a id="embedly-tutorial-card"
+                          href="https://vimeo.com/60718161"
+                          data-card-controls="0" data-card-chrome="0">
+                        </a>
+                      </div>
 
                       <!-- HERO TEXT -->
                       <h1><strong>Embed content from any site!</strong></h1>
+
 
 
                       <!-- Blurb -->
@@ -883,11 +933,15 @@ class WP_Embedly
                           value="<?php _e('GET API KEY', 'embedly')?>"/>
                       </div>
 
-
                       &nbsp;
 
+                      <button id="connect-button" class="embedly-button">Connect</button>
+                      <div id="embedly-which">
+                        <h4>Which Project Would you Like to Connect?</h4>
+                      </div>
+
                         <!-- BEGIN Embedly API Key input Field -->
-                        <div class="embedly-key-body">
+<!--                         <div class="embedly-key-body">
                           <h3><?php _e('GOT YOUR API KEY? PASTE IT HERE', 'embedly'); ?></h3>
                           <div class="embedly-api-key-input-wrapper">
                             <h1 class="valid-outer-text">Lookin' Good</h1>
@@ -901,12 +955,12 @@ class WP_Embedly
                             </div>
                             <h1 class="invalid-outer-text">*Required Field</h1>
                           </div>
-                        </div>
+                        </div> -->
 
-                      <form id="embedly_key_form" method="POST" action="">
+<!--                       <form id="embedly_key_form" method="POST" action="">
                         <input class="embedly-button" name="Submit" type="submit" value="<?php
                           _e('ACTIVATE PLUGIN', 'embedly');?>"/>
-                      </form>
+                      </form> -->
 
                     </div>
                   </div>

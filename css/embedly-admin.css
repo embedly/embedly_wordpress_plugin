@@ -20,33 +20,38 @@ input[type="checkbox"]:checked:before {
   vertical-align: middle;
 }
 .embedly-ui-header-outer-wrapper {
-  height:101px;
-  border-bottom:1px solid #fff;
-  border-top-left-radius:10px;
-  border-top-right-radius:10px;
+  /*height:101px;*/
+  /*border-bottom:1px solid #fff;*/
+/*  border-top-left-radius:10px;
+  border-top-right-radius:10px;*/
 }
 .embedly-ui-header-wrapper {
   height:99px;
-  border-top-left-radius:10px;
-  border-top-right-radius:10px;
+  text-align: center;
+  vertical-align: middle;
+  /*border-top-left-radius:10px;
+  border-top-right-radius:10px;*/
 }
 .embedly-ui-header {
-  height:96px;
-  border:1px solid #fff;
-  background-color: 008ac4;
-  border-top-left-radius:10px;
-  border-top-right-radius:10px;
+  /*height:96px;*/
+  /*border:1px solid #fff;*/
+  /*background-color: 008ac4;*/
+/* border-top-left-radius:10px;
+  border-top-right-radius:10px;*/
   position:relative;
+  width: 100%;
 }
 .embedly-ui-logo {
-  text-indent:-999999em;
-  width:200px;
-  height:70px;
-  background:url('../img/logo-large.png') no-repeat 0 0;
-  position:absolute;
-  top:50%;
-  left:20px;
-  margin-top:-28px;
+  background:url('../img/wordpressicon-93x88.png') no-repeat 0 0;
+  display:block;
+  height:88px;
+  width:93px;
+  overflow:hidden;
+  text-indent:100%;
+  white-space:nowrap;
+  margin-left: auto;
+  margin-right: auto;
+
 }
 .embedly-ui-key-wrap {
   margin:30px;
@@ -111,6 +116,14 @@ input[type="checkbox"]:checked:before {
 }
 /* end styles for advanced dropdown menu*/
 
+/* styles for tutorial dropdown */
+.tutorial-body {
+  display: none;
+  padding: 5px;
+}
+.tutorial-wrapper {
+  clear: both;
+}
 
 .embedly-button {
   -webkit-appearance: none;
