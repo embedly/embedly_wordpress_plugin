@@ -48,9 +48,6 @@ if (!defined('EMBEDLY_URL')) {
 if (!defined('EMBEDLY_BASE_URI')) {
     define('EMBEDLY_BASE_URI', 'https://api.embedly.com/1/card?');
 }
-if(!defined('SIGNUP_URL')) {
-    define('SIGNUP_URL', 'https://app.embed.ly/signup/wordpress');
-}
 
 // DEBUGGING
 $EMBEDLY_DEBUG = false;
@@ -93,6 +90,7 @@ class WP_Embedly
             'card_controls' => true,
             'card_align' => 'center',
             'card_theme' => 'light',
+            'key_valid?' => false,
         );
 
         //i18n
@@ -159,7 +157,7 @@ class WP_Embedly
 
         add_action('plugins_loaded', array(
           $this,
-          'check_api_key'
+          'validate_api_key'
         ));
 
         // action establishes embed.ly the sole provider of embeds
@@ -175,9 +173,9 @@ class WP_Embedly
     **/
     function validate_api_key() {
         if($this->embedly_acct_has_feature('oembed', $this->embedly_options['key'])) {
-            $this->update_option('key_valid?', true);
+            $this->embedly_save_option('key_valid?', true);
         } else {
-            $this->update_option('key_valid?', false);
+            $this->embedly_save_option('key_valid?', false);
         }
     }
 
@@ -389,7 +387,7 @@ class WP_Embedly
     function add_embedly_providers()
     {
         # if user entered valid key, override providers, else, do nothing
-        if (!empty($this->embedly_options['key']) && valid_key()) {
+        if (!empty($this->embedly_options['key']) && $this->valid_key()) {
             // delete all current oembed providers
             add_filter('oembed_providers', create_function('', 'return array();'));
             // except twitter (@cstiteler: test that this works for twitter)
@@ -831,9 +829,9 @@ class WP_Embedly
                               </ul>
                             </div>
                             <!-- preview card.. work in progress -->
-                            <div class="card-preview-container">
+                            <div class="card-preview-container"><h3>PREVIEW CARD (and our tutorial!)</h3>
                               <a class="embedly-card-template"
-                                href="https://vimeo.com/80836225">
+                                href="https://vimeo.com/62648882">
                               </a>
                             </div>
                           </div>
@@ -928,9 +926,8 @@ class WP_Embedly
 
                       <!-- Create an embed.ly account button -->
                       <div class="embedly-create-account-btn-wrap">
-                        <input class="embedly-button" type="button" onclick=
-                          <?php echo '"' . "window.open('" . SIGNUP_URL . "');" . '"' ?>
-                          value="<?php _e('GET API KEY', 'embedly')?>"/>
+                        <input id='create-account-btn' class="embedly-button" type="button"
+                          value="<?php _e('CREATE AN ACCOUNT', 'embedly')?>"/>
                       </div>
 
                       &nbsp;

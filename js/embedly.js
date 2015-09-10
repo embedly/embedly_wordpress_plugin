@@ -151,12 +151,16 @@ jQuery(document).ready(function($) {
     } else {
       console.log('showing');
       $tutorial.show();
-      // build_tutorial();
       $arrow.removeClass('dashicons-arrow-right-alt2').addClass('dashicons-arrow-down-alt2')
     }
     return false;
   });
 
+  // sets the back direct link on the create account button
+  $('#create-account-btn')
+    .attr(
+      "onclick",
+      "window.open('https://app.embed.ly/signup/wordpress?back=" + window.location.toString() + "');");
 
   // given a key, value pair for a card setting, performs
   // ajax request to ajaxurl backend to update option
