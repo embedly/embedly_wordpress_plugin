@@ -719,17 +719,16 @@ class WP_Embedly
                               <h1 class="active-count">-</h1>
                               People are <strong>actively viewing</strong> your embeds!
                               <br/> <!-- is this acceptable? need to format my h tags for this page.-->
-
+                            </li>
+                            <li>
                               <input class="embedly-button" type="button" 
                                 <?php $this->get_onclick_analytics_button(); ?>
                                 value="<?php _e('Realtime Analytics', 'embedly')?>"/>
                             </li>
+                            <li>&nbsp;</li>
                             <li class="historical-viewers">
                               <h1 class="weekly-count">Computing...</h1>
                               People have <strong>viewed</strong> an embed in the <strong>last week</strong>.
-                              <br/> <!-- is this acceptable? need to format my h tags for this page.-->
-<!--                               <input class="embedly-button" type="button" onclick="window.open('http://app.embed.ly');"
-                               value="<?php _e('Historical Analytics', 'embedly')?>"/> -->
                             </li>
                           </ul>
                           <!-- LIST OF PROVIDERS LINK -->
@@ -737,8 +736,8 @@ class WP_Embedly
                         </div>
 
                         <!-- BEGIN Embedly API Key input Field -->
-                        <hr>
-                        <div class="embedly-key-body">
+                        <!-- <hr> -->
+<!--                         <div class="embedly-key-body">
                           <h3>YOUR EMBEDLY API KEY</h3>
                           <div class="embedly-api-key-input-wrapper">
                             <h1 class="valid-outer-text">Lookin' Good</h1>
@@ -752,7 +751,7 @@ class WP_Embedly
                             </div>
                             <h1 class="invalid-outer-text">*Required Field</h1>
                           </div>
-                        </div>
+                        </div> -->
                         <!-- END Embedly API Key input Field -->
 
 
@@ -764,9 +763,10 @@ class WP_Embedly
                             <a href="#"><h3>ADVANCED EMBED SETTINGS
                             <span id="advanced-arrow" class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
                           </div>
+                          <div class = "advanced-body">
+                            <p>Changing these settings will change how your future embeds appear.</p></div>
                           <div class="advanced-body">
                             <div class="advanced-selections">
-                              <p>Changing these settings will change how your future embeds appear.</p>
                               <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
                               <ul>
                                 <li>
@@ -903,38 +903,63 @@ class WP_Embedly
                       </div> -->
                       <!-- END Notifications -->
 
-                      <!-- Tutorial Video -->
-                      <div class="embedly-tutorial-container">
-                        <a id="embedly-tutorial-card"
-                          href="https://vimeo.com/60718161"
-                          data-card-controls="0" data-card-chrome="0">
-                        </a>
-                      </div>
+                      <div class="welcome-page-body">
+                        <ul>
+                          <li>
+                            <!-- Tutorial Video -->
+                            <div class="embedly-tutorial-container">
+                              <a id="embedly-tutorial-card"
+                                href="https://vimeo.com/60718161"
+                                data-card-controls="0" data-card-chrome="0">
+                              </a>
+                            </div>
+                          </li>
 
-                      <!-- HERO TEXT -->
-                      <h1><strong>Embed content from any site!</strong></h1>
+                          <li>
+                            <!-- HERO TEXT -->
+                            <h1><strong>Embed content from any site!</strong></h1>
+                          </li>
+
+                          <li>
+                            <!-- Blurb -->
+                            <h3>
+                              <span class="dashicons dashicons-twitter"></span>
+                              We now support <strong>Twitter</strong>! Check out our
+                              <a href="http://embed.ly/providers" target="_blank"><strong>long list of providers</strong>.</a>
+                            </h3>
+                              <h3>Getting started? <strong>Learn more above</strong> about embedly cards for Wordpress.</h3>
+                          </li>
 
 
+                          <li>
+                            <!-- Create an embed.ly account button -->
+                            <?php _e("Don't Have An Account?", "embedly"); ?>
+                            <div class="embedly-create-account-btn-wrap">
+                              <input id='create-account-btn' class="embedly-button embedly-button-long" type="button"
+                                value="<?php _e('GET STARTED HERE!', 'embedly')?>"/>
+                            </div>
+                            <p>&nbsp;</p>
+                            <button id="connect-button" class="embedly-button embedly-button-long">
+                              <div class="inner-connect-button">
+                                <span class="inner-button-span">
+                                  <img id="connect-btn-img" src=<?php echo EMBEDLY_URL . "/img/embedly-white-70-40.svg" ?>>
+                                </span>
+                                <span class="inner-button-span">
+                                  SYNC WITH EMBEDLY ACCOUNT
+                                </span>
+                              </div>
+                            </button>
 
-                      <!-- Blurb -->
-                      <h3>
-                        <span class="dashicons dashicons-twitter"></span>
-                        We now support <strong>Twitter</strong>! Check out our
-                        <a href="http://embed.ly/providers" target="_blank"><strong>long list of providers</strong>.</a>
-                      </h3>
-                        <h3>Getting started? <strong>Learn more above</strong> about embedly cards for Wordpress.</h3>
+                            <!-- dropdown for selecting a project -->
+                            <div id="embedly-which">
+                              <h4>Which Project Would you Like to Connect?</h4>
+                              <h4>&nbsp;</h4>
+                              <ul id="embedly-which-list">
+                              </ul>
+                            </div>
 
-                      <!-- Create an embed.ly account button -->
-                      <div class="embedly-create-account-btn-wrap">
-                        <input id='create-account-btn' class="embedly-button" type="button"
-                          value="<?php _e('CREATE AN ACCOUNT', 'embedly')?>"/>
-                      </div>
-
-                      &nbsp;
-
-                      <button id="connect-button" class="embedly-button">Connect</button>
-                      <div id="embedly-which">
-                        <h4>Which Project Would you Like to Connect?</h4>
+                          </li>
+                        </ul>
                       </div>
 
                         <!-- BEGIN Embedly API Key input Field -->

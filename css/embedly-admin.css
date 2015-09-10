@@ -19,25 +19,19 @@ input[type="checkbox"]:checked:before {
   text-align: center;
   vertical-align: middle;
 }
-.embedly-ui-header-outer-wrapper {
-  /*height:101px;*/
-  /*border-bottom:1px solid #fff;*/
-/*  border-top-left-radius:10px;
-  border-top-right-radius:10px;*/
+.embedly-analytics ul li {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.embedly-analytics h1 {
+  font-size: 50px;
 }
 .embedly-ui-header-wrapper {
   height:99px;
   text-align: center;
   vertical-align: middle;
-  /*border-top-left-radius:10px;
-  border-top-right-radius:10px;*/
 }
 .embedly-ui-header {
-  /*height:96px;*/
-  /*border:1px solid #fff;*/
-  /*background-color: 008ac4;*/
-/* border-top-left-radius:10px;
-  border-top-right-radius:10px;*/
   position:relative;
   width: 100%;
 }
@@ -59,7 +53,7 @@ input[type="checkbox"]:checked:before {
   padding:1px;
 }
 .embedly-ui-key-wrap p {
-  font-size:12px;
+  font-size:14px;
   color:#747474;
   font-family:'Cabin', sans-serif;
   margin:5px 0 0;
@@ -67,7 +61,6 @@ input[type="checkbox"]:checked:before {
 }
 .embedly-ui-key-form {
   background:#fff;
-  /*border:1px solid #fff;*/
   border-radius:0px;
   padding:14px;
 }
@@ -110,9 +103,12 @@ input[type="checkbox"]:checked:before {
   margin-bottom: 30px;
 }
 .card-preview-container {
+  padding: 20px;
   width: 70%;
+  min-height: 550px;
   float: right;
   vertical-align: middle;
+  border: 2px solid #A6A8AB;
 }
 /* end styles for advanced dropdown menu*/
 
@@ -125,31 +121,81 @@ input[type="checkbox"]:checked:before {
   clear: both;
 }
 
+.embedly-create-account-btn-wrap {
+  page-break-inside: '';
+}
 .embedly-button {
   -webkit-appearance: none;
   -moz-appearance: none;
+  border: solid 0 #1eb0d7;
   border-radius: 0;
-  border-style: solid;
-  border-width: 0;
   cursor: pointer;
   font-family: museo-sans-fontspring,"Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 14px;
   line-height: normal;
-  margin-top: 40px;
-  margin-bottom: 40px;
   position: relative;
   text-align: center;
   text-decoration: none;
   display: inline-block;
   padding: 0.50rem 1.5rem;
   background-color: #36495e;
-  border-color: #1eb0d7;
   color: #FFF;
   transition: background-color 300ms ease-out;
+  height: 40px;
 }
 .embedly-button:hover {
   background-color:#556d82;
 }
+.embedly-button-long {
+  width: 100%;
+}
+
+
+/* welcome page styles */
+.welcome-page-body ul li{
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
+.welcome-page-body h1 {
+  font-size: 50px;
+}
+#connect-button {
+  outline: none;
+  background-color: #4CC6E6;
+}
+.inner-connect-button{
+  vertical-align: center;
+}
+#connect-btn-img {
+  height: 21px;
+  width: auto;
+  vertical-align: middle;
+}
+span.inner-button-span {
+  vertical-align: middle;
+}
+#embedly-which {
+  padding: 20px;
+  display: none;
+  background-color: #4CC6E6;
+}
+#embedly-which h4 {
+  color: #fff;
+  margin: 0 auto;
+}
+#embedly-which a {
+  text-decoration: none;
+  display: block;
+  color: #fff;
+  cursor: pointer;
+}
+#embedly-which-list li {
+  margin: 10px;
+  font-size: 14px;
+}
+
+
+/* wp styles */
 #wpwrap {
   background-color: #FFF;
 }
@@ -367,16 +413,6 @@ hr {
 }
 
 
-/* integrating sean's things */
-#embedly-which {
-  display: none;
-}
-#embedly-which a {
-  text-decoration: none;
-  display: block;
-  margin: 10px 20px;
-  color: #4CC6E6;
-  text-decoration: underline;
-}
+
 
 

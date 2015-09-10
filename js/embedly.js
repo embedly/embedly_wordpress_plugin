@@ -103,6 +103,7 @@ jQuery(document).ready(function($) {
 
   $('.embedly-social-checkbox').click(function() {
     update_option('card_controls', $(this).is(':checked') ? 1 : 0);
+    simulate_hover_on_preview_card();
   });
 
   $('.embedly-dark-checkbox').click(function() {
@@ -121,6 +122,14 @@ jQuery(document).ready(function($) {
       return false;
     }
   });
+
+  function simulate_hover_on_preview_card() {
+    // not sure if this is possible into the iframe..
+    // or if worth. maybe just explain with a tooltip
+    // what the social setting does.
+    $('embedly-card').addClass('hover');
+    setTimeout($('embedly-card').removeClass('hover'), 3000);
+  }
 
   // toggles advanced options
   $('.advanced-wrapper .advanced-header').find('a[href="#"]').click(function(e) {
@@ -412,8 +421,14 @@ jQuery(document).ready(function($) {
   var button = document.getElementById('connect-button');
 
   button.addEventListener('click', function () {
+    // if the div is open already, close it., else continue:
+    if($('#embedly-which').is(":visible")) {
+      $('#embedly-which').hide();
+      return;
+    }
+
     // if the user clicks twice, make sure div is empty
-    $('#embedly-which').empty();
+    $('#embedly-which-list').empty();
 
     console.log('click');
     app.connect(function (data) {
@@ -428,7 +443,9 @@ jQuery(document).ready(function($) {
         } else {
           // selects the div containing accounts to connect
           var which = document.getElementById('embedly-which');
+          var whichlist = document.getElementById('embedly-which-list');
           which.style.display = 'block';
+          console.log("whichlist is: " + whichlist)
 
           var selected = function (org) {
             return function () {
@@ -437,17 +454,21 @@ jQuery(document).ready(function($) {
               // alert('connected ' + org.name + ' ' + org.api_key + ' ' + org.analytics_key);
               which.style.display = 'none';
               // clear html after selection in case of reselection
-              which.innerHTML = '';
+              whichlist.innerHTML = "";
             }
           }
-            for (var i = 0; i < data.organizations.length; i++) {
-              var a = document.createElement('a'),
-                org = data.organizations[i];
-              a.innerHTML = org.name;
-              a.addEventListener('click', selected(org));
-              which.appendChild(a);
-            }
+
+          for (var i = 0; i < data.organizations.length; i++) {
+            var li = document.createElement('li');
+            var a = document.createElement('a');
+            org = data.organizations[i];
+            a.innerHTML = org.name;
+            a.addEventListener('click', selected(org));
+            li.appendChild(a);
+            whichlist.appendChild(li);
+            // which.appendChild(whichlist);
           }
+        }
       } else {
         alert('Please log into Embedly');
       }
@@ -464,6 +485,9 @@ jQuery(document).ready(function($) {
         'org_name': name,
       },
       function(response) {
+        if(response == 'true') {
+          location.reload();
+        }
         // should warn user if something went wrong here..
         console.log(response);
     });
