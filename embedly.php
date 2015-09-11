@@ -50,7 +50,7 @@ if (!defined('EMBEDLY_BASE_URI')) {
 }
 
 // DEBUGGING
-$EMBEDLY_DEBUG = false;
+$EMBEDLY_DEBUG = true;
 
 // maps local settings key => api param name
 $settings_map = array(
@@ -493,22 +493,22 @@ class WP_Embedly
     function handle_width_input($input)
     {
         // width can be '%' or 'px'
-        // first check if '%',
+        // first check if '100%',
         $percent = $this->int_before_substring($input, '%');
         if ($percent != 0 && $percent <= 100) {
             return $percent . '%';
         }
 
-        // try for px:
+        // try for a value like 300px (platform can only handle >200px?)
         $pixels = $this->int_before_substring($input, 'px');
         if ($pixels > 0) {
-            return $pixels . 'px';
+            return max($pixels, 200);
         }
 
         // try solitary int value.
         $int = intval($input);
         if ($int > 0) {
-            return $int . 'px';
+            return max($int, 200);
         }
 
         return "";
@@ -581,8 +581,7 @@ class WP_Embedly
          if ($this->valid_key()) {
              $class .= ' locked_key';
          }
-         $class .= '"';
-         echo $class;
+         echo $class . '" ';
     }
 
     /**
@@ -590,7 +589,16 @@ class WP_Embedly
     **/
     function get_value_embedly_max_width() {
         if(isset($this->embedly_options['card_width'])) {
-            echo 'value="' . $this->embedly_options['card_width'] . '"';
+          $value = 'value="';
+          $width = $this->embedly_options['card_width'];
+          if(strpos($width, '%') !== false) {
+            $value .= $width;
+          } else if($width !== '') {
+            // we remove for api call, but replace for user
+            $value .= $width . "px";
+          }
+
+          echo $value . '" ';
         }
     }
 
@@ -642,7 +650,7 @@ class WP_Embedly
       if($this->embedly_options['card_theme'] == 'dark') {
         $class .= ' dark-theme';
       }
-      echo $class .= '" ';
+      echo $class . '" ';
     }
     /////////////////////////// END TEMPLATE FUNCTIONS FOR FORM LOGIC
 

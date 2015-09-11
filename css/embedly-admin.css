@@ -5,7 +5,7 @@
   padding:20px;
 }
 .embedly-ui {
-  font-family: 'museo-sans-fontspring';
+  font-family: 'museo-sans-fontspring', sans-serif;
   background:#fff;
 }
 .embedly-ui h1 {
@@ -59,7 +59,7 @@ input[type="checkbox"]:checked:before {
 .embedly-ui-key-wrap p {
   font-size:14px;
   color:#747474;
-  font-family:'museo-sans-fontspring';
+  /*font-family:'museo-sans-fontspring';*/
   margin:5px 0 0;
   text-shadow:0 1px 0 #fff;
 }
@@ -111,7 +111,7 @@ input[type="checkbox"]:checked:before {
   padding-bottom: 30px;
   padding-left: 50px;
   padding-right: 50px; /* to acommodate the sharing buttons */
-  width: 70%;
+  width: 65%;
   min-height: 550px;
   float: right;
   vertical-align: middle;
