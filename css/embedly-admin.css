@@ -3,6 +3,9 @@
   margin:0 auto;
   position:relative;
   padding:20px;
+  font-size: 16px;
+  font-weight: 500;
+  /* font weight should be 500 */
 }
 .embedly-ui {
   color: #36495e;
@@ -10,6 +13,7 @@
   -webkit-font-smoothing: antialiased;
   background:#fff;
 }
+
 .embedly-ui a {
   text-decoration:none;
   color: #36495e;
@@ -25,6 +29,7 @@
 }
 
 .embedly-analytics {
+  font-size: 16px;
   text-align: center;
   vertical-align: middle;
 }
@@ -32,8 +37,9 @@
   margin-top: 30px;
   margin-bottom: 30px;
 }
-.embedly-analytics h1 {
-  /*font-size: 75px;*/
+.embedly-analytics p {
+  font-size: 16px;
+  letter-spacing: 0.25px;
 }
 .embedly-ui-header-wrapper {
   height:99px;
@@ -91,10 +97,13 @@
 .advanced-wrapper h3 {
   font-weight: bold;
 }
-}
 .advanced-body {
   display: none;
   padding: 5px;
+}
+.advanced-body p {
+  font-size: 16px;
+  font-weight: 500;
 }
 .advanced-selections {
   float: left;
@@ -148,7 +157,8 @@
   border-radius: 0;
   cursor: pointer;
   font-family: 'museo-sans-fontspring',Helvetica,Arial,sans-serif;
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 700;
   line-height: normal;
   position: relative;
   text-align: center;
@@ -159,6 +169,7 @@
   color: #FFF;
   transition: background-color 300ms ease-out;
   height: 40px;
+  letter-spacing: .75px;
 }
 .embedly-button:hover {
   background-color:#556d82;

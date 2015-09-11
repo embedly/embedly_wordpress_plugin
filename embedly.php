@@ -704,18 +704,17 @@ class WP_Embedly
                           <ul>
                             <li class="active-viewers">
                               <h1 class="active-count">-</h1>
-                              People are <strong>actively viewing</strong> your embeds!
+                              <p>People are <strong>actively viewing</strong> your embeds!</p>
                               <br/> <!-- is this acceptable? need to format my h tags for this page.-->
-                            </li>
-                            <li>
                               <input class="embedly-button" type="button" 
                                 <?php $this->get_onclick_analytics_button(); ?>
                                 value="<?php _e('Realtime Analytics', 'embedly')?>"/>
                             </li>
                             <li>&nbsp;</li>
+                            <li>&nbsp;</li>
                             <li class="historical-viewers">
                               <h1 class="weekly-count">Computing...</h1>
-                              People have <strong>viewed</strong> an embed in the <strong>last week</strong>.
+                              <p>People have <strong>viewed</strong> an embed in the <strong>last week</strong>.</p>
                             </li>
                           </ul>
                           <!-- LIST OF PROVIDERS LINK -->
