@@ -96,7 +96,6 @@ jQuery(document).ready(function($) {
     update_option('card_align', align);
   });
 
-  // immediate settings
   $('.chrome-card-checkbox').click(function() {
     update_option('card_chrome', $(this).is(':checked') ? 0 : 1);
   });
@@ -107,8 +106,16 @@ jQuery(document).ready(function($) {
   });
 
   $('.embedly-dark-checkbox').click(function() {
-    value = $(this).is(':checked') ? 'dark' : 'light';
+    var checked = $(this).is(':checked');
+    value = checked ? 'dark' : 'light';
     update_option('card_theme', value);
+
+    var $preview = $('.card-preview-container');
+    if(checked) {
+      $preview.addClass('dark-theme');
+    } else {
+      $preview.removeClass('dark-theme');
+    }
   });
 
   $('.embedly-max-width').focusout(function(e) {

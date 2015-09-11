@@ -621,6 +621,17 @@ class WP_Embedly
             echo ' onclick="window.open(' . "'" . 'http://app.embed.ly' . "'" . ');" ';
         }
     }
+
+    /**
+    * sets the class of the preview container.. if dark theme, add "dark-theme" class
+    */
+    function get_class_card_preview_container() {
+      $class = 'class="card-preview-container';
+      if($this->embedly_options['card_theme'] == 'dark') {
+        $class .= ' dark-theme';
+      }
+      echo $class .= '" ';
+    }
     /////////////////////////// END TEMPLATE FUNCTIONS FOR FORM LOGIC
 
     /**
@@ -829,9 +840,10 @@ class WP_Embedly
                               </ul>
                             </div>
                             <!-- preview card.. work in progress -->
-                            <div class="card-preview-container"><h3>PREVIEW CARD (and our tutorial!)</h3>
+                            <div <?php $this->get_class_card_preview_container(); ?>>
+                              <h3>PREVIEW CARD</h3>
                               <a class="embedly-card-template"
-                                href="https://vimeo.com/62648882">
+                                href="https://vimeo.com/80836225">
                               </a>
                             </div>
                           </div>
