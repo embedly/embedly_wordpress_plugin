@@ -17,6 +17,7 @@
 .embedly-ui h1 {
   font-family: 'proxima-nova-extra-condensed-fontspring';
   font-size: 75px;
+  margin: 30px;
 }
 /* Overrides color of checkmarks in checkboxes*/
 .embedly-ui input[type="checkbox"]:checked:before {
@@ -87,6 +88,10 @@
   text-align: center;
 }
 /*styles for advanced dropdown*/
+.advanced-wrapper h3 {
+  font-weight: bold;
+}
+}
 .advanced-body {
   display: none;
   padding: 5px;
