@@ -362,7 +362,8 @@ class WP_Embedly
             $protocol = is_ssl() ? 'https' : 'http';
             wp_enqueue_style('dashicons');
             wp_enqueue_style('embedly_admin_styles', EMBEDLY_URL . '/css/embedly-admin.css');
-            wp_enqueue_style('google_fonts', $protocol . '://fonts.googleapis.com/css?family=Cabin:400,600');
+            wp_enqueue_style('embedly-fonts', $protocol . '://embed.ly/static/styles/fontspring-stylesheet.css');
+            // wp_enqueue_style('google_fonts', $protocol . '://fonts.googleapis.com/css?family=Cabin:400,600');
             // controls some of the functionality of the settings page, will need to go through embedly.js at some point
             wp_enqueue_script('embedly_admin_scripts', EMBEDLY_URL . '/js/embedly.js', array(
                 'jquery'
@@ -572,6 +573,9 @@ class WP_Embedly
       return true;
     }
 
+    /**
+    * returns embedly key
+    */
     function get_class_api_key_input_container() {
         $class = 'class="embedly-api-key-input-container';
          if ($this->valid_key()) {
@@ -581,12 +585,18 @@ class WP_Embedly
          echo $class;
     }
 
+    /**
+    * returns max_width setting as a html value attr
+    **/
     function get_value_embedly_max_width() {
         if(isset($this->embedly_options['card_width'])) {
             echo 'value="' . $this->embedly_options['card_width'] . '"';
         }
     }
 
+    /**
+    * returns current card_align value
+    **/
     function get_current_align() {
         $current_align = 'center'; // default if not set
         if(isset($this->embedly_options['card_align'])) {
@@ -595,7 +605,9 @@ class WP_Embedly
         return $current_align;
     }
 
-    // builds a <script> tag that globalizes the current card settings for preview init
+    /**
+    * builds a <script> tag that globalizes the current card settings for preview init
+    **/
     function get_script_embedly_current_card() {
         global $settings_map;
         $current_card_script = "<script> var current_card = {";

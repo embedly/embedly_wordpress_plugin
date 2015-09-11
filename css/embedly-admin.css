@@ -5,7 +5,11 @@
   padding:20px;
 }
 .embedly-ui {
+  font-family: 'museo-sans-fontspring';
   background:#fff;
+}
+.embedly-ui h1 {
+  font-family: 'proxima-nova-extra-condensed-fontspring';
 }
 /* Overrides color of checkmarks in checkboxes*/
 input[type="checkbox"]:checked:before {
@@ -24,7 +28,7 @@ input[type="checkbox"]:checked:before {
   margin-bottom: 30px;
 }
 .embedly-analytics h1 {
-  font-size: 50px;
+  font-size: 75px;
 }
 .embedly-ui-header-wrapper {
   height:99px;
@@ -55,7 +59,7 @@ input[type="checkbox"]:checked:before {
 .embedly-ui-key-wrap p {
   font-size:14px;
   color:#747474;
-  font-family:'Cabin', sans-serif;
+  font-family:'museo-sans-fontspring';
   margin:5px 0 0;
   text-shadow:0 1px 0 #fff;
 }
@@ -143,7 +147,7 @@ input[type="checkbox"]:checked:before {
   border: solid 0 #1eb0d7;
   border-radius: 0;
   cursor: pointer;
-  font-family: museo-sans-fontspring,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-family: 'museo-sans-fontspring',Helvetica,Arial,sans-serif;
   font-size: 14px;
   line-height: normal;
   position: relative;
