@@ -176,7 +176,7 @@ jQuery(document).ready(function($) {
   $('#create-account-btn')
     .attr(
       "onclick",
-      "window.open('https://app.embed.ly/signup/wordpress?back=" + window.location.toString() + "');");
+      "window.open('https://app.embed.ly/signup/wordpress?back=" + encodeURIComponent(window.location.toString()) + "');");
 
   // given a key, value pair for a card setting, performs
   // ajax request to ajaxurl backend to update option

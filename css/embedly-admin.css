@@ -5,20 +5,24 @@
   padding:20px;
 }
 .embedly-ui {
-  font-family: 'museo-sans-fontspring', sans-serif;
-  background:#fff;
-}
-.embedly-ui h1 {
-  font-family: 'proxima-nova-extra-condensed-fontspring';
-}
-/* Overrides color of checkmarks in checkboxes*/
-input[type="checkbox"]:checked:before {
   color: #36495e;
+  font-family: 'museo-sans-fontspring', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background:#fff;
 }
 .embedly-ui a {
   text-decoration:none;
-  color:#36495e;
+  color: #36495e;
 }
+.embedly-ui h1 {
+  font-family: 'proxima-nova-extra-condensed-fontspring';
+  font-size: 75px;
+}
+/* Overrides color of checkmarks in checkboxes*/
+.embedly-ui input[type="checkbox"]:checked:before {
+  color: #36495e;
+}
+
 .embedly-analytics {
   text-align: center;
   vertical-align: middle;
@@ -28,7 +32,7 @@ input[type="checkbox"]:checked:before {
   margin-bottom: 30px;
 }
 .embedly-analytics h1 {
-  font-size: 75px;
+  /*font-size: 75px;*/
 }
 .embedly-ui-header-wrapper {
   height:99px;
@@ -56,13 +60,6 @@ input[type="checkbox"]:checked:before {
   background:#fff;
   padding:1px;
 }
-.embedly-ui-key-wrap p {
-  font-size:14px;
-  color:#747474;
-  /*font-family:'museo-sans-fontspring';*/
-  margin:5px 0 0;
-  text-shadow:0 1px 0 #fff;
-}
 .embedly-ui-key-form {
   background:#fff;
   border-radius:0px;
@@ -85,14 +82,10 @@ input[type="checkbox"]:checked:before {
     height: 3em;
     margin-top: -3em;
 }
-
-
 .embedly-api-key-input {
   width:65%;
   text-align: center;
 }
-
-
 /*styles for advanced dropdown*/
 .advanced-body {
   display: none;
@@ -137,9 +130,11 @@ input[type="checkbox"]:checked:before {
 .tutorial-wrapper {
   clear: both;
 }
-
 .embedly-create-account-btn-wrap {
   page-break-inside: '';
+}
+#create-account-btn {
+  font-size: 20px;
 }
 .embedly-button {
   -webkit-appearance: none;
@@ -166,19 +161,23 @@ input[type="checkbox"]:checked:before {
 .embedly-button-long {
   width: 100%;
 }
-
-
 /* welcome page styles */
 .welcome-page-body ul li{
   margin-top: 50px;
   margin-bottom: 50px;
 }
-.welcome-page-body h1 {
-  font-size: 50px;
+#twitter-icon {
+  font-size: 25px;
+  margin: 4px;
+}
+.welcome-page-body p {
+  font-size: 20px;
+  margin: 0 auto;
 }
 #connect-button {
   outline: none;
   background-color: #4CC6E6;
+  font-size: 20px;
 }
 .inner-connect-button{
   vertical-align: center;
@@ -196,22 +195,23 @@ span.inner-button-span {
   display: none;
   background-color: #4CC6E6;
 }
-#embedly-which h4 {
+#embedly-which p {
   color: #fff;
   margin: 0 auto;
+  font-size: 16px;
 }
 #embedly-which a {
   text-decoration: none;
   display: block;
   color: #fff;
   cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
 }
 #embedly-which-list li {
   margin: 10px;
   font-size: 14px;
 }
-
-
 /* wp styles */
 #wpwrap {
   background-color: #FFF;
@@ -279,7 +279,6 @@ span.selected-align-select:hover {
   text-align: center;
   vertical-align: middle;
 }
-
 .dashicons-twitter:before {
   color: #55acee;
 }

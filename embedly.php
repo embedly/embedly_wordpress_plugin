@@ -8,7 +8,7 @@ Version: 4.0.0
 Author URI: http://embed.ly
 License: GPL2
 
-Copyright 2010  Embedly  (email : developer@embed.ly)
+Copyright 2015 Embedly  (email : developer@embed.ly)
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as
@@ -50,7 +50,7 @@ if (!defined('EMBEDLY_BASE_URI')) {
 }
 
 // DEBUGGING
-$EMBEDLY_DEBUG = true;
+$EMBEDLY_DEBUG = false;
 
 // maps local settings key => api param name
 $settings_map = array(
@@ -669,6 +669,7 @@ class WP_Embedly
 
           <div class="embedly-wrap">
             <div class="embedly-ui">
+              <div class="embedly-input-wrapper">
 
               <!-- DELETE FOR PRODUCTION -->
               <?php
@@ -676,31 +677,8 @@ class WP_Embedly
               if( isset($EMBEDLY_DEBUG) && ($EMBEDLY_DEBUG) ) { ?>
 
                 <!-- Testing key input states -->
-                <hr>
-                  <div class="embedly-input-wrapper">
-
-                  <h4>
                   DEBUGGING:
-                  <?php
-                      echo "<p>CURRENT URI: " . $this->build_uri_with_options() . "</p>";
-                      if( isset($_POST)) {
-                          $output = '';
-                          foreach ($_POST as $key => $value) {
-                              if ( is_array($value) ) {
-                                  $output .= "POST[" . $key . "]: ";
-                                  foreach($value as $element) {
-                                      // throw new Exception($element);
-                                      $output .= '[' . $element . ']';
-                                  }
-                              }else {
-                                  $output .= "POST[" . $key . "]: " . $value . ", ";
-                              }
-
-                          }
-                          echo $output;
-                      }
-                  ?>
-                  </h4>
+                  <?php echo "CURRENT URI: " . $this->build_uri_with_options() ;?>
       <?php } ?>
           <!-- END DELETE FOR PRODUCTION -->
 
@@ -719,28 +697,6 @@ class WP_Embedly
                       </div>
                     </div>
                   </div>
-
-                  <!-- Notifications -->
-<!--                   <?php
-                    if (isset($errorMessage)) { ?>
-                  <div class="embedly-error embedly-message" id="embedly-error">
-                    <p><strong><?php echo $errorMessage;?></strong></p>
-                  </div>
-
-                  <?php } elseif (isset($successMessage) && !isset($errorMessage)) { ?>
-                  <div class="embedly-updated embedly-message" id="embedly-success">
-                    <p><strong><?php echo $successMessage; ?></strong></p>
-                  </div>
-                  <?php } ?>
-
-                  <div class="embedly-error embedly-ajax-message embedly-message" id="embedly-ajax-error">
-                    <p><strong><?php _e('Something went wrong. Please try again later.', 'embedly'); ?></strong></p>
-                  </div>
-
-                  <div class="embedly-updated embedly-ajax-message embedly-message" id="embedly-ajax-success">
-                    <p><strong><?php _e("We have sync'd your providers list with our API. Enjoy!", 'embedly'); ?></strong></p>
-                  </div> -->
-                  <!-- END Notifications -->
 
                     <div class="embedly-ui-key-wrap">
                       <div class="embedly_key_form embedly-ui-key-form">
@@ -765,26 +721,6 @@ class WP_Embedly
                           <!-- LIST OF PROVIDERS LINK -->
                           Check out our <strong><a href='http://embed.ly/providers' target="_blank">list of providers</a></strong>.
                         </div>
-
-                        <!-- BEGIN Embedly API Key input Field -->
-                        <!-- <hr> -->
-<!--                         <div class="embedly-key-body">
-                          <h3>YOUR EMBEDLY API KEY</h3>
-                          <div class="embedly-api-key-input-wrapper">
-                            <h1 class="valid-outer-text">Lookin' Good</h1>
-                            <h1 class="invalid-outer-text">Invalid API key. Try again!</h1>
-                            <div
-                              <?php $this->get_class_embedly_api_key_input_container(); ?>>
-                              <input id="embedly_key_test" type="text" class="embedly_key_input_test"
-                                placeholder="<?php _e('Enter your API Key', 'embedly'); ?>"
-                                <?php $this->get_value_embedly_key_test(); ?>/>
-                              <span <?php $this->get_class_key_icon_span(); ?>> </span>
-                            </div>
-                            <h1 class="invalid-outer-text">*Required Field</h1>
-                          </div>
-                        </div> -->
-                        <!-- END Embedly API Key input Field -->
-
 
                         <!-- Begin 'Advanced Options' Section -->
                         <hr>
@@ -885,14 +821,6 @@ class WP_Embedly
                             </div>
                           </div>
                         </div> <!-- END 'Tutorial' Section -->
-
-
-                        <!-- Saving Settings Button (No longer required.) -->
-<!--                         <div class="embedly-save-settings-input" hidden>
-                          <input class="embedly-button" name="submit" type="submit" value="<?php
-                            _e('Save', 'embedly');
-                            ?>"/>
-                        </div> -->
                       </div>
                     </div>
                   </form>
@@ -912,29 +840,6 @@ class WP_Embedly
                   <div class="embedly-ui-key-wrap embedly-new-user-modal">
                     <div class="embedly_key_form embedly-ui-key-form">
 
-                      <!-- Notifications -->
-<!--                       <?php
-                        // get_notification();
-                        if (isset($errorMessage)) { ?>
-                      <div class="embedly-error embedly-message" id="embedly-error">
-                        <p><strong><?php echo $errorMessage;?></strong></p>
-                      </div>
-
-                      <?php } elseif (isset($successMessage) && !isset($errorMessage)) { ?>
-                      <div class="embedly-updated embedly-message" id="embedly-success">
-                        <p><strong><?php echo $successMessage; ?></strong></p>
-                      </div>
-                      <?php } ?>
-
-                      <div class="embedly-error embedly-ajax-message embedly-message" id="embedly-ajax-error">
-                        <p><strong><?php _e('Something went wrong. Please try again later.', 'embedly'); ?></strong></p>
-                      </div>
-
-                      <div class="embedly-updated embedly-ajax-message embedly-message" id="embedly-ajax-success">
-                        <p><strong><?php _e("We have sync'd your providers list with our API. Enjoy!", 'embedly'); ?></strong></p>
-                      </div> -->
-                      <!-- END Notifications -->
-
                       <div class="welcome-page-body">
                         <ul>
                           <li>
@@ -942,7 +847,8 @@ class WP_Embedly
                             <div class="embedly-tutorial-container">
                               <a id="embedly-tutorial-card"
                                 href="https://vimeo.com/60718161"
-                                data-card-controls="0" data-card-chrome="0">
+                                data-card-controls="0" data-card-chrome="0"
+                                data-card-width="85%">
                               </a>
                             </div>
                           </li>
@@ -954,18 +860,18 @@ class WP_Embedly
 
                           <li>
                             <!-- Blurb -->
-                            <h3>
-                              <span class="dashicons dashicons-twitter"></span>
+                            <p>
+                              <span id="twitter-icon" class="dashicons dashicons-twitter"></span>
                               We now support <strong>Twitter</strong>! Check out our
                               <a href="http://embed.ly/providers" target="_blank"><strong>long list of providers</strong>.</a>
-                            </h3>
-                              <h3>Getting started? <strong>Learn more above</strong> about embedly cards for Wordpress.</h3>
+                            </p>
+                              <p>Getting started? <strong>Learn more above</strong> about embedly cards for Wordpress.</p>
                           </li>
 
 
                           <li>
                             <!-- Create an embed.ly account button -->
-                            <?php _e("Don't Have An Account?", "embedly"); ?>
+                            <p><?php _e("Don't Have An Account?", "embedly"); ?></p>
                             <div class="embedly-create-account-btn-wrap">
                               <input id='create-account-btn' class="embedly-button embedly-button-long" type="button"
                                 value="<?php _e('GET STARTED HERE!', 'embedly')?>"/>
@@ -984,38 +890,14 @@ class WP_Embedly
 
                             <!-- dropdown for selecting a project -->
                             <div id="embedly-which">
-                              <h4>Which Project Would you Like to Connect?</h4>
+                              <p><strong>Which Project Would you Like to Connect?</strong></p>
                               <h4>&nbsp;</h4>
                               <ul id="embedly-which-list">
                               </ul>
                             </div>
-
                           </li>
                         </ul>
                       </div>
-
-                        <!-- BEGIN Embedly API Key input Field -->
-<!--                         <div class="embedly-key-body">
-                          <h3><?php _e('GOT YOUR API KEY? PASTE IT HERE', 'embedly'); ?></h3>
-                          <div class="embedly-api-key-input-wrapper">
-                            <h1 class="valid-outer-text">Lookin' Good</h1>
-                            <h1 class="invalid-outer-text">Invalid API key. Try again!</h1>
-                            <div
-                              <?php $this->get_class_embedly_api_key_input_container(); ?>>
-                              <input id="embedly_key_test" type="text" class="embedly_key_input_test"
-                                placeholder="<?php _e('Enter your API Key', 'embedly'); ?>"
-                                <?php $this->get_value_embedly_key_test(); ?>/>
-                              <span <?php $this->get_class_key_icon_span(); ?>> </span>
-                            </div>
-                            <h1 class="invalid-outer-text">*Required Field</h1>
-                          </div>
-                        </div> -->
-
-<!--                       <form id="embedly_key_form" method="POST" action="">
-                        <input class="embedly-button" name="Submit" type="submit" value="<?php
-                          _e('ACTIVATE PLUGIN', 'embedly');?>"/>
-                      </form> -->
-
                     </div>
                   </div>
                 </div>
