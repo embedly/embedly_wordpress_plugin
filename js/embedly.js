@@ -204,7 +204,22 @@ jQuery(document).ready(function($) {
         }
         update_preview(preview_map[key], String(value));
       });
+
+    $('#embedly-settings-saved').show();
+    settings_remainder = 3;
   }
+
+  var settings_remainder = 0;
+  var settings_timer = function() {
+    if(settings_remainder <= 0) {
+      settings_remainder = 0;
+      $('#embedly-settings-saved').fadeOut();
+    } else {
+      settings_remainder -= 1;
+    }
+  };
+  (function() { setInterval(settings_timer, 1000); })();
+
 
   // grab a param from the url (to determine if back from embed.ly)
   function getUrlParameter(sParam) {

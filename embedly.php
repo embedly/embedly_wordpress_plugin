@@ -69,9 +69,7 @@ class WP_Embedly
 
     public $embedly_options; //embedly options array
     public $embedly_settings_page; //embedly settings page
-
     static $instance; //allows plugin to be called externally without re-constructing
-
 
     /**
      * Register hooks with WP Core
@@ -147,6 +145,7 @@ class WP_Embedly
             'embedly_save_account',
         ));
 
+        // validates api key on load
         add_action('plugins_loaded', array(
           $this,
           'validate_api_key'
@@ -202,7 +201,6 @@ class WP_Embedly
         } else {
             $this->embedly_save_option($_POST['key'], $_POST['value']);
         }
-
 
         wp_die();
     }
@@ -304,7 +302,7 @@ class WP_Embedly
         }
 
         global $menu;
-        if ( empty($this->embedly_options['key']) ) {
+        if ( !$this->valid_key() ) {
             foreach ( $menu as $key => $value ) {
                 if ($menu[$key][2] == 'embedly') {
                     // accesses the menu item html
@@ -652,7 +650,7 @@ class WP_Embedly
                         <div class="embedly-analytics">
                           <ul>
                             <li class="active-viewers">
-                              <h1 class="active-count">-</h1>
+                              <h1 class="active-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
                               <p>People are <strong>actively viewing</strong> your embeds!</p>
                               <br/> <!-- is this acceptable? need to format my h tags for this page.-->
                               <input class="embedly-button" type="button" 
@@ -662,7 +660,7 @@ class WP_Embedly
                             <li>&nbsp;</li>
                             <li>&nbsp;</li>
                             <li class="historical-viewers">
-                              <h1 class="weekly-count">Computing...</h1>
+                              <h1 class="weekly-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
                               <p>People have <strong>viewed</strong> an embed in the <strong>last week</strong>.</p>
                             </li>
                           </ul>
@@ -673,13 +671,14 @@ class WP_Embedly
                         <!-- Begin 'Advanced Options' Section -->
                         <hr>
 
-                        <div class="advanced-wrapper">
+                        <div class="advanced-wrapper dropdown-wrapper">
                           <div class="advanced-header">
                             <a href="#"><h3>ADVANCED EMBED SETTINGS
                             <span id="advanced-arrow" class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
                           </div>
                           <div class = "advanced-body">
-                            <p>Changing these settings will change how your future embeds appear.</p></div>
+                            <p>Changing these settings will change how your future embeds appear.
+                            <span id="embedly-settings-saved"><i>    (settings saved) </i></span></p></div>
                           <div class="advanced-body">
                             <div class="advanced-selections">
                               <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
@@ -709,7 +708,7 @@ class WP_Embedly
                                     <h3>WIDTH</h3>
                                     <input class='embedly-max-width' type="text" name="card_width" placeholder="example: 400px"
                                       <?php $this->get_value_embedly_max_width(); ?>/>
-                                    <p>(responsive if left blank)</p>
+                                    <p><i>(responsive if left blank)</i></p>
                                   </div>
                                 </li>
                                 <li>
@@ -756,7 +755,7 @@ class WP_Embedly
 
 
                         <!-- BEGIN TUTORIAL EXPANDER -->
-                        <div class="tutorial-wrapper">
+                        <div class="tutorial-wrapper dropdown-wrapper">
                           <div class="tutorial-header">
                             <a href="#"><h3>TUTORIAL
                             <span id="tutorial-arrow" class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
