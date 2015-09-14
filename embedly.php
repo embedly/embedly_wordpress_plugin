@@ -870,12 +870,16 @@ class WP_Embedly
 
                           <li>
                             <!-- Create an embed.ly account button -->
-                            <p><?php _e("Don't Have An Account?", "embedly"); ?></p>
                             <div class="embedly-create-account-btn-wrap">
+                              <p><?php _e("Don't Have An Account?", "embedly"); ?></p>
                               <input id='create-account-btn' class="embedly-button embedly-button-long" type="button"
                                 value="<?php _e('GET STARTED HERE!', 'embedly')?>"/>
+                              <p><?php _e("Already have an account?", "embedly"); ?>
+                                  <a id="preexisting-user" href="https://app.embed.ly" target="_blank"><?php _e('Login', 'embedly'); ?></a>
+                              </p>
+                              <p>&nbsp;</p>
                             </div>
-                            <p>&nbsp;</p>
+
                             <button id="connect-button" class="embedly-button embedly-button-long">
                               <div class="inner-connect-button">
                                 <span class="inner-button-span">

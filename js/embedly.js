@@ -72,6 +72,8 @@ jQuery(document).ready(function($) {
       });
   })();
 
+
+
   function add_commas(val){
     while (/(\d+)(\d{3})/.test(val.toString())){
       val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
@@ -178,6 +180,11 @@ jQuery(document).ready(function($) {
       "onclick",
       "window.open('https://app.embed.ly/signup/wordpress?back=" + encodeURIComponent(window.location.toString()) + "');");
 
+  // sets the back direct link for pre-existing users
+  $('#preexisting-user').attr('href',
+    'https://app.embed.ly/wordpress?back=' +
+    encodeURIComponent(window.location.toString()));
+
   // given a key, value pair for a card setting, performs
   // ajax request to ajaxurl backend to update option
   function update_option(key, value) {
@@ -197,6 +204,30 @@ jQuery(document).ready(function($) {
         update_preview(preview_map[key], String(value));
       });
   }
+
+  // grab a param from the url (to determine if back from embed.ly)
+  function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+  }
+
+  (function check_backdirect() {
+    if(getUrlParameter('embedly') == 'back') {
+      $('.embedly-create-account-btn-wrap').hide();
+    }
+  })();
+
+
 
   function key_test(to_test) {
     $.post(ajaxurl, {
@@ -469,7 +500,7 @@ jQuery(document).ready(function($) {
             var li = document.createElement('li');
             var a = document.createElement('a');
             org = data.organizations[i];
-            a.innerHTML = org.name;
+            a.innerHTML = org.name.toUpperCase();
             a.addEventListener('click', selected(org));
             li.appendChild(a);
             whichlist.appendChild(li);
