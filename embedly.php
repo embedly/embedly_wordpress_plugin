@@ -129,7 +129,7 @@ class WP_Embedly
             $this,
             'embedly_notify_user_icon'
         ));
-        // ajax for analytics data
+        // ajax requests
         add_action('wp_ajax_embedly_analytics_active_viewers', array(
             $this,
             'embedly_ajax_get_active_viewers'
@@ -138,18 +138,10 @@ class WP_Embedly
             $this,
             'embedly_ajax_get_historical_viewers'
         ));
-
         add_action('wp_ajax_embedly_update_option', array(
             $this,
             'embedly_ajax_update_option'
         ));
-
-        // ajax for key handling logic
-        add_action('wp_ajax_embedly_key_input', array(
-            $this,
-            'embedly_key_input'
-        ));
-
         add_action('wp_ajax_embedly_save_account', array(
             $this,
             'embedly_save_account',
@@ -171,7 +163,8 @@ class WP_Embedly
     /**
     * makes sure the key is always valid (in case user, say, deletes their acct)
     **/
-    function validate_api_key() {
+    function validate_api_key()
+    {
         if($this->embedly_acct_has_feature('oembed', $this->embedly_options['key'])) {
             $this->embedly_save_option('key_valid?', true);
         } else {
@@ -179,7 +172,8 @@ class WP_Embedly
         }
     }
 
-    function embedly_save_account() {
+    function embedly_save_account()
+    {
         $api_key = $_POST['api_key'];
         $analytics_key=$_POST['analytics_key'];
 
@@ -198,21 +192,8 @@ class WP_Embedly
         wp_die();
     }
 
-    // deprecated if we continue with the connect button only
-    function embedly_key_input() {
-        // receives a key in $_POST, returns on of the valid key states.
-        $key = $_POST['key'];
-        if ( $this->embedly_acct_has_feature('oembed', $key) ) {
-            // better than returning some ambiguous boolean type
-            $this->embedly_save_option('key', $key);
-            echo 'true';
-        } else {
-            echo 'false';
-        }
-        wp_die();
-    }
-
-    function embedly_ajax_update_option() {
+    function embedly_ajax_update_option()
+    {
         // access to the $_POST from the ajax call data object
         if ($_POST['key'] == 'card_width') {
             $this->embedly_save_option($_POST['key'], $this->handle_width_input($_POST['value']));
@@ -526,34 +507,6 @@ class WP_Embedly
     }
 
     /////////////////////////// BEGIN TEMPLATE FUNCTIONS FOR FORM LOGIC
-    function get_class_embedly_api_key_input_container()
-    {
-         $class = 'class="embedly-api-key-input-container';
-          if ($this->valid_key()) {
-              $class .= ' locked_key';
-          }
-          $class .= '"';
-          echo $class;
-    }
-
-    function get_value_embedly_key_test()
-    {
-        if ($this->valid_key()) {
-          echo 'value="' . $this->embedly_options['key'] . '" readonly';
-        }
-    }
-
-    function get_class_key_icon_span()
-    {
-        $class = 'class="dashicons key-icon lock-control-key-icon';
-        if ($this->valid_key()) {
-            // set the key icon if necessary.
-            $class .= ' locked-key-icon';
-        }
-        $class .= '"';
-        echo $class;
-    }
-
     function valid_key()
     {
       if (!isset($this->embedly_options['key'])) {
@@ -570,18 +523,6 @@ class WP_Embedly
       }
 
       return true;
-    }
-
-    /**
-    * returns embedly key
-    */
-    function get_class_api_key_input_container()
-    {
-        $class = 'class="embedly-api-key-input-container';
-         if ($this->valid_key()) {
-             $class .= ' locked_key';
-         }
-         echo $class . '" ';
     }
 
     /**
@@ -746,7 +687,8 @@ class WP_Embedly
                                 <li>
                                   <h3>DESIGN</h3>
                                   <input class='chrome-card-checkbox' type='checkbox' value='checked' name='minimal' <?php
-                                    checked( $this->embedly_options['card_chrome'], 0);
+                                    // checked( $this->embedly_options['card_chrome'], !1); // ¯\_(ツ)_/¯ -php
+                                  checked( @$this->embedly_options["card_chrome"] ?: false, false);
                                     ?> /> MINIMAL
                                 </li>
                                 <li>

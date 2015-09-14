@@ -89,10 +89,6 @@
     height: 3em;
     margin-top: -3em;
 }
-.embedly-api-key-input {
-  width:65%;
-  text-align: center;
-}
 /*styles for advanced dropdown*/
 .advanced-wrapper h3 {
   font-weight: bold;
@@ -303,71 +299,6 @@ span.selected-align-select:hover {
 }
 
 /* END STYLES FOR NEW USER MODAL */
-div.embedly-updated, div.embedly-error
-{
-  border-radius: 3px;
-  border-style: solid;
-  border-width: 1px;
-  margin: 5px 0 15px;
-  padding: 0 0.6em;
-}
-div.embedly-error
-{
-  background-color: #ffebe8;
-  border-color: #cc0000;
-}
-div.embedly-updated
-{
-  background: rgba(0, 193, 73, 0.3);
-  border-color: #00933B;
-}
-div.embedly-updated p
-{
-  color: #666;
-  margin: 0.5em 0;
-  padding: 2px;
-}
-div.embedly-error p
-{
-  color: #dd0000;
-  margin: 0.5em 0;
-  padding: 2px;
-}
-.embedly-message
-{
-  line-height: 18px;
-  margin: 30px !important;
-}
-.embedly-ajax-message
-{
-  display: none;
-}
-hr {
-  margin-top: 30px;
-  margin-bottom: 30px;
-}
-
-/* TESTING FORM STATES */
-.embedly-key-body {
-  text-align: center;
-  vertical-align: middle;
-}
-.embedly-api-key-input-container {
-  position: relative;
-  width: 500px;
-  margin: 0 auto;
-  font-family:monospace;
-}
-.embedly-api-key-input-wrapper h1 {
-  font-size: 8px;
-  margin: 0px;
-}
-.embedly-api-key-input-wrapper .valid-outer-text {
-  color: #4BBA80;
-}
-.embedly-api-key-input-wrapper .invalid-outer-text {
-  color: #E44E46;
-}
 
 .embedly-max-width input[type="text"], textarea {
   width: 40px;
@@ -375,47 +306,7 @@ hr {
   border: 1px solid #36495E;
 }
 
-.embedly-api-key-input-container input[type="text"], textarea {
-  width: 100%;
-  height: 30px;
-  border: 1px solid #36495E;
-}
-.key-icon {
-  visibility: visible;
-  position: absolute;
-  right: 7px;
-  bottom: 15%;
-}
-.key-icon:before {
-  border: 1px solid #ccc; /* circle border width */
-  border-radius: 50%; /* circle */
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    -ms-border-radius: 50%;
-  color: #fff; /* dashicon color */
-  display: block
-  -webkit-font-smoothing: antialiased;
-  bottom: 15%; /* how to css? */
-}
-.locked-key-icon:before {
-  color: #A6A8AB;
-  content: '\f160';
-  border: 0px;
-}
-.unlocked-key-icon:before {
-  color: #A6A8AB;
-  content: "\f528";
-  border: 0px;
-  bottom: 0%;
-}
-.valid-key-icon:before {
-  background-color: #4BBA80;
-  content: "\f147";
-}
-.invalid-key-icon:before {
-  content: "\f158";
-  background-color: #E44E46;
-}
+
 .embedly-default-card-settings {
   width: 50%;
 }
@@ -423,31 +314,6 @@ hr {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-.embedly_key_input_test {
-  border: 1px solid;
-  border-radius: 0;
-}
-.invalid_key input[type="text"], textarea {
-  border-color: #E44E46;
-  background-color: #F7DFDF;
-  color: #36495E;
-}
-.valid_key input[type="text"], textarea {
-  border-color: #4BBA80;
-  background-color: #E5F2ED;
-  color: #36495E;
-}
-.locked_key input[type="text"], textarea {
-  color: #A6A8AB;
-  border-color: #A6A8AB;
-  background-color: #F1F1F2;
-}
-.unlocked_key input[type="text"], textarea {
-  border-color: #A6A8AB;
-  background-color: #fff;
-}
-
-
 
 
 

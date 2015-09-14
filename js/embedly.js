@@ -229,140 +229,12 @@ jQuery(document).ready(function($) {
     }
   })();
 
-  function key_test(to_test) {
-    $.post(ajaxurl, {
-      'action': 'embedly_key_input',
-      'key': to_test
-    },  function(response) {
-      if(response == 'false') {
-        invalid_key();
-      } else {
-        valid_key();
-        setTimeout(function() {
-            lock_key()
-          }, 5000);
-      }
-    });
-  }
-
-  // handle 'return' events inside key input field.
-  $('#embedly_key_test').keypress(function(e) {
-    var attr = $(this).prop('readonly');
-    if (typeof attr !== typeof undefined && attr !== false) {
-      // the field is readonly.
-      return
-    } else if (e.which == 13) {
-      e.preventDefault();
-      key_test($(this).val());
-    }
-  });
-
-  // also support on focus out for key input
-  $('#embedly_key_test').focusout(function(e) {
-    var attr = $(this).prop('readonly');
-    if (typeof attr != typeof undefined && attr == false) {
-      // the field is NOT readonly, do the test
-      key_test($(this).val());
-    }
-  });
-
-  (function() {
-    // clears any notifications that exist on load
-    clear_notifications();
-  })();
-
-  // clears all notification text
-  function clear_notifications() {
-    valid_states.forEach(function(state) {
-      $('.' + state + '-outer-text').hide(); // notif. text
-    });
-  }
-
-  // clears all embedly-api-key-input-container states
-  function clear_states() {
-    valid_states.forEach(function (state) {
-      $('.embedly-api-key-input-container').removeClass(state + '_key');
-    });
-  }
-
-  function lock_key() {
-    clear_states();
-    clear_notifications();
-    $('#embedly_key_test').prop('readonly', true).parent().addClass('locked_key');
-
-    valid_states.forEach(function(item) {
-      $('.key-icon').removeClass(item + '-key-icon').addClass('locked-key-icon');
-    });
-  }
-
-  function unlock_key() {
-    clear_states();
-    clear_notifications();
-    $('#embedly_key_test').prop('readonly', false).parent().addClass('unlocked_key');
-
-    valid_states.forEach(function(item) {
-      $('.key-icon').removeClass(item + '-key-icon').addClass('unlocked-key-icon');
-    });
-  }
-
-  function valid_key() {
-    // set valid key
-    // changes the color of the input box
-    clear_states();
-    $('#embedly_key_test').parent().addClass('valid_key');
-
-    clear_notifications();
-    $('.valid-outer-text').show(); // show the notification text
-
-    valid_states.forEach(function(item) {
-      $('.key-icon').removeClass(item + '-key-icon').addClass('valid-key-icon');
-    });
-  }
-
-  function invalid_key() {
-    // set invalid key
-    clear_states();
-    $('#embedly_key_test').parent().addClass('invalid_key');
-
-    clear_notifications();
-    // $('#embedly_key_test').removeClass('valid_key').addClass('invalid_key');
-    valid_states.forEach(function(item) {
-      $('.key-icon').removeClass(item + '-key-icon').addClass('invalid-key-icon');
-    });
-    clear_notifications();
-    $('.invalid-outer-text').show();
-  }
-
-  // action handlers for lock icon click
-  $('.lock-control-key-icon').click(function(e) {
-    e.preventDefault();
-    if($(this).hasClass('locked-key-icon')) {
-      unlock_key();
-    } else if ($(this).hasClass('unlocked-key-icon')) {
-      lock_key();
-    }
-  }).hover(function() {
-      console.log('hovering..')
-      if($(this).hasClass('locked-key-icon')) {
-        $(this).attr('title', $(this).attr('data-locked'));
-      }
-      else {
-        $(this).attr('title', $(this).attr('data-unlocked'));
-      }
-    }, function() {
-      $(this).attr('title', '');
-    });
-
   (function () {
     build_tutorial();
   })();
 
   function build_tutorial() {
-    console.log('building tutorial');
-    // $('.tutorial-body .embedly-tutorial-container .embedly-card').remove();
-    console.log('link is: ' + $('#embedly-tutorial-card'));
     card = embedly.card($('#embedly-tutorial-card'));
-    console.log('card is: ' + card);
   };
 
   function build_card() {
@@ -398,7 +270,7 @@ jQuery(document).ready(function($) {
     build_card();
   })();
 
-  // sean's connect button, integration
+  // sean's connect button integration
   var app = {
     _ready: false,
     _iframe: null,
@@ -475,9 +347,8 @@ jQuery(document).ready(function($) {
 
         if (data.organizations.length === 1) {
           var org = data.organizations[0]
-          button.innerHTML = 'connected';
+          button.innerHTML = 'CONNECTED';
           save_account(org.api_key, org.analytics_key, org.name);
-          // alert('connected ' + org.name + ' ' + org.api_key + ' ' + org.analytics_key);
         } else {
           // selects the div containing accounts to connect
           var which = document.getElementById('embedly-which');
@@ -489,7 +360,6 @@ jQuery(document).ready(function($) {
             return function () {
               button.innerHTML = 'connected';
               save_account(org.api_key, org.analytics_key, org.name);
-              // alert('connected ' + org.name + ' ' + org.api_key + ' ' + org.analytics_key);
               which.style.display = 'none';
               // clear html after selection in case of reselection
               whichlist.innerHTML = "";
@@ -504,7 +374,6 @@ jQuery(document).ready(function($) {
             a.addEventListener('click', selected(org));
             li.appendChild(a);
             whichlist.appendChild(li);
-            // which.appendChild(whichlist);
           }
         }
       } else {
