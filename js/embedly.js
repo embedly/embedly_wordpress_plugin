@@ -98,6 +98,7 @@ jQuery(document).ready(function($) {
     update_option('card_align', align);
   });
 
+  // minimal checkbox at the moment
   $('.chrome-card-checkbox').click(function() {
     update_option('card_chrome', $(this).is(':checked') ? 0 : 1);
   });
@@ -221,13 +222,12 @@ jQuery(document).ready(function($) {
     }
   }
 
+  // checks if page was loaded after signing in from app.embed.ly/wordpress/*
   (function check_backdirect() {
     if(getUrlParameter('embedly') == 'back') {
       $('.embedly-create-account-btn-wrap').hide();
     }
   })();
-
-
 
   function key_test(to_test) {
     $.post(ajaxurl, {

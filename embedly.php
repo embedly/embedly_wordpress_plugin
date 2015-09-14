@@ -182,7 +182,6 @@ class WP_Embedly
     function embedly_save_account() {
         $api_key = $_POST['api_key'];
         $analytics_key=$_POST['analytics_key'];
-        $name = $_POST['org_name'];
 
         // not validating the analytics_key for security reasons.
         // analytics calls will just fail if it's invalid.
@@ -190,11 +189,6 @@ class WP_Embedly
 
             $this->embedly_save_option('key', $api_key);
             $this->embedly_save_option('analytics_key', $analytics_key);
-            $this->embedly_save_option('org_name', $name);
-            // do we need to save the name?
-            // would not need the redirect, if so, I can just build a uri
-            // maybe we can personalize the settings page a bit?
-            // or just don't store it for privacy.
 
             // better than returning some ambiguous boolean type
             echo 'true';
@@ -478,7 +472,8 @@ class WP_Embedly
        $this->embedly_options = get_option('embedly_settings');
     }
 
-    function embedly_delete_option($key) {
+    function embedly_delete_option($key)
+    {
         unset($this->embedly_options[$key]);
         update_option('embedly_settings', $this->embedly_options);
         $this->embedly_options = get_option('embedly_settings');
@@ -531,7 +526,8 @@ class WP_Embedly
     }
 
     /////////////////////////// BEGIN TEMPLATE FUNCTIONS FOR FORM LOGIC
-    function get_class_embedly_api_key_input_container() {
+    function get_class_embedly_api_key_input_container()
+    {
          $class = 'class="embedly-api-key-input-container';
           if ($this->valid_key()) {
               $class .= ' locked_key';
@@ -540,13 +536,15 @@ class WP_Embedly
           echo $class;
     }
 
-    function get_value_embedly_key_test() {
+    function get_value_embedly_key_test()
+    {
         if ($this->valid_key()) {
           echo 'value="' . $this->embedly_options['key'] . '" readonly';
         }
     }
 
-    function get_class_key_icon_span() {
+    function get_class_key_icon_span()
+    {
         $class = 'class="dashicons key-icon lock-control-key-icon';
         if ($this->valid_key()) {
             // set the key icon if necessary.
@@ -556,7 +554,8 @@ class WP_Embedly
         echo $class;
     }
 
-    function valid_key() {
+    function valid_key()
+    {
       if (!isset($this->embedly_options['key'])) {
         return false;
       }
@@ -576,7 +575,8 @@ class WP_Embedly
     /**
     * returns embedly key
     */
-    function get_class_api_key_input_container() {
+    function get_class_api_key_input_container()
+    {
         $class = 'class="embedly-api-key-input-container';
          if ($this->valid_key()) {
              $class .= ' locked_key';
@@ -587,7 +587,8 @@ class WP_Embedly
     /**
     * returns max_width setting as a html value attr
     **/
-    function get_value_embedly_max_width() {
+    function get_value_embedly_max_width()
+    {
         if(isset($this->embedly_options['card_width'])) {
           $value = 'value="';
           $width = $this->embedly_options['card_width'];
@@ -605,7 +606,8 @@ class WP_Embedly
     /**
     * returns current card_align value
     **/
-    function get_current_align() {
+    function get_current_align()
+    {
         $current_align = 'center'; // default if not set
         if(isset($this->embedly_options['card_align'])) {
           $current_align = $this->embedly_options['card_align'];
@@ -621,7 +623,13 @@ class WP_Embedly
         $current_card_script = "<script> var current_card = {";
         foreach ($settings_map as $setting => $api_param) {
           if(isset($this->embedly_options[$setting])) {
-            $current_card_script .= "'" . $setting . "': '" . $this->embedly_options[$setting] . "',";
+            $value= '';
+            if( is_bool($this->embedly_options[$setting]) ) {
+              $value = $this->embedly_options[$setting] ? '1': '0';
+            } else {
+              $value = $this->embedly_options[$setting];
+            }
+            $current_card_script .= "'" . $setting . "': '" . $value . "',";
           }
         }
         $current_card_script .= '}</script>';
