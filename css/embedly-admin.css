@@ -20,7 +20,7 @@
 }
 .embedly-ui h1 {
   font-family: 'proxima-nova-extra-condensed-fontspring';
-  font-size: 75px;
+  font-size: 70px;
   margin: 30px;
 }
 /* Overrides color of checkmarks in checkboxes*/
@@ -63,7 +63,9 @@
 
 }
 .embedly-ui-key-wrap {
-  margin:30px;
+  margin-left: 30px;
+  margin-right:30px;
+  margin-bottom: 30px;
   background:#fff;
   padding:1px;
 }
@@ -192,6 +194,10 @@
 }
 .welcome-page-body p {
   font-size: 20px;
+  margin: 0 auto;
+}
+#embedly-welcome-blurb {
+  max-width: 1000px;
   margin: 0 auto;
 }
 #connect-button {

@@ -696,10 +696,7 @@ class WP_Embedly
                               <p>People have <strong>viewed</strong> an embed in the <strong>last week</strong>.</p>
                             </li>
                           <!-- </ul> -->
-                          <li>
-                          <!-- LIST OF PROVIDERS LINK -->
-                          Check out our <strong><a href='http://embed.ly/providers' target="_blank">list of providers</a></strong>.
-                          </li>
+
                           <li><p>&nbsp;</p></li>
                           </ul>
                         </div>
@@ -826,30 +823,32 @@ class WP_Embedly
 
                       <div class="welcome-page-body">
                         <ul>
+                          <!-- HERO TEXT -->
+                          <li>
+                            <h1><strong>Embed content from any site!</strong></h1>
+                          </li>
                           <li>
                             <!-- Tutorial Video -->
                             <div class="embedly-tutorial-container">
                               <a id="embedly-tutorial-card"
                                 href="https://vimeo.com/60718161"
                                 data-card-controls="0" data-card-chrome="0"
-                                data-card-width="60%">
+                                data-card-width="65%">
                               </a>
                             </div>
                           </li>
 
                           <li>
-                            <!-- HERO TEXT -->
-                            <h1><strong>Embed content from any site!</strong></h1>
-                          </li>
-
-                          <li>
                             <!-- Blurb -->
-                            <p>
-                              <span id="twitter-icon" class="dashicons dashicons-twitter"></span>
-                              We now support <strong>Twitter</strong>! Check out our
-                              <a href="http://embed.ly/providers" target="_blank"><strong>long list of providers</strong>.</a>
-                            </p>
-                              <p>Getting started? <strong>Learn more above</strong> about embedly cards for Wordpress.</p>
+                            <div id="embedly-welcome-blurb">
+                              <p>
+                                <span id="twitter-icon" class="dashicons dashicons-twitter"></span>
+                                Now with Twitter support! In addition to the default Wordpress embedding,
+                                you get embedding for any article, gfycat, storify, and twitch.  See our growing
+                                <a href="http://embed.ly/providers" target="_blank"><strong>growing list of embed providers</strong>.</a>
+                              </p>
+                                <p>Getting started? <strong>Learn more above</strong> about embedly cards for Wordpress.</p>
+                            </div>
                           </li>
 
 
@@ -871,7 +870,7 @@ class WP_Embedly
                                   <img id="connect-btn-img" src=<?php echo EMBEDLY_URL . "/img/embedly-white-70-40.svg" ?>>
                                 </span>
                                 <span class="inner-button-span">
-                                  SYNC WITH EMBEDLY ACCOUNT
+                                  ACTIVATE WITH EMBEDLY ACCOUNT
                                 </span>
                               </div>
                             </button>
