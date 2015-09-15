@@ -392,7 +392,9 @@ jQuery(document).ready(function($) {
           }
         }
       } else {
-        alert('Please log into Embedly');
+        // alert('Please log into Embedly');
+        window.open('https://app.embed.ly/wordpress?back=' +
+        encodeURIComponent(window.location.toString()));
       }
     });
   });

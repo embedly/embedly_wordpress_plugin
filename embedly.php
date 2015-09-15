@@ -711,7 +711,7 @@ class WP_Embedly
                           </div>
                           <div class = "advanced-body">
                             <p>Changing these settings will change how your future embeds appear.
-                            <span id="embedly-settings-saved"><i>    (settings saved) </i></span></p></div>
+                           </p></div>
                           <div class="advanced-body">
                             <div class="advanced-selections">
                               <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
@@ -739,9 +739,9 @@ class WP_Embedly
                                 <li><!-- Width Input Area -->
                                   <div class="max-width-input-container">
                                     <h3>WIDTH</h3>
-                                    <input class='embedly-max-width' type="text" name="card_width" placeholder="example: 400px"
+                                    <input id='embedly-max-width' type="text" name="card_width" placeholder="example: 400px"
                                       <?php $this->get_value_embedly_max_width(); ?>/>
-                                    <p><i>(responsive if left blank)</i></p>
+                                    <p><i>Responsive if left blank</i></p>
                                   </div>
                                 </li>
                                 <li>
@@ -751,10 +751,10 @@ class WP_Embedly
                                     <ul class="align-select">
                                       <?php
                                         $current_align = $this->get_current_align();
-                                        $sel = ' selected-align-select "';
+                                        $sel = ' selected-align-select"';
                                       ?>
                                       <li><span class=
-                                        <?php echo '"' . $this->get_compatible_dashicon('left') . ($current_align == 'left' ? $sel : '"'); ?>
+                                        <?php echo $this->get_compatible_dashicon('left') . ($current_align == 'left' ? $sel : '"'); ?>
                                         title="Left" align-value="left">
                                         <input type='hidden' value='unchecked' name='card_align_left'>
                                         </span>
@@ -778,7 +778,9 @@ class WP_Embedly
                             </div>
                             <!-- preview card.. work in progress -->
                             <div <?php $this->get_class_card_preview_container(); ?>>
-                              <h3>PREVIEW CARD</h3>
+                              <h3>CARD PREVIEW
+                                <span id="embedly-settings-saved"><i><?php _e('settings saved', 'embedly'); ?> </i></span>
+                              </h3>
                               <a class="embedly-card-template"
                                 href="https://vimeo.com/80836225">
                               </a>
@@ -879,8 +881,12 @@ class WP_Embedly
                             <div id="embedly-which">
                               <p><strong>Which Project Would you Like to Connect?</strong></p>
                               <h4>&nbsp;</h4>
-                              <ul id="embedly-which-list">
-                              </ul>
+                              <ul id="embedly-which-list"></ul>
+                            </div>
+                          </li>
+                          <li>
+                            <div id="embedly-connect-failed-refresh">
+                            <p>You may need to refresh the page after connecting</p>
                             </div>
                           </li>
                         </ul>

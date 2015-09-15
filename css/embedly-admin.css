@@ -100,7 +100,8 @@
   letter-spacing: 0.25px;
 }
 #embedly-settings-saved {
-  color: #A6A8AB;
+  margin-left: 30px;
+  font-weight: normal;
   display: none;
 }
 .advanced-body {
@@ -118,6 +119,9 @@
 .advanced-wrapper .advanced-body li {
   margin-top: 30px;
   margin-bottom: 30px;
+}
+.max-width-input-container p {
+  margin: 0;
 }
 .card-preview-container {
   padding-top: 30px;
@@ -238,6 +242,9 @@ span.inner-button-span {
   margin: 10px;
   font-size: 14px;
 }
+#embedly-connect-failed-refresh {
+  display: none;
+}
 /* wp styles */
 #wpwrap {
   background-color: #FFF;
@@ -310,13 +317,25 @@ span.selected-align-select:hover {
 }
 
 /* END STYLES FOR NEW USER MODAL */
-
-.embedly-max-width input[type="text"], textarea {
-  width: 40px;
-  height: 30px;
-  border: 1px solid #36495E;
+#embedly-max-width {
+  width: 80%;
+  height: 40px;
+  border: 1px solid #36495e;
 }
-
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+  color:    #36495e;
+}
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color:    #36495e;
+  opacity:  1;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color:    #36495e;
+  opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color:    #36495e;
+}
 
 .embedly-default-card-settings {
   width: 50%;
