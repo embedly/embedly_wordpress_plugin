@@ -306,7 +306,10 @@ class WP_Embedly
             foreach ( $menu as $key => $value ) {
                 if ($menu[$key][2] == 'embedly') {
                     // accesses the menu item html
-                    $menu[$key][0] .= ' <span class="update-plugins count-1"><span class="plugin-count">!</span></span>';
+                    $menu[$key][0] .= ' <span class="update-plugins count-1">'.
+                      '<span class="plugin-count"'.
+                      'title="Please sync your Embedly account to use plugin">'.
+                      '!</span></span>';
                     return;
                 }
             }
@@ -318,10 +321,15 @@ class WP_Embedly
      **/
     function embedly_add_settings_page()
     {
+        $icon = 'dashicons-admin-generic';
+        if( version_compare( $GLOBALS['wp_version'], '4.1', '>' ) ) {
+           $icon = 'dashicons-align-center';
+        }
+
         $this->embedly_settings_page = add_menu_page('Embedly', 'Embedly', 'activate_plugins', 'embedly', array(
-            $this,
-            'embedly_settings_page'
-        ), 'dashicons-align-center'); // icon looks generally like an embeded card
+                $this,
+                'embedly_settings_page'
+            ), $icon);
     }
 
 
@@ -599,6 +607,30 @@ class WP_Embedly
       }
       echo $class . '" ';
     }
+
+    function get_compatible_dashicon($align)
+    {
+      $base = '"dashicons align-icon ';
+      // WP 4.1 has the "new" align icon, else, use old one (until 3.8)
+      if( version_compare( $GLOBALS['wp_version'], '4.1', '<' ) ) {
+        if($align == 'left') {
+          // left is being reversed  to support di-none in 4.1+
+          echo $base . 'dashicons-editor-alignleft';
+        } else if($align == 'right') {
+          echo $base . 'dashicons-editor-alignleft di-reverse';
+        } else {
+          echo $base . 'dashicons-editor-aligncenter';
+        }
+      } else {
+        if($align == 'left') {
+          echo $base . 'di-none';
+        } else if($align == 'right'){
+          echo $base . 'di-none di-reverse';
+        } else {
+          echo $base . 'di-center';
+        }
+      }
+    }
     /////////////////////////// END TEMPLATE FUNCTIONS FOR FORM LOGIC
 
     /**
@@ -663,9 +695,13 @@ class WP_Embedly
                               <h1 class="weekly-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
                               <p>People have <strong>viewed</strong> an embed in the <strong>last week</strong>.</p>
                             </li>
-                          </ul>
+                          <!-- </ul> -->
+                          <li>
                           <!-- LIST OF PROVIDERS LINK -->
                           Check out our <strong><a href='http://embed.ly/providers' target="_blank">list of providers</a></strong>.
+                          </li>
+                          <li><p>&nbsp;</p></li>
+                          </ul>
                         </div>
 
                         <!-- Begin 'Advanced Options' Section -->
@@ -721,19 +757,19 @@ class WP_Embedly
                                         $sel = ' selected-align-select "';
                                       ?>
                                       <li><span class=
-                                        <?php echo '"dashicons di-none align-icon' . ($current_align == 'left' ? $sel : '"'); ?>
+                                        <?php echo '"' . $this->get_compatible_dashicon('left') . ($current_align == 'left' ? $sel : '"'); ?>
                                         title="Left" align-value="left">
                                         <input type='hidden' value='unchecked' name='card_align_left'>
                                         </span>
                                       </li>
                                       <li><span class=
-                                        <?php echo '"dashicons di-center align-icon' . ($current_align == 'center' ? $sel : '"'); ?>
+                                        <?php echo $this->get_compatible_dashicon('center') . ($current_align == 'center' ? $sel : '"'); ?>
                                         title="Center" align-value="center">
                                         <input type='hidden' value='checked' name='card_align_center'>
                                         </span>
                                       </li>
                                       <li><span class=
-                                        <?php echo '"dashicons di-none di-reverse align-icon' . ($current_align == 'right' ? $sel : '"'); ?>
+                                        <?php echo $this->get_compatible_dashicon('right') . ($current_align == 'right' ? $sel : '"'); ?>
                                         title="Right" align-value="right">
                                         <input type='hidden' value='unchecked' name='card_align_right'>
                                         </span>
