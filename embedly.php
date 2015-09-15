@@ -832,7 +832,7 @@ class WP_Embedly
                               <a id="embedly-tutorial-card"
                                 href="https://vimeo.com/60718161"
                                 data-card-controls="0" data-card-chrome="0"
-                                data-card-width="85%">
+                                data-card-width="60%">
                               </a>
                             </div>
                           </li>
@@ -859,9 +859,9 @@ class WP_Embedly
                               <p><?php _e("Don't Have An Account?", "embedly"); ?></p>
                               <input id='create-account-btn' class="embedly-button embedly-button-long" type="button"
                                 value="<?php _e('GET STARTED HERE!', 'embedly')?>"/>
-                              <p><?php _e("Already have an account?", "embedly"); ?>
+<!--                               <p><?php _e("Already have an account?", "embedly"); ?>
                                   <a id="preexisting-user" href="https://app.embed.ly" target="_blank"><?php _e('Login', 'embedly'); ?></a>
-                              </p>
+                              </p> -->
                               <p>&nbsp;</p>
                             </div>
 
