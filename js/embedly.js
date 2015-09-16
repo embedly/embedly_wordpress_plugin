@@ -27,6 +27,14 @@ var preview_map = {
   'card_align': 'data-card-align',
 }
 
+// sean's connect button integration
+var app = {
+  _ready: false,
+  _iframe: null,
+  _callbacks: []
+};
+
+
 jQuery(document).ready(function($) {
   // NEW STUFF:
   $(".embedly-align-select-container  a").click(function(){
@@ -71,8 +79,6 @@ jQuery(document).ready(function($) {
         $(".embedly-analytics .historical-viewers .weekly-count").html(add_commas(impr));
       });
   })();
-
-
 
   function add_commas(val){
     while (/(\d+)(\d{3})/.test(val.toString())){
@@ -237,13 +243,6 @@ jQuery(document).ready(function($) {
     }
   }
 
-  // checks if page was loaded after signing in from app.embed.ly/wordpress/*
-  (function check_backdirect() {
-    if(getUrlParameter('embedly') == 'back') {
-      $('.embedly-create-account-btn-wrap').hide();
-    }
-  })();
-
   (function () {
     build_tutorial();
   })();
@@ -285,12 +284,6 @@ jQuery(document).ready(function($) {
     build_card();
   })();
 
-  // sean's connect button integration
-  var app = {
-    _ready: false,
-    _iframe: null,
-    _callbacks: []
-  };
 
   app.init = function () {
     window.addEventListener('message', function (e) {
@@ -312,7 +305,7 @@ jQuery(document).ready(function($) {
 
     iframe.addEventListener('load', function () {
       app._ready = true;
-      app.connect();
+      // app.connect();
     });
 
     iframe.frameborder = '0';
@@ -343,37 +336,34 @@ jQuery(document).ready(function($) {
 
   app.init();
 
-  var button = document.getElementById('connect-button');
-
-  button.addEventListener('click', function () {
+  function do_connect() {
+    // cleans html for user select:
     // if the div is open already, close it., else continue:
     if($('#embedly-which').is(":visible")) {
       $('#embedly-which').hide();
       return;
     }
-
-    // if the user clicks twice, make sure div is empty
+    // if the user clicks multiple times, make sure div is empty
     $('#embedly-which-list').empty();
 
-    console.log('click');
+    console.log('connecting');
     app.connect(function (data) {
       console.log(data);
       if (data.error === false) {
 
         if (data.organizations.length === 1) {
           var org = data.organizations[0]
-          button.innerHTML = 'CONNECTED';
+          connect_button.innerHTML = 'CONNECTED';
           save_account(org.api_key, org.analytics_key, org.name);
         } else {
           // selects the div containing accounts to connect
           var which = document.getElementById('embedly-which');
           var whichlist = document.getElementById('embedly-which-list');
           which.style.display = 'block';
-          console.log("whichlist is: " + whichlist)
 
           var selected = function (org) {
             return function () {
-              button.innerHTML = 'connected';
+              connect_button.innerHTML = 'CONNECTED';
               save_account(org.api_key, org.analytics_key, org.name);
               which.style.display = 'none';
               // clear html after selection in case of reselection
@@ -392,12 +382,35 @@ jQuery(document).ready(function($) {
           }
         }
       } else {
-        // alert('Please log into Embedly');
+        // user is not logged in, send them to app
+        $('#connect-button').html("visiting app.embed.ly...")
         window.open('https://app.embed.ly/wordpress?back=' +
         encodeURIComponent(window.location.toString()));
       }
     });
-  });
+  }
+
+  var connect_button = document.getElementById('connect-button');
+  connect_button.addEventListener('click', do_connect);
+
+  // checks if page was loaded after signing in from app.embed.ly/wordpress/*
+  (function check_backdirect() {
+    if(getUrlParameter('embedly') == 'back') {
+      $('#embedly-connect-failed-refresh').show();
+      $('.embedly-create-account-btn-wrap').hide();
+      initiate_connection();
+    }
+  })();
+
+  function initiate_connection() {
+    if(app._ready) {
+      console.log('app ready!');
+      do_connect();
+    } else {
+      console.log('waiting');
+      setTimeout(initiate_connection, 100);
+    }
+  }
 
   function save_account(api_key, analytics_key, name) {
     $.post(

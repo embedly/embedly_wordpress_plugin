@@ -643,7 +643,7 @@ class WP_Embedly
         ?>
         <head>
           <?php $this->get_script_embedly_current_card(); ?>
-          <script src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
+          <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
         <head>
 
           <div class="embedly-wrap">
