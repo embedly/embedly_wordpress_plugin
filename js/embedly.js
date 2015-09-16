@@ -127,11 +127,11 @@ jQuery(document).ready(function($) {
     }
   });
 
-  $('.embedly-max-width').focusout(function(e) {
+  $('#embedly-max-width').focusout(function(e) {
     valid_width = update_option('card_width', $(this).val());
   });
 
-  $('.embedly-max-width').keypress(function(e) {
+  $('#embedly-max-width').keypress(function(e) {
     if(e.which == 13) {
       valid_width = update_option('card_width', $(this).val());
       console.log('valid width: ' + valid_width);
@@ -252,15 +252,19 @@ jQuery(document).ready(function($) {
   };
 
   function build_card() {
-    // clone the template
-    clone = $('a.embedly-card-template').clone();
-    clone.removeClass('embedly-card-template').addClass('embedly-card-preview');
-    // remove the old card
-    $('.card-preview-container .embedly-card').remove();
-    // insert the new card template
-    clone.insertAfter('a.embedly-card-template')[0];
-    // cardify it.
-    card = embedly.card($('a.embedly-card-preview')[0]);
+    if(typeof embedly != 'undefined') {
+      // clone the template
+      clone = $('a.embedly-card-template').clone();
+      clone.removeClass('embedly-card-template').addClass('embedly-card-preview');
+      // remove the old card
+      $('.card-preview-container .embedly-card').remove();
+      // insert the new card template
+      clone.insertAfter('a.embedly-card-template')[0];
+      // cardify it.
+      card = embedly.card($('a.embedly-card-preview')[0]);
+    } else {
+      setTimeout(build_card, 100);
+    }
   }
 
   // function that updates the template card with the key value pair
