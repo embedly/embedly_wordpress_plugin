@@ -74,6 +74,16 @@
   border-radius:0px;
   padding:14px;
 }
+#welcome-blurb{
+  text-align: left;
+  margin: 30px;
+}
+#welcome-blurb h2 {
+  color: #36495e;
+}
+#welcome-blurb h3 {
+  color: #36495e;
+}
 .embedly-footer {
   text-align: center;
   vertical-align: middle;

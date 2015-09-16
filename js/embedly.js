@@ -34,7 +34,6 @@ var app = {
   _callbacks: []
 };
 
-
 jQuery(document).ready(function($) {
   // NEW STUFF:
   $(".embedly-align-select-container  a").click(function(){
@@ -139,14 +138,6 @@ jQuery(document).ready(function($) {
     }
   });
 
-  function simulate_hover_on_preview_card() {
-    // not sure if this is possible into the iframe..
-    // or if worth. maybe just explain with a tooltip
-    // what the social setting does.
-    $('embedly-card').addClass('hover');
-    setTimeout($('embedly-card').removeClass('hover'), 3000);
-  }
-
   // toggles advanced options
   $('.advanced-wrapper .advanced-header').find('a[href="#"]').click(function(e) {
     e.preventDefault();
@@ -248,7 +239,12 @@ jQuery(document).ready(function($) {
   })();
 
   function build_tutorial() {
-    card = embedly.card($('#embedly-tutorial-card'));
+    if(typeof embedly != 'undefined') {
+      card = embedly.card($('#embedly-tutorial-card'));
+    } else {
+      setTimeout(build_tutorial, 100);
+    }
+
   };
 
   function build_card() {
@@ -339,7 +335,7 @@ jQuery(document).ready(function($) {
   };
 
   app.init();
-
+  var logged_in;
   function do_connect() {
     // cleans html for user select:
     // if the div is open already, close it., else continue:
@@ -352,9 +348,7 @@ jQuery(document).ready(function($) {
 
     console.log('connecting');
     app.connect(function (data) {
-      console.log(data);
       if (data.error === false) {
-
         if (data.organizations.length === 1) {
           var org = data.organizations[0]
           connect_button.innerHTML = 'CONNECTED';
@@ -385,17 +379,40 @@ jQuery(document).ready(function($) {
             whichlist.appendChild(li);
           }
         }
+        // def.resolve(true);
       } else {
-        // user is not logged in, send them to app
-        $('#connect-button').html("visiting app.embed.ly...")
-        window.open('https://app.embed.ly/wordpress?back=' +
-        encodeURIComponent(window.location.toString()));
+        // user is not currently logged in
+        alert("Please log in to your Embedly account first");
+        // def.resolve(false);
       }
     });
   }
 
+  // $('#connect-button').attr('onclick', 'window.open("https://app.embed.ly/wordpress?back=' +
+  //       encodeURIComponent(window.location.toString()) + '");');
+
   var connect_button = document.getElementById('connect-button');
   connect_button.addEventListener('click', do_connect);
+
+  // $('#connect-button').click(function(e) {
+  //   var def = $.Deferred();
+  //   do_connect(def);
+
+  //   var abra_kadabra = function(e) {
+  //     $('#connect-button').html("VISITING APP.EMBED.LY...");
+  //     window.open('https://app.embed.ly/wordpress?back=' +
+  //       encodeURIComponent(window.location.toString()));
+  //   }
+
+  //   $.when(def).done(function(result) {
+  //     if(result) {
+  //       console.log('logged in!');
+  //     } else {
+  //       console.log('not logged in!');
+  //       abra_kadabra();
+  //     }
+  //   });
+  // });
 
   // checks if page was loaded after signing in from app.embed.ly/wordpress/*
   (function check_backdirect() {
