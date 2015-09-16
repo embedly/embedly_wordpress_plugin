@@ -10,35 +10,40 @@ Tested up to: 4.1
 Stable tag: 3.2.1
 
 
-Embed videos, images, PDF, and article previews from "any" source with just the URL.
-Just add your Embedly Key to the Embedly plugin settings.
-
+Enhanced embedding tool to give your blog more media types, video analytics, and
+style options. Get previews for any URL with this simple plugin.
 
 
 == Description ==
 
+In addition to the default Wordpress embedding, you get previews for any article,
+including your own blog posts. You also get embeds for Gfycat, Twitch, Google
+Maps, and Embedly’s growing list of [300+ supported
+providers](http://embed.ly/providers).
 
-The [Embedly](http://embed.ly) plugin allows bloggers to embed videos, images, PDF, and article previews from
-"any" source with just the URL. It uses the [Embedly Cards](http://embed.ly/cards) to generate a clean, responsive, and shareable card for content types video, products, articles and more.
+You can customize the style of the embeds to optimize for darker WP themes,
+change alignment, and set the width. Social buttons can be added around the embeds
+to make it easier to share the embeds from your blog posts.
 
-Write your post as normal and click the Embedly Icon in your Rich Editor
-to add "any" URL to your post.
+For most music and video player embeds (YouTube, Vimeo, Instagram, SoundCloud)
+you can receive analytics on viewer behaviors. See which videos are actually
+watched and how far your readers watch them.
 
-OR
 
-Embed 300+ sources by putting the URL to the content you want to embed on
-a single line like so:
+Using it is as simple as the default Wordpress embedding. Embed media by pasting its URL in a single line when writing a post:
 
     This Embedly lets me embed everything great on the web!
 
     http://instagram.com/p/w8hB9Dn7qF/
-    
+
     http://i.imgur.com/ywzpg.jpg
-    
+
     http://www.amazon.com/gp/product/B002BRZ9G0/ref=s9_pop_gw_ir01
 
     http://azizisbored.tumblr.com/post/558456193/mtv-movie-awards-promo-who-is-aziz-ansari
 
+The plugin automatically displays an embed of the media in the Wordpress post
+editor.
 
 
 
@@ -47,88 +52,88 @@ a single line like so:
 
 Using the Plugin Manager
 
-1. 
+1.
 Click Plugins
-1. 
+1.
 Click Add New
-1. 
+1.
 Search for Embedly
-1. 
+1.
 Click Install
-1. 
+1.
 Click Install Now
-1. 
+1.
 Click Activate Plugin
 
 
 
 Manually
 
-1. 
+1.
 Upload `embedly` to the `/wp-content/plugins/` directory
-1. 
+1.
 Activate the plugin through the 'Plugins' menu in WordPress
 
 
 
 Multi-Site
 
-1. 
+1.
 Navigate to My Sites -> Network Admin
-1. 
+1.
 Follow Steps 1-5 in Using the Plugin Manager setup above, `Do not Network Activate`
-1. 
+1.
 Go to each site's dashboard and activate Embedly in Plugins section
 
 
 
 == Frequently Asked Questions ==
 
-= 
-Is this plugin for me? 
+=
+Is this plugin for me?
 =
 
 Yes
 
-= 
+=
 
-Where do I get a key? 
+Where do I get a key?
 =
 
 You can sign up for a free or paid plan by clicking [here](https://app.embed.ly).
 
-= 
+=
 
-How do I embed "any" URL? 
+How do I embed "any" URL?
 =
 
 In the post editor click the Embedly icon and add your URL.
 
-= 
+=
 
-Do I need a key? 
+Do I need a key?
 =
 
 You need a key to embed "any" url, otherwise the plugin will
 only be available for these [providers](http://embed.ly/providers).
 
-= 
+=
 
-What does a paid product give me? 
+What does a paid product give me?
 =
 
 We will be providing analytics on how your embeds are doing
 including plays, duration watched, hovers, and other engagement
 metrics. This is currently not available in the plugin.
 
-= 
-What is your support email? 
+=
+What is your support email?
 =
 
 support@embed.ly
 
-= 
-Do you support multi-site? 
+=
+Do you support multi-site?
 =
 
 Yes, see steps above to install for multi-site.
