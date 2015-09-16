@@ -79,9 +79,11 @@
   margin: 30px;
 }
 #welcome-blurb h2 {
+  size: 14px;
   color: #36495e;
 }
 #welcome-blurb h3 {
+  size: 18px;
   color: #36495e;
 }
 .embedly-footer {

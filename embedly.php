@@ -89,7 +89,7 @@ class WP_Embedly
             'card_align' => 'center',
             'card_theme' => 'light',
             'key_valid?' => false,
-            'welcomed?' => false,
+            'welcomed?' => 0,
         );
 
         //i18n
@@ -636,12 +636,11 @@ class WP_Embedly
 
     function get_welcome_message() {
         if (isset($this->embedly_options['welcomed?']) && !$this->embedly_options['welcomed?']) {
-            echo '<div id="welcome-blurb">' . "<h3>You're ready to start embedding.</h3>".
+            $this->embedly_save_option('welcomed?', true);
+            echo "<h3>You're ready to start embedding.</h3>".
                  "<h2>Paste a URL in a new post and it will automatically embed and measure analytics.</h2>".
-                 "<h2>For more on getting started, check out the tutorial below.</h2></div>";
+                 "<h2>For more on getting started, check out the tutorial below.</h2>";
         } else echo "";
-
-        update_option('welcomed?', true);
     }
     /////////////////////////// END TEMPLATE FUNCTIONS FOR FORM LOGIC
 
@@ -657,6 +656,10 @@ class WP_Embedly
           <?php $this->get_script_embedly_current_card(); ?>
           <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
         <head>
+          <div class="embedly-wrap">
+            <div class="embedly-ui">
+              <div class="embedly-input-wrapper">
+
 
               <!-- DELETE FOR PRODUCTION -->
               <?php
@@ -687,10 +690,11 @@ class WP_Embedly
 
                     <div class="embedly-ui-key-wrap">
                       <div class="embedly_key_form embedly-ui-key-form">
+
+                        <div id="welcome-blurb">
+                          <?php $this->get_welcome_message();  ?>
+                        </div>
                         <div class="embedly-analytics">
-
-                        <?php $this->get_welcome_message();  ?>
-
                           <ul>
                             <li class="active-viewers">
                               <h1 class="active-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
