@@ -10,7 +10,7 @@ Tested up to: 4.1
 Stable tag: 3.2.1
 
 
-The Embedly Plugin extends Wordpress's automatic embed feature to give your blog more media types, video analytics, and style options. Get previews for any URL with this simple plugin.
+The Embedly Plugin extends Wordpress's automatic embed feature to give your blog more media types, video analytics, and style options.
 
 
 == Description ==
