@@ -210,14 +210,15 @@ class WP_Embedly
         wp_die();
     }
 
+    /**
+    * retrieves the historical viewership numbers with narrate
+    **/
     function embedly_ajax_get_historical_viewers()
     {
-        // will eventually need to check also if analytics key exists..
-        if($this->valid_key()) {
+        if ($this->valid_key()) {
             $end = date("Ymd");
             $lastweek = time() - (7 * 24 * 60 * 60);
             $start = date("Ymd", $lastweek);
-            // turn off till analytics
             $analytics_key = $this->embedly_options['analytics_key'];
 
             $historical_url =
@@ -226,27 +227,16 @@ class WP_Embedly
                 "&end=" . $end .
                 "&key=" . $analytics_key;
 
-            // create curl resource
-            $ch = curl_init();
-            // set url
-            curl_setopt($ch,
-                CURLOPT_URL,
-                $historical_url);
-            //return the transfer as a string
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            // $output contains the output string
-            $output = curl_exec($ch);
-            // close curl resource to free up system resources
-            curl_close($ch);
-            // send output to frontend
-            echo $output;
-            // done ajax call
-            wp_die();
-        } else {
-            // there was some key error
-            echo '{"err": true}';
-            wp_die();
+            $response = wp_remote_get($historical_url);
+            if( is_array($response) ) {
+              $header = $response['headers']; // array of http header lines
+              $body = $response['body']; // use the content
+              echo $body;
+              wp_die();
+            }
         }
+        echo '{"err": true}';
+        wp_die();
     }
 
     /**
@@ -256,33 +246,24 @@ class WP_Embedly
     {
         if ($this->valid_key()) {
             $narrate_url = "https://narrate.embed.ly/1/series?key=" .
-              $this->embedly_options['analytics_key'];
-            // create curl resource
-            $ch = curl_init();
-            // set url
-            curl_setopt($ch,
-                CURLOPT_URL,
-                $narrate_url);
-            //return the transfer as a string
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            // $output contains the output string
-            $output = curl_exec($ch);
-            // close curl resource to free up system resources
-            curl_close($ch);
-            // send output to frontend
-            if(empty($output)) {
-              echo '{"active": "error"}';
-              wp_die();
+                $this->embedly_options['analytics_key'];
+
+            $response = wp_remote_get($narrate_url);
+            if( is_array($response) ) {
+                $header = $response['headers'];
+                $body = $response['body'];
+                if(empty($body)) {
+                    echo '{"active": "-"}';
+                } else {
+                    echo $body;
+                }
             }
-            echo $output;
-            // done ajax call
             wp_die();
         } else {
-            // there was some key error
+            // invalid key, should never get here.
             echo '{"active": "-"}';
             wp_die();
         }
-
     }
 
     /**

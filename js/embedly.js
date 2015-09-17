@@ -57,10 +57,7 @@ jQuery(document).ready(function($) {
 
   // forces first render of preview card.
   // with current settings
-  (function() {
-    update_preview('data');
-    build_card();
-  })();
+  build_card();
 
   (function load_historical() {
     $.post(
