@@ -903,6 +903,7 @@ class WP_Embedly
                             </div>
                           </button>
 
+
                           <!-- dropdown for selecting a project -->
                           <div id="embedly-which">
                             <p><strong>Which Project Would you Like to Connect?</strong></p>
@@ -915,9 +916,9 @@ class WP_Embedly
                           <p>You may need to refresh the page after connecting</p>
                           </div>
                         </section>
-                      </div>
-                    </div>
-                  </div>
+                       </div>
+                     </div>
+                   </div>
                 </div>
               <?php } // END if/else for new/existing account
               ?>
