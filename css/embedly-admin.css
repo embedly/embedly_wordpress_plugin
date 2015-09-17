@@ -90,12 +90,12 @@
 .embedly-footer {
   text-align: center;
   vertical-align: middle;
-  font-size: 12px;
+  font-size: 14px;
   float:bottom;
-  color: #A6A8AB;
+  color: #808080;
 }
 .embedly-footer .dashicons:before {
-  color: #A6A8AB;
+  color: #808080;
 }
 #footer {
     clear: both;
@@ -170,6 +170,12 @@
 .embedly-create-account-btn-wrap {
   page-break-inside: '';
 }
+.embedly-create-account-btn-wrap a {
+  color: #4CC6E6;
+}
+.embedly-create-account-btn-wrap p {
+  color: #808080;
+}
 #create-account-btn {
   font-size: 20px;
 }
@@ -215,6 +221,7 @@
   max-width: 1000px;
   margin: 0 auto;
 }
+
 #connect-button {
   outline: none;
   background-color: #4CC6E6;

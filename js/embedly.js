@@ -392,27 +392,29 @@ jQuery(document).ready(function($) {
   //       encodeURIComponent(window.location.toString()) + '");');
 
   var connect_button = document.getElementById('connect-button');
-  connect_button.addEventListener('click', do_connect);
+  // connect_button.addEventListener('click', do_connect);
 
-  // $('#connect-button').click(function(e) {
-  //   var def = $.Deferred();
-  //   do_connect(def);
+  $('#connect-button').click(function(e) {
+    // var def = $.Deferred();
+    // do_connect(def);
 
-  //   var abra_kadabra = function(e) {
-  //     $('#connect-button').html("VISITING APP.EMBED.LY...");
-  //     window.open('https://app.embed.ly/wordpress?back=' +
-  //       encodeURIComponent(window.location.toString()));
-  //   }
+    var abra_kadabra = function(e) {
+      $('#connect-button').html("VISITING APP.EMBED.LY...");
+      window.open('https://app.embed.ly/wordpress?back=' +
+        encodeURIComponent(window.location.toString()));
+    }
 
-  //   $.when(def).done(function(result) {
-  //     if(result) {
-  //       console.log('logged in!');
-  //     } else {
-  //       console.log('not logged in!');
-  //       abra_kadabra();
-  //     }
-  //   });
-  // });
+    abra_kadabra();
+
+    // $.when(def).done(function(result) {
+    //   if(result) {
+    //     console.log('logged in!');
+    //   } else {
+    //     console.log('not logged in!');
+    //     abra_kadabra();
+    //   }
+    // });
+  });
 
   // checks if page was loaded after signing in from app.embed.ly/wordpress/*
   (function check_backdirect() {
