@@ -229,10 +229,14 @@ class WP_Embedly
 
             $response = wp_remote_get($historical_url);
             if( is_array($response) ) {
-              $header = $response['headers']; // array of http header lines
-              $body = $response['body']; // use the content
-              echo $body;
-              wp_die();
+                $header = $response['headers'];
+                $body = $response['body'];
+                if(empty($body)) {
+                    echo '{"err": true}';
+                } else {
+                    echo $body;
+                }
+                wp_die();
             }
         }
         echo '{"err": true}';
