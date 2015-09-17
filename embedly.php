@@ -49,9 +49,6 @@ if (!defined('EMBEDLY_BASE_URI')) {
     define('EMBEDLY_BASE_URI', 'https://api.embedly.com/1/card?');
 }
 
-// DEBUGGING
-$EMBEDLY_DEBUG = false;
-
 // maps local settings key => api param name
 $settings_map = array(
     'card_controls' => 'cards_controls',
@@ -117,10 +114,6 @@ class WP_Embedly
         add_action('admin_print_styles', array(
             $this,
             'embedly_enqueue_admin'
-        ));
-        add_action('wp_head', array(
-            $this,
-            'embedly_enqueue_public'
         ));
 
         // action notifies user on admin menu if they don't have a key
@@ -361,7 +354,6 @@ class WP_Embedly
             wp_enqueue_style('dashicons');
             wp_enqueue_style('embedly_admin_styles', EMBEDLY_URL . '/css/embedly-admin.css');
             wp_enqueue_style('embedly-fonts', $protocol . '://embed.ly/static/styles/fontspring-stylesheet.css');
-            // wp_enqueue_style('google_fonts', $protocol . '://fonts.googleapis.com/css?family=Cabin:400,600');
             // controls some of the functionality of the settings page, will need to go through embedly.js at some point
             wp_enqueue_script('embedly_admin_scripts', EMBEDLY_URL . '/js/embedly.js', array(
                 'jquery'
@@ -370,27 +362,16 @@ class WP_Embedly
         return;
     }
 
-
-    /**
-     * Enqueue styles for front-end
-     **/
-    function embedly_enqueue_public()
-    {
-        wp_enqueue_style('embedly_front_end', EMBEDLY_URL . '/css/embedly-frontend.css');
-    }
-
-
     /**
      * Does the work of adding the Embedly providers to wp_oembed
      **/
     function add_embedly_providers()
     {
         # if user entered valid key, override providers, else, do nothing
-        if (!empty($this->embedly_options['key']) && $this->valid_key()) {
+        if ($this->valid_key()) {
             // delete all current oembed providers
             add_filter('oembed_providers', create_function('', 'return array();'));
-            // except twitter (@cstiteler: test that this works for twitter)
-            // wp_oembed_add_provider('#https?://(www\.)?twitter\.com/.+?/status(es)?/.*#i', 'https://api.twitter.com/1/statuses/oembed.{format}', true);
+            // add embedly provider
             $provider_uri = $this->build_uri_with_options();
             wp_oembed_add_provider('#.*#i', $provider_uri, true);
         }
@@ -438,7 +419,7 @@ class WP_Embedly
 
 
     /**
-    * Function to check if account has specific features enabled
+    * legacy function to check if account has specific features enabled
     * but mainly, we care to check if the key is valid
     **/
    function embedly_acct_has_feature($feature, $key = false)
@@ -476,6 +457,9 @@ class WP_Embedly
        $this->embedly_options = get_option('embedly_settings');
     }
 
+    /**
+    * removes a setting
+    **/
     function embedly_delete_option($key)
     {
         unset($this->embedly_options[$key]);
@@ -487,7 +471,7 @@ class WP_Embedly
     /**
     * handles 'max width' input for card defaults
     * returns the string corresponding to the correct cards_width
-    * card paramater
+    * card parameter
     **/
     function handle_width_input($input)
     {
@@ -529,24 +513,29 @@ class WP_Embedly
         }
     }
 
-    /////////////////////////// BEGIN TEMPLATE FUNCTIONS FOR FORM LOGIC
+    /**
+    * waterfall failure checks on the key
+    **/
     function valid_key()
     {
-      if (!isset($this->embedly_options['key'])) {
-        return false;
-      }
-      if (empty($this->embedly_options['key'])) {
-        return false;
-      }
-      if(!isset($this->embedly_options['key_valid?'])) {
-        return false;
-      }
-      if (!$this->embedly_options['key_valid?']) {
-        return false;
-      }
+        if (!isset($this->embedly_options['key'])) {
+          return false;
+        }
+        if (empty($this->embedly_options['key'])) {
+          return false;
+        }
+        if(!isset($this->embedly_options['key_valid?'])) {
+          return false;
+        }
+        if (!$this->embedly_options['key_valid?']) {
+          return false;
+        }
 
-      return true;
+        return true;
     }
+
+    /////////////////////////// BEGIN TEMPLATE FUNCTIONS FOR FORM LOGIC
+
 
     /**
     * returns max_width setting as a html value attr
@@ -624,6 +613,9 @@ class WP_Embedly
       echo $class . '" ';
     }
 
+    /**
+    * fallback for alignment icons (only change nec. to support 3.8, atm)
+    **/
     function get_compatible_dashicon($align)
     {
       $base = '"dashicons align-icon ';
@@ -648,7 +640,9 @@ class WP_Embedly
       }
     }
 
-
+    /**
+    * Welcome the user one time.
+    **/
     function get_welcome_message() {
         if (isset($this->embedly_options['welcomed?']) && !$this->embedly_options['welcomed?']) {
             $this->embedly_save_option('welcomed?', true);
@@ -674,24 +668,11 @@ class WP_Embedly
           <div class="embedly-wrap">
             <div class="embedly-ui">
               <div class="embedly-input-wrapper">
+                <?php
+                // Decide which modal to display.
+                if( $this->valid_key() ) { ?>
 
-
-              <!-- DELETE FOR PRODUCTION -->
-              <?php
-              global $EMBEDLY_DEBUG;
-              if( isset($EMBEDLY_DEBUG) && ($EMBEDLY_DEBUG) ) { ?>
-
-                <!-- Testing key input states -->
-                  DEBUGGING:
-                  <?php echo "CURRENT URI: " . $this->build_uri_with_options() ;?>
-      <?php } ?>
-          <!-- END DELETE FOR PRODUCTION -->
-
-
-        <?php
-            // Decide which modal to display.
-            if( $this->valid_key() ) { ?>
-
+                <!-- EXISTING USER MODAL -->
                 <form id="embedly_key_form" method="POST" action="">
                   <div class="embedly-ui-header-outer-wrapper">
                     <div class="embedly-ui-header-wrapper">
