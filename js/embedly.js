@@ -174,10 +174,7 @@ jQuery(document).ready(function($) {
   });
 
   // sets the back direct link on the create account button
-  $('#create-account-btn')
-    .attr(
-      "onclick",
-      "window.open('https://app.embed.ly/signup/wordpress?back=" + encodeURIComponent(window.location.toString()) + "');");
+  $('#create-account-btn').attr("href", "https://app.embed.ly/signup/wordpress?back=" + encodeURIComponent(window.location.toString()));
 
   // sets the back direct link for pre-existing users
   $('#preexisting-user').attr('href',
