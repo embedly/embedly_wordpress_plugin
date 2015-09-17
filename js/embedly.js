@@ -1,14 +1,19 @@
-/**
-  * Quicksand 1.2.2
-  * Reorder and filter items with a nice shuffling animation.
-  * Copyright (c) 2010 Jacek Galanciak (razorjack.net) and agilope.com
-  * Big thanks for Piotr Petrus (riddle.pl) for deep code review and wonderful docs & demos.
-  * Dual licensed under the MIT and GPL version 2 licenses.
-  * http://github.com/jquery/jquery/blob/master/MIT-LICENSE.txt
-  * http://github.com/jquery/jquery/blob/master/GPL-LICENSE.txt
-  * Project site: http://razorjack.net/quicksand
-  * Github site: http://github.com/razorjack/quicksand
-**/
+// EMBEDLY ADMIN PAGE JAVASCRIPT
+// Copyright 2015 Embedly  (email : developer@embed.ly)
+
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License, version 2, as
+// published by the Free Software Foundation.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+
 // valid class prefixes for modulation of key state
 var valid_states = [
   'invalid',
@@ -17,6 +22,7 @@ var valid_states = [
   'unlocked',
   'lock-control',
 ];
+
 
 // for mapping backend data to preview card data-card-* attrs
 var preview_map = {
@@ -40,26 +46,23 @@ jQuery(document).ready(function($) {
     $(this).parent().addClass("selected").siblings().removeClass("selected");
   });
 
+
   // loads the analytics from narrate immediately,
   // and then every N milliseconds
-  (function load_actives() {
+  var load_actives = function() {
     $.post(
       ajaxurl,
       {'action': 'embedly_analytics_active_viewers'},
       function(response) {
-        console.log("Reponse is: " + response);
         var response = JSON.parse(response);
         $(".embedly-analytics .active-viewers .active-count").html(response.active);
     });
+  }
+  load_actives();
+  setInterval(load_actives, 10000);
 
-    setTimeout(load_actives, 10000);
-  })();
 
-  // forces first render of preview card.
-  // with current settings
-  build_card();
-
-  (function load_historical() {
+  var load_historical = function() {
     $.post(
       ajaxurl,
       {'action': 'embedly_analytics_historical_viewers'},
@@ -75,7 +78,10 @@ jQuery(document).ready(function($) {
         }
         $(".embedly-analytics .historical-viewers .weekly-count").html(add_commas(impr));
       });
-  })();
+  }
+  load_historical();
+  setInterval(load_historical, 10000);
+
 
   function add_commas(val){
     while (/(\d+)(\d{3})/.test(val.toString())){
@@ -83,6 +89,7 @@ jQuery(document).ready(function($) {
     }
     return val;
   }
+
 
   // When the alignment is selected, unselect other alignments
   $('.align-icon').mousedown(function(e) {
@@ -131,10 +138,10 @@ jQuery(document).ready(function($) {
   $('#embedly-max-width').keypress(function(e) {
     if(e.which == 13) {
       valid_width = update_option('card_width', $(this).val());
-      console.log('valid width: ' + valid_width);
       return false;
     }
   });
+
 
   // toggles advanced options
   $('.advanced-wrapper .advanced-header').find('a[href="#"]').click(function(e) {
@@ -152,6 +159,7 @@ jQuery(document).ready(function($) {
     return false;
   });
 
+
   // toggles tutorial
   $('.tutorial-wrapper .tutorial-header').find('a[href="#"]').click(function(e) {
     e.preventDefault();
@@ -159,24 +167,25 @@ jQuery(document).ready(function($) {
     $arrow = $('#tutorial-arrow');
 
     if($tutorial.is(":visible")) {
-      console.log("hiding");
       $tutorial.hide();
       $arrow.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-right-alt2');
     } else {
-      console.log('showing');
       $tutorial.show();
       $arrow.removeClass('dashicons-arrow-right-alt2').addClass('dashicons-arrow-down-alt2')
     }
     return false;
   });
 
+
   // sets the back direct link on the create account button
   $('#create-account-btn').attr("href", "https://app.embed.ly/signup/wordpress?back=" + encodeURIComponent(window.location.toString()));
+
 
   // sets the back direct link for pre-existing users
   $('#preexisting-user').attr('href',
     'https://app.embed.ly/wordpress?back=' +
     encodeURIComponent(window.location.toString()));
+
 
   // given a key, value pair for a card setting, performs
   // ajax request to ajaxurl backend to update option
@@ -188,7 +197,6 @@ jQuery(document).ready(function($) {
         'key': key,
         'value': value,
       }, function(response) {
-        console.log(response);
         if( key == 'card_width' ) {
           // if the input was invalid for width,
           // the value will default to previous value
@@ -229,10 +237,6 @@ jQuery(document).ready(function($) {
     }
   }
 
-  (function () {
-    build_tutorial();
-  })();
-
   function build_tutorial() {
     if(typeof embedly != 'undefined') {
       card = embedly.card($('#embedly-tutorial-card'));
@@ -241,6 +245,8 @@ jQuery(document).ready(function($) {
     }
 
   };
+  build_tutorial();
+
 
   function build_card() {
     if(typeof embedly != 'undefined') {
@@ -257,6 +263,10 @@ jQuery(document).ready(function($) {
       setTimeout(build_card, 100);
     }
   }
+  // forces first render of preview card.
+  // with current settings
+  build_card();
+
 
   // function that updates the template card with the key value pair
   function update_preview(key, value) {
@@ -265,6 +275,7 @@ jQuery(document).ready(function($) {
     // then render the new card
     build_card();
   }
+
 
   (function initialize_preview() {
     Object.keys(preview_map).forEach(function(key) {
@@ -340,7 +351,6 @@ jQuery(document).ready(function($) {
     // if the user clicks multiple times, make sure div is empty
     $('#embedly-which-list').empty();
 
-    console.log('connecting');
     app.connect(function (data) {
       if (data.error === false) {
         if (data.organizations.length === 1) {
@@ -373,25 +383,16 @@ jQuery(document).ready(function($) {
             whichlist.appendChild(li);
           }
         }
-        // def.resolve(true);
       } else {
         // user is not currently logged in
         alert("Please log in to your Embedly account first");
-        // def.resolve(false);
       }
     });
   }
 
-  // $('#connect-button').attr('onclick', 'window.open("https://app.embed.ly/wordpress?back=' +
-  //       encodeURIComponent(window.location.toString()) + '");');
-
   var connect_button = document.getElementById('connect-button');
-  // connect_button.addEventListener('click', do_connect);
 
   $('#connect-button').click(function(e) {
-    // var def = $.Deferred();
-    // do_connect(def);
-
     var abra_kadabra = function(e) {
       $('#connect-button').html("VISITING APP.EMBED.LY...");
       window.open('https://app.embed.ly/wordpress?back=' +
@@ -399,16 +400,8 @@ jQuery(document).ready(function($) {
     }
 
     abra_kadabra();
-
-    // $.when(def).done(function(result) {
-    //   if(result) {
-    //     console.log('logged in!');
-    //   } else {
-    //     console.log('not logged in!');
-    //     abra_kadabra();
-    //   }
-    // });
   });
+
 
   // checks if page was loaded after signing in from app.embed.ly/wordpress/*
   (function check_backdirect() {
@@ -419,12 +412,11 @@ jQuery(document).ready(function($) {
     }
   })();
 
+
   function initiate_connection() {
     if(app._ready) {
-      console.log('app ready!');
       do_connect();
     } else {
-      console.log('waiting');
       setTimeout(initiate_connection, 100);
     }
   }
@@ -443,7 +435,6 @@ jQuery(document).ready(function($) {
           location.reload();
         }
         // should warn user if something went wrong here..
-        console.log(response);
     });
   }
 });
