@@ -4,10 +4,10 @@ Contributors: Embedly
 
 Tags: embed, oembed, video, image, pdf, card
 
-Requires at least: 3.6
+Requires at least: 3.8
 
-Tested up to: 4.1
-Stable tag: 3.2.1
+Tested up to: 4.3
+Stable tag: 4.0.0
 
 
 The Embedly Plugin extends Wordpress's automatic embed feature to give your blog more media types, video analytics, and style options.

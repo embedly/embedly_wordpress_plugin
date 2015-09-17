@@ -1,8 +1,8 @@
 <?php
 /*
 Plugin Name: Embedly
-Plugin URI: http://embed.ly
-Description: The Embedly Plugin extends Wordpress's automatic embed feature, allowing bloggers to Embed from 230+ services and counting.
+Plugin URI: http://embed.ly/wordpress
+Description: The Embedly Plugin extends Wordpress's automatic embed feature, allowing bloggers to Embed from 300+ services and counting.
 Author: Embed.ly Inc
 Version: 4.0.0
 Author URI: http://embed.ly
@@ -89,7 +89,7 @@ class WP_Embedly
             'card_align' => 'center',
             'card_theme' => 'light',
             'key_valid?' => false,
-            'welcomed?' => 0,
+            'welcomed?' => false,
         );
 
         //i18n
@@ -152,8 +152,7 @@ class WP_Embedly
           'validate_api_key'
         ));
 
-        // action establishes embed.ly the sole provider of embeds
-        // (except those unsupported)
+        // action establishes embed.ly the provider of embeds
         add_action('plugins_loaded', array(
             $this,
             'add_embedly_providers'
@@ -161,7 +160,7 @@ class WP_Embedly
     }
 
     /**
-    * makes sure the key is always valid (in case user, say, deletes their acct)
+    * makes sure the key is always valid (in case user, say, deletes their app acct)
     **/
     function validate_api_key()
     {
@@ -172,28 +171,40 @@ class WP_Embedly
         }
     }
 
+    /**
+    * receives embedly account data from connection request
+    **/
     function embedly_save_account()
     {
-        $api_key = $_POST['api_key'];
-        $analytics_key=$_POST['analytics_key'];
-
-        // not validating the analytics_key for security reasons.
+        // not validating the analytics_key for security.
         // analytics calls will just fail if it's invalid.
-        if ($this->embedly_acct_has_feature('oembed', $api_key)) {
+        if(isset($_POST) && !empty($_POST)) {
+            $api_key = $_POST['api_key'];
+            $analytics_key=$_POST['analytics_key'];
 
-            $this->embedly_save_option('key', $api_key);
-            $this->embedly_save_option('analytics_key', $analytics_key);
+            if ($this->embedly_acct_has_feature('oembed', $api_key)) {
+                $this->embedly_save_option('key', $api_key);
+                $this->embedly_save_option('analytics_key', $analytics_key);
 
-            // better than returning some ambiguous boolean type
-            echo 'true';
-        } else {
-            echo 'false';
+                // better than returning some ambiguous boolean type
+                echo 'true';
+                wp_die();
+            }
         }
+        echo 'false';
         wp_die();
     }
 
+    /**
+    * handles request from frontend to update a card setting
+    **/
     function embedly_ajax_update_option()
     {
+        if(!isset($_POST) || empty($_POST)) {
+          echo 'ajax-error';
+          wp_die();
+        }
+
         // access to the $_POST from the ajax call data object
         if ($_POST['key'] == 'card_width') {
             $this->embedly_save_option($_POST['key'], $this->handle_width_input($_POST['value']));
@@ -251,7 +262,8 @@ class WP_Embedly
     function embedly_ajax_get_active_viewers()
     {
         if ($this->valid_key()) {
-            $narrate_url = "https://narrate.embed.ly/1/series?key=" . $this->embedly_options['key'];
+            $narrate_url = "https://narrate.embed.ly/1/series?key=" .
+              $this->embedly_options['analytics_key'];
             // create curl resource
             $ch = curl_init();
             // set url
@@ -265,6 +277,10 @@ class WP_Embedly
             // close curl resource to free up system resources
             curl_close($ch);
             // send output to frontend
+            if(empty($output)) {
+              echo '{"active": "error"}';
+              wp_die();
+            }
             echo $output;
             // done ajax call
             wp_die();
@@ -813,7 +829,7 @@ class WP_Embedly
                           <div class="tutorial-body">
                             <div class="embedly-tutorial-container">
                               <a id="embedly-tutorial-card"
-                                href="https://vimeo.com/60718161"
+                                href="https://vimeo.com/62648882"
                                 data-card-controls="0" data-card-chrome="0"
                                 data-card-width="65%">
                               </a>
@@ -849,7 +865,7 @@ class WP_Embedly
                             <!-- Tutorial Video -->
                             <div class="embedly-tutorial-container">
                               <a id="embedly-tutorial-card"
-                                href="https://vimeo.com/60718161"
+                                href="https://vimeo.com/62648882"
                                 data-card-controls="0" data-card-chrome="0"
                                 data-card-width="65%">
                               </a>

@@ -47,6 +47,7 @@ jQuery(document).ready(function($) {
       ajaxurl,
       {'action': 'embedly_analytics_active_viewers'},
       function(response) {
+        console.log("Reponse is: " + response);
         var response = JSON.parse(response);
         $(".embedly-analytics .active-viewers .active-count").html(response.active);
     });
@@ -335,7 +336,6 @@ jQuery(document).ready(function($) {
   };
 
   app.init();
-  var logged_in;
   function do_connect() {
     // cleans html for user select:
     // if the div is open already, close it., else continue:
