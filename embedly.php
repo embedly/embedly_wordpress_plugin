@@ -40,10 +40,10 @@ if (!defined('WP_PLUGIN_DIR')) {
     define('WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins');
 }
 if (!defined('EMBEDLY_DIR')) {
-    define('EMBEDLY_DIR', WP_PLUGIN_DIR . '/embedly_wordpress_plugin');
+    define('EMBEDLY_DIR', WP_PLUGIN_DIR . '/embedly');
 }
 if (!defined('EMBEDLY_URL')) {
-    define('EMBEDLY_URL', WP_PLUGIN_URL . '/embedly_wordpress_plugin');
+    define('EMBEDLY_URL', WP_PLUGIN_URL . '/embedly');
 }
 if (!defined('EMBEDLY_BASE_URI')) {
     define('EMBEDLY_BASE_URI', 'https://api.embedly.com/1/card?');
@@ -854,74 +854,67 @@ class WP_Embedly
                   </div>
                   <div class="embedly-ui-key-wrap embedly-new-user-modal">
                     <div class="embedly_key_form embedly-ui-key-form">
-
                       <div class="welcome-page-body">
-                        <ul>
-                          <!-- HERO TEXT -->
-                          <li>
-                            <h1><strong>Embed content from any site!</strong></h1>
-                          </li>
-                          <li>
-                            <!-- Tutorial Video -->
-                            <div class="embedly-tutorial-container">
-                              <a id="embedly-tutorial-card"
-                                href="https://vimeo.com/62648882"
-                                data-card-controls="0" data-card-chrome="0"
-                                data-card-width="65%">
-                              </a>
-                            </div>
-                          </li>
+                        <!-- HERO TEXT -->
+                        <h1>Embed content from any site!</h1>
+                        <section>
+                          <!-- Tutorial Video -->
+                          <div class="embedly-tutorial-container">
+                            <a id="embedly-tutorial-card"
+                              href="https://vimeo.com/62648882"
+                              data-card-controls="0" data-card-chrome="0"
+                              data-card-width="65%">
+                            </a>
+                          </div>
+                        </section>
 
-                          <li>
-                            <!-- Blurb -->
-                            <div id="embedly-welcome-blurb">
-                              <p>
-                                <span id="twitter-icon" class="dashicons dashicons-twitter"></span>
-                                Now with Twitter support! In addition to the default Wordpress embedding,
-                                you get embedding for any article, gfycat, storify, and twitch.  See our growing
-                                <a href="http://embed.ly/providers" target="_blank"><strong>growing list of embed providers</strong>.</a>
-                              </p>
-                                <p>Getting started? <strong>Learn more above</strong> about embedly cards for Wordpress.</p>
-                            </div>
-                          </li>
+                        <section>
+                          <!-- Blurb -->
+                          <div id="embedly-welcome-blurb">
+                            <p>
+                              <span id="twitter-icon" class="dashicons dashicons-twitter"></span>
+                              Now with Twitter support! In addition to the default Wordpress embedding,
+                              you get embedding for any article, gfycat, storify, and twitch.  See our growing
+                              <a href="http://embed.ly/providers" target="_blank"><strong>growing list of embed providers</strong>.</a>
+                            </p>
+                              <p>Getting started? <strong>Learn more above</strong> about embedly cards for Wordpress.</p>
+                          </div>
+                        </section>
 
-
-                          <li>
-                            <!-- Create an embed.ly account button -->
-                            <div class="embedly-create-account-btn-wrap">
-                              <p><?php _e("Don't Have An Account?", "embedly"); ?></p>
-                              <input id='create-account-btn' class="embedly-button embedly-button-long" type="button"
-                                value="<?php _e('GET STARTED HERE!', 'embedly')?>"/>
-                              <p>&nbsp;</p>
-                              <p><?php _e("Already have an Embedly account?", "embedly"); ?>
-                                  <strong><a id="preexisting-user" href="https://app.embed.ly" target="_blank"><?php _e('Login', 'embedly'); ?></a><strong>
-                              </p>
+                        <section>
+                          <!-- Create an embed.ly account button -->
+                          <div class="embedly-create-account-btn-wrap">
+                            <p><?php _e("Don't Have An Account?", "embedly"); ?></p>
+                            <input id='create-account-btn' class="embedly-button embedly-button-long" type="button"
+                              value="<?php _e('GET STARTED HERE!', 'embedly')?>"/>
+                            <p>&nbsp;</p>
+                            <p><?php _e("Already have an Embedly account?", "embedly"); ?>
+                                <strong><a id="preexisting-user" href="https://app.embed.ly" target="_blank"><?php _e('Login', 'embedly'); ?></a></strong>
+                            </p>
+                          </div>
+                          <button id="connect-button" class="embedly-button embedly-button-long">
+                            <div class="inner-connect-button">
+                              <span class="inner-button-span">
+                                <img id="connect-btn-img" src=<?php echo EMBEDLY_URL . "/img/embedly-white-70-40.svg" ?>>
+                              </span>
+                              <span class="inner-button-span">
+                                ACTIVATE WITH EMBEDLY ACCOUNT
+                              </span>
                             </div>
+                          </button>
 
-                            <button id="connect-button" class="embedly-button embedly-button-long">
-                              <div class="inner-connect-button">
-                                <span class="inner-button-span">
-                                  <img id="connect-btn-img" src=<?php echo EMBEDLY_URL . "/img/embedly-white-70-40.svg" ?>>
-                                </span>
-                                <span class="inner-button-span">
-                                  ACTIVATE WITH EMBEDLY ACCOUNT
-                                </span>
-                              </div>
-                            </button>
-
-                            <!-- dropdown for selecting a project -->
-                            <div id="embedly-which">
-                              <p><strong>Which Project Would you Like to Connect?</strong></p>
-                              <h4>&nbsp;</h4>
-                              <ul id="embedly-which-list"></ul>
-                            </div>
-                          </li>
-                          <li>
-                            <div id="embedly-connect-failed-refresh">
-                            <p>You may need to refresh the page after connecting</p>
-                            </div>
-                          </li>
-                        </ul>
+                          <!-- dropdown for selecting a project -->
+                          <div id="embedly-which">
+                            <p><strong>Which Project Would you Like to Connect?</strong></p>
+                            <h4>&nbsp;</h4>
+                            <ul id="embedly-which-list"></ul>
+                          </div>
+                        </section>
+                        <section>
+                          <div id="embedly-connect-failed-refresh">
+                          <p>You may need to refresh the page after connecting</p>
+                          </div>
+                        </section>
                       </div>
                     </div>
                   </div>

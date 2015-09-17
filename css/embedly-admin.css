@@ -21,7 +21,8 @@
 .embedly-ui h1 {
   font-family: 'proxima-nova-extra-condensed-fontspring';
   font-size: 70px;
-  margin: 30px;
+  line-height: 80px;
+  margin:0;
 }
 /* Overrides color of checkmarks in checkboxes*/
 .embedly-ui input[type="checkbox"]:checked:before {
@@ -186,11 +187,10 @@
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  padding: 0.50rem 1.5rem;
+  padding: 1.25rem 1.5rem;
   background-color: #36495e;
   color: #FFF;
   transition: background-color 300ms ease-out;
-  height: 40px;
   letter-spacing: .75px;
 }
 .embedly-button:hover {
@@ -200,9 +200,8 @@
   width: 100%;
 }
 /* welcome page styles */
-.welcome-page-body ul li{
-  margin-top: 50px;
-  margin-bottom: 50px;
+.welcome-page-body section{
+  margin: 50px 0;
 }
 #twitter-icon {
   font-size: 25px;
