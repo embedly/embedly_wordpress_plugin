@@ -18,6 +18,9 @@
   text-decoration:none;
   color: #36495e;
 }
+.embedly-ui a.emb-button {
+  color: #fff;
+}
 .embedly-ui h1 {
   font-family: 'proxima-nova-extra-condensed-fontspring';
   font-size: 70px;
@@ -34,10 +37,11 @@
   text-align: center;
   vertical-align: middle;
 }
-.embedly-analytics ul li {
-  margin-top: 30px;
-  margin-bottom: 30px;
+
+.embedly-analytics .active-viewers, .embedly-analytics .historical-viewers {
+  margin: 30px 0 70px;
 }
+
 .embedly-analytics p {
   font-size: 16px;
   letter-spacing: 0.25px;
@@ -179,7 +183,7 @@
 #create-account-btn {
   font-size: 20px;
 }
-.embedly-button {
+.emb-button {
   -webkit-appearance: none;
   -moz-appearance: none;
   border: solid 0 #1eb0d7;
@@ -199,10 +203,10 @@
   transition: background-color 300ms ease-out;
   letter-spacing: .75px;
 }
-.embedly-button:hover {
+.emb-button:hover {
   background-color:#556d82;
 }
-.embedly-button-long {
+.emb-button-long {
   width: 100%;
 }
 /* welcome page styles */

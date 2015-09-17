@@ -605,12 +605,11 @@ class WP_Embedly
     */
     function get_onclick_analytics_button() {
         if($this->valid_key()) {
-            echo ' onclick="' . 'window.open(' . "'" .
-                'https://app.embed.ly/r' . '?api_key=' . $this->embedly_options['key'] .
-                '&path=analytics' . "'" . ');"';
+            echo ' href="https://app.embed.ly/r' . '?api_key=' . $this->embedly_options['key'] .
+                '&path=analytics' .'" ';
         } else {
             // how to fail gracefully here? (should always have key)
-            echo ' onclick="window.open(' . "'" . 'http://app.embed.ly' . "'" . ');" ';
+            echo ' href="http://app.embed.ly" ';
         }
     }
 
@@ -711,25 +710,16 @@ class WP_Embedly
                           <?php $this->get_welcome_message();  ?>
                         </div>
                         <div class="embedly-analytics">
-                          <ul>
-                            <li class="active-viewers">
-                              <h1 class="active-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
-                              <p>People are <strong>actively viewing</strong> your embeds!</p>
-                              <br/> <!-- is this acceptable? need to format my h tags for this page.-->
-                              <input class="embedly-button" type="button" 
-                                <?php $this->get_onclick_analytics_button(); ?>
-                                value="<?php _e('Realtime Analytics', 'embedly')?>"/>
-                            </li>
-                            <li>&nbsp;</li>
-                            <li>&nbsp;</li>
-                            <li class="historical-viewers">
-                              <h1 class="weekly-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
-                              <p>People have <strong>viewed</strong> an embed in the <strong>last week</strong>.</p>
-                            </li>
-                          <!-- </ul> -->
-
-                          <li><p>&nbsp;</p></li>
-                          </ul>
+                          <div class="active-viewers">
+                            <h1 class="active-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
+                            <p>People are <strong>actively viewing</strong> your embeds!</p>
+                            <br/> <!-- is this acceptable? need to format my h tags for this page.-->
+                            <a class="emb-button" target="_blank" <?php $this->get_onclick_analytics_button(); ?>><?php _e('Realtime Analytics', 'embedly')?></a>
+                          </div>
+                          <div class="historical-viewers">
+                            <h1 class="weekly-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
+                            <p>People have <strong>viewed</strong> an embed in the <strong>last week</strong>.</p>
+                          </div>
                         </div>
 
                         <!-- Begin 'Advanced Options' Section -->
@@ -885,14 +875,14 @@ class WP_Embedly
                           <!-- Create an embed.ly account button -->
                           <div class="embedly-create-account-btn-wrap">
                             <p><?php _e("Don't Have An Account?", "embedly"); ?></p>
-                            <input id='create-account-btn' class="embedly-button embedly-button-long" type="button"
+                            <input id='create-account-btn' class="emb-button emb-button-long" type="button"
                               value="<?php _e('GET STARTED HERE!', 'embedly')?>"/>
                             <p>&nbsp;</p>
                             <p><?php _e("Already have an Embedly account?", "embedly"); ?>
                                 <strong><a id="preexisting-user" href="https://app.embed.ly" target="_blank"><?php _e('Login', 'embedly'); ?></a></strong>
                             </p>
                           </div>
-                          <button id="connect-button" class="embedly-button embedly-button-long">
+                          <button id="connect-button" class="emb-button emb-button-long">
                             <div class="inner-connect-button">
                               <span class="inner-button-span">
                                 <img id="connect-btn-img" src=<?php echo EMBEDLY_URL . "/img/embedly-white-70-40.svg" ?>>
