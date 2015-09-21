@@ -556,9 +556,18 @@ class WP_Embedly
     /**
     * builds a <script> tag that globalizes the current card settings for preview init
     **/
-    function get_script_embedly_current_card() {
+    function get_script_embedly_config() {
         global $settings_map;
-        $current_card_script = "<script> var current_card = {";
+        $config_script = '<script> var EMBEDLY_CONFIG = {';
+        if($this->valid_key()) {
+          $config_script .= 'key: "' . $this->embedly_options['analytics_key'] . '",';
+        } else {
+          $config_script .= 'key: null",';
+        }
+
+        $config_script .= 'ajaxurl: "' . admin_url( 'admin-ajax.php', 'relative' ) . '",';
+
+        $config_script .= 'current: {';
         foreach ($settings_map as $setting => $api_param) {
           if(isset($this->embedly_options[$setting])) {
             $value= '';
@@ -567,11 +576,11 @@ class WP_Embedly
             } else {
               $value = $this->embedly_options[$setting];
             }
-            $current_card_script .= "'" . $setting . "': '" . $value . "',";
+            $config_script .= "'" . $setting . "': '" . $value . "',";
           }
         }
-        $current_card_script .= '}</script>';
-        echo $current_card_script;
+        $config_script .= '}}</script>';
+        echo $config_script;
     }
 
     /**
@@ -646,10 +655,10 @@ class WP_Embedly
         global $wpdb;
         ######## BEGIN FORM HTML #########
         ?>
-        <head>
-          <?php $this->get_script_embedly_current_card(); ?>
+        <div>
+          <?php $this->get_script_embedly_config(); ?>
           <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
-        <head>
+        </div>
           <div class="embedly-wrap">
             <div class="embedly-ui">
               <div class="embedly-input-wrapper">
@@ -692,14 +701,14 @@ class WP_Embedly
                         <hr>
 
                         <div class="advanced-wrapper dropdown-wrapper">
-                          <div class="advanced-header">
+                          <div class="advanced-header dropdown-header">
                             <a href="#"><h3>ADVANCED EMBED SETTINGS
                             <span id="advanced-arrow" class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
                           </div>
-                          <div class = "advanced-body">
+                          <div class = "advanced-body dropdown-body">
                             <p>Changing these settings will change how your future embeds appear.
                            </p></div>
-                          <div class="advanced-body">
+                          <div class="advanced-body dropdown-body">
                             <div class="advanced-selections">
                               <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
                               <ul>
@@ -778,13 +787,13 @@ class WP_Embedly
 
                         <!-- BEGIN TUTORIAL EXPANDER -->
                         <div class="tutorial-wrapper dropdown-wrapper">
-                          <div class="tutorial-header">
+                          <div class="tutorial-header dropdown-header">
                             <a href="#"><h3>TUTORIAL
                             <span id="tutorial-arrow" class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
                           </div>
-                          <div class="tutorial-body">
+                          <div class="tutorial-body dropdown-body">
                             <div class="embedly-tutorial-container">
-                              <a id="embedly-tutorial-card"
+                              <a id="embedly-tutorial-card" class="embedly-card"
                                 href="https://vimeo.com/62648882"
                                 data-card-controls="0" data-card-chrome="0"
                                 data-card-width="65%">
@@ -816,7 +825,7 @@ class WP_Embedly
                         <section>
                           <!-- Tutorial Video -->
                           <div class="embedly-tutorial-container">
-                            <a id="embedly-tutorial-card"
+                            <a id="embedly-tutorial-card" class="embedly-card"
                               href="https://vimeo.com/62648882"
                               data-card-controls="0" data-card-chrome="0"
                               data-card-width="65%">

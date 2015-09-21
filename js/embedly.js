@@ -1,3 +1,4 @@
+/* globals EMBEDLY_CONFIG:true, jQuery:true */
 // EMBEDLY ADMIN PAGE JAVASCRIPT
 // Copyright 2015 Embedly  (email : developer@embed.ly)
 
@@ -15,286 +16,57 @@
 // Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 // valid class prefixes for modulation of key state
-var valid_states = [
-  'invalid',
-  'valid',
-  'locked',
-  'unlocked',
-  'lock-control',
-];
 
+// To avoid poluting the global namespace, everything should be in here.
+(function($){
 
-// for mapping backend data to preview card data-card-* attrs
-var preview_map = {
-  'card_chrome': 'data-card-chrome',
-  'card_controls': 'data-card-controls',
-  'card_width': 'data-card-width',
-  'card_theme': 'data-card-theme',
-  'card_align': 'data-card-align',
-}
+  // for mapping backend data to preview card data-card-* attrs
+  var preview_map = {
+    'card_chrome': 'data-card-chrome',
+    'card_controls': 'data-card-controls',
+    'card_width': 'data-card-width',
+    'card_theme': 'data-card-theme',
+    'card_align': 'data-card-align'
+  };
 
-// sean's connect button integration
-var app = {
-  _ready: false,
-  _iframe: null,
-  _callbacks: []
-};
+  var utils = {};
 
-jQuery(document).ready(function($) {
-  // NEW STUFF:
-  $(".embedly-align-select-container  a").click(function(){
-    $(this).parent().addClass("selected").siblings().removeClass("selected");
-  });
-
-
-  // loads the analytics from narrate immediately,
-  // and then every N milliseconds
-  var load_actives = function() {
-    $.post(
-      ajaxurl,
-      {'action': 'embedly_analytics_active_viewers'},
-      function(response) {
-        var response = JSON.parse(response);
-        $(".embedly-analytics .active-viewers .active-count").html(response.active);
-    });
-  }
-  load_actives();
-  setInterval(load_actives, 10000);
-
-
-  var load_historical = function() {
-    $.post(
-      ajaxurl,
-      {'action': 'embedly_analytics_historical_viewers'},
-      function(response) {
-        var times = JSON.parse(response);
-        if(times["err"]) {
-          impr = "No Analytics";
-        } else {
-          var impr = 0;
-          times.forEach(function(item) {
-            impr += item.actions.load;
-          });
-        }
-        $(".embedly-analytics .historical-viewers .weekly-count").html(add_commas(impr));
-      });
-  }
-  load_historical();
-  setInterval(load_historical, 10000);
-
-
-  function add_commas(val){
+  utils.comma = function(val){
     while (/(\d+)(\d{3})/.test(val.toString())){
       val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
     }
     return val;
-  }
-
-
-  // When the alignment is selected, unselect other alignments
-  $('.align-icon').mousedown(function(e) {
-
-    $(this).children()[0].value = 'checked';
-    $(this).addClass('selected-align-select');
-
-    $.each($(this).parent().siblings(), function(name, obj) {
-      var span = $(obj).children()[0];
-      var hidden = $(span).children()[0];
-      hidden.value = 'unchecked';
-      $(span).removeClass('selected-align-select');
-    });
-
-    var align = $(this).attr('align-value');
-    update_option('card_align', align);
-  });
-
-  // minimal checkbox at the moment
-  $('.chrome-card-checkbox').click(function() {
-    update_option('card_chrome', $(this).is(':checked') ? 0 : 1);
-  });
-
-  $('.embedly-social-checkbox').click(function() {
-    update_option('card_controls', $(this).is(':checked') ? 1 : 0);
-    simulate_hover_on_preview_card();
-  });
-
-  $('.embedly-dark-checkbox').click(function() {
-    var checked = $(this).is(':checked');
-    value = checked ? 'dark' : 'light';
-    update_option('card_theme', value);
-
-    var $preview = $('.card-preview-container');
-    if(checked) {
-      $preview.addClass('dark-theme');
-    } else {
-      $preview.removeClass('dark-theme');
-    }
-  });
-
-  $('#embedly-max-width').focusout(function(e) {
-    valid_width = update_option('card_width', $(this).val());
-  });
-
-  $('#embedly-max-width').keypress(function(e) {
-    if(e.which == 13) {
-      valid_width = update_option('card_width', $(this).val());
-      return false;
-    }
-  });
-
-
-  // toggles advanced options
-  $('.advanced-wrapper .advanced-header').find('a[href="#"]').click(function(e) {
-    e.preventDefault();
-    $advanced = $('.advanced-wrapper .advanced-body');
-    $arrow = $('#advanced-arrow');
-
-    if($advanced.is(":visible")) {
-      $advanced.hide();
-      $arrow.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-right-alt2');
-    } else {
-      $advanced.show();
-      $arrow.removeClass('dashicons-arrow-right-alt2').addClass('dashicons-arrow-down-alt2')
-    }
-    return false;
-  });
-
-
-  // toggles tutorial
-  $('.tutorial-wrapper .tutorial-header').find('a[href="#"]').click(function(e) {
-    e.preventDefault();
-    $tutorial = $('.tutorial-wrapper .tutorial-body');
-    $arrow = $('#tutorial-arrow');
-
-    if($tutorial.is(":visible")) {
-      $tutorial.hide();
-      $arrow.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-right-alt2');
-    } else {
-      $tutorial.show();
-      $arrow.removeClass('dashicons-arrow-right-alt2').addClass('dashicons-arrow-down-alt2')
-    }
-    return false;
-  });
-
-
-  // sets the back direct link on the create account button
-  $('#create-account-btn').attr("href", "https://app.embed.ly/signup/wordpress?back=" + encodeURIComponent(window.location.toString()));
-
-
-  // sets the back direct link for pre-existing users
-  $('#preexisting-user').attr('href',
-    'https://app.embed.ly/wordpress?back=' +
-    encodeURIComponent(window.location.toString()));
-
-
-  // given a key, value pair for a card setting, performs
-  // ajax request to ajaxurl backend to update option
-  function update_option(key, value) {
-    $.post(
-      ajaxurl,
-      {
-        'action': 'embedly_update_option',
-        'key': key,
-        'value': value,
-      }, function(response) {
-        if( key == 'card_width' ) {
-          // if the input was invalid for width,
-          // the value will default to previous value
-          value = response;
-        }
-        update_preview(preview_map[key], String(value));
-      });
-
-    $('#embedly-settings-saved').show();
-    settings_remainder = 3;
-  }
-
-  var settings_remainder = 0;
-  var settings_timer = function() {
-    if(settings_remainder <= 0) {
-      settings_remainder = 0;
-      $('#embedly-settings-saved').fadeOut();
-    } else {
-      settings_remainder -= 1;
-    }
   };
-  (function() { setInterval(settings_timer, 1000); })();
 
+  utils.unparam = function(param){
+    var query = window.location.search.substring(1).split('&').reduce(function(obj, tuple){
+      var parts = tuple.split('=');
+      obj[parts[0]] = decodeURIComponent(parts[1]);
+      return obj;
+    }, {});
 
-  // grab a param from the url (to determine if back from embed.ly)
-  function getUrlParameter(sParam) {
-    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
-
-    for (i = 0; i < sURLVariables.length; i++) {
-        sParameterName = sURLVariables[i].split('=');
-
-        if (sParameterName[0] === sParam) {
-            return sParameterName[1] === undefined ? true : sParameterName[1];
-        }
+    if (param){
+      return query[param];
     }
-  }
-
-  function build_tutorial() {
-    if(typeof embedly != 'undefined') {
-      card = embedly.card($('#embedly-tutorial-card'));
-    } else {
-      setTimeout(build_tutorial, 100);
-    }
-
+    return query;
   };
-  build_tutorial();
 
-
-  function build_card() {
-    if(typeof embedly != 'undefined') {
-      // clone the template
-      clone = $('a.embedly-card-template').clone();
-      clone.removeClass('embedly-card-template').addClass('embedly-card-preview');
-      // remove the old card
-      $('.card-preview-container .embedly-card').remove();
-      // insert the new card template
-      clone.insertAfter('a.embedly-card-template')[0];
-      // cardify it.
-      card = embedly.card($('a.embedly-card-preview')[0]);
-    } else {
-      setTimeout(build_card, 100);
-    }
-  }
-  // forces first render of preview card.
-  // with current settings
-  build_card();
-
-
-  // function that updates the template card with the key value pair
-  function update_preview(key, value) {
-    // update the template first
-    $template = $('a.embedly-card-template').attr(key, value);
-    // then render the new card
-    build_card();
-  }
-
-
-  (function initialize_preview() {
-    Object.keys(preview_map).forEach(function(key) {
-      // current card is set globally server side.
-      // contains a map of "card_chrome" => "1" for all set options
-      // if set, update the template for the initial card.
-      if(current_card[key]) {
-        update_preview(preview_map[key], current_card[key]);
-      }
-    });
-    // when done, build it.
-    build_card();
-  })();
-
+  /*
+  * APP
+  * Connect button integration
+  */
+  var app = {
+    _ready: false,
+    _iframe: null,
+    _queue: false,
+    _callback: null
+  };
 
   app.init = function () {
     window.addEventListener('message', function (e) {
+      var data;
       try {
-        data = JSON.parse(e.data);
+        data = window.JSON.parse(e.data);
       } catch (err) {
         return false;
       }
@@ -311,7 +83,10 @@ jQuery(document).ready(function($) {
 
     iframe.addEventListener('load', function () {
       app._ready = true;
-      // app.connect();
+      // If we set a callback earlier, use it.
+      if (app._callback !== null){
+        app.connect(app._callback);
+      }
     });
 
     iframe.frameborder = '0';
@@ -329,115 +104,327 @@ jQuery(document).ready(function($) {
     if (app._callback) {
       app._callback.call(window, data);
     }
-  }
+  };
 
   // connection code
   app.connect = function (callback) {
     app._callback = callback;
-    msg = JSON.stringify({
+
+    if (app._ready === false){
+      return false;
+    }
+
+    var msg = window.JSON.stringify({
       method: 'connect'
     });
     app._iframe.contentWindow.postMessage(msg, '*');
   };
 
-  app.init();
-  function do_connect() {
-    // cleans html for user select:
-    // if the div is open already, close it., else continue:
-    if($('#embedly-which').is(":visible")) {
-      $('#embedly-which').hide();
-      return;
-    }
-    // if the user clicks multiple times, make sure div is empty
-    $('#embedly-which-list').empty();
 
-    app.connect(function (data) {
-      if (data.error === false) {
-        if (data.organizations.length === 1) {
-          var org = data.organizations[0]
-          connect_button.innerHTML = 'CONNECTED';
-          save_account(org.api_key, org.analytics_key, org.name);
-        } else {
-          // selects the div containing accounts to connect
-          var which = document.getElementById('embedly-which');
-          var whichlist = document.getElementById('embedly-which-list');
-          which.style.display = 'block';
+  /*
+  * ANALYTICS
+  * Everything that has to do with getting information from Embedly's Analytics Engines.
+  */
+  var analytics = {};
 
-          var selected = function (org) {
-            return function () {
-              connect_button.innerHTML = 'CONNECTED';
-              save_account(org.api_key, org.analytics_key, org.name);
-              which.style.display = 'none';
-              // clear html after selection in case of reselection
-              whichlist.innerHTML = "";
-            }
-          }
-
-          for (var i = 0; i < data.organizations.length; i++) {
-            var li = document.createElement('li');
-            var a = document.createElement('a');
-            org = data.organizations[i];
-            a.innerHTML = org.name.toUpperCase();
-            a.addEventListener('click', selected(org));
-            li.appendChild(a);
-            whichlist.appendChild(li);
-          }
-        }
-      } else {
-        // user is not currently logged in
-        alert("Please log in to your Embedly account first");
-      }
-    });
-  }
-
-  var connect_button = document.getElementById('connect-button');
-
-  $('#connect-button').click(function(e) {
-    var abra_kadabra = function(e) {
-      $('#connect-button').html("VISITING APP.EMBED.LY...");
-      window.open('https://app.embed.ly/wordpress?back=' +
-        encodeURIComponent(window.location.toString()));
-    }
-
-    abra_kadabra();
-  });
-
-
-  // checks if page was loaded after signing in from app.embed.ly/wordpress/*
-  (function check_backdirect() {
-    if(getUrlParameter('embedly') == 'back') {
-      $('#embedly-connect-failed-refresh').show();
-      $('.embedly-create-account-btn-wrap').hide();
-      initiate_connection();
-    }
-  })();
-
-
-  function initiate_connection() {
-    if(app._ready) {
-      do_connect();
-    } else {
-      setTimeout(initiate_connection, 100);
-    }
-  }
-
-  function save_account(api_key, analytics_key, name) {
+  // loads the analytics from narrate immediately,
+  // and then every N milliseconds
+  analytics.actives = function() {
     $.post(
-      ajaxurl,
+      EMBEDLY_CONFIG.ajaxurl,
+      {'action': 'embedly_analytics_active_viewers'},
+      function(response) {
+        response = window.JSON.parse(response);
+        $(".embedly-analytics .active-viewers .active-count").html(response.active);
+    });
+  };
+
+  analytics.historical = function() {
+    $.post(
+      EMBEDLY_CONFIG.ajaxurl,
+      {'action': 'embedly_analytics_historical_viewers'},
+      function(response) {
+        var times = window.JSON.parse(response), impr;
+        if(times["err"]) {
+          impr = "No Analytics";
+        } else {
+          impr = 0;
+          times.forEach(function(item) {
+            impr += item.actions.load;
+          });
+        }
+        $(".embedly-analytics .historical-viewers .weekly-count").html(utils.comma(impr));
+      });
+  };
+
+  // Start everything.
+  analytics.init = function(){
+    analytics.actives();
+    setInterval(analytics.actives, 10000);
+    analytics.historical();
+  };
+
+
+  /*
+  * SETTINGS
+  * Everything that has to do with the saving things to the Wordpress Backend.
+  */
+  var settings = {};
+
+  // given a key, value pair for a card setting, performs
+  // ajax request to ajaxurl backend to update option
+  settings.update = function (key, value) {
+    $.post(
+      EMBEDLY_CONFIG.ajaxurl,
+      {
+        'action': 'embedly_update_option',
+        'key': key,
+        'value': value
+      }, function(response) {
+        if(key === 'card_width') {
+          // if the input was invalid for width,
+          // the value will default to previous value
+          value = response;
+        }
+        settings.preview(preview_map[key], String(value));
+      });
+
+    $('#embedly-settings-saved').show();
+
+    // Fade out after 3 seconds.
+    setTimeout(function(){
+      $('#embedly-settings-saved').fadeOut();
+    }, 3000);
+  };
+
+  // Build the card.
+  settings.card = function() {
+    if (window.embedly){
+      // clone the template
+      var clone = $('a.embedly-card-template').clone();
+      clone.removeClass('embedly-card-template').addClass('embedly-card-preview');
+      // remove the old card
+      $('.card-preview-container .embedly-card').remove();
+      // insert the new card template
+      clone.insertAfter('a.embedly-card-template');
+      // cardify it.
+      window.embedly.card($('a.embedly-card-preview')[0]);
+    } else {
+      // when embedly loads build the card.
+      window.onEmbedlyReady = function(){
+        settings.card();
+      };
+    }
+  };
+
+  // function that updates the template card with the key value pair
+  settings.preview = function(key, value){
+    // update the template first
+    $('a.embedly-card-template').attr(key, value);
+    // then render the new card
+    settings.card();
+  };
+
+  // Save the account.
+  settings.save = function(api_key, analytics_key, name) {
+    $.post(
+      EMBEDLY_CONFIG.ajaxurl,
       {
         'action': 'embedly_save_account',
         'api_key': api_key,
         'analytics_key': analytics_key,
-        'org_name': name,
+        'org_name': name
       },
       function(response) {
-        if(response == 'true') {
+        if(response === 'true') {
           location.reload();
+        } else {
+          window.alert([
+            'We were unable to save your Embedly information your Wordpress ',
+            'install. Please email support@embed.ly and we will try to help.'].join(''));
         }
-        // should warn user if something went wrong here..
+
     });
-  }
-});
+  };
+
+  //Uses the app.connect to try to auth the user.
+  settings.connect = function(callback){
+    // cleans html for user select:
+    // if the div is open already, close it., else continue:
+    var $which = $('#embedly-which'),
+      $list = $('#embedly-which-list'),
+      $button = $('#connect-button');
+
+    if($which.is(":visible")) {
+      $which.hide();
+      return;
+    }
+    // if the user clicks multiple times, make sure div is empty
+    $list.empty();
+
+    app.connect(function (data) {
+      if (data.error === false) {
+        if (data.organizations.length === 1) {
+          // single organization. easy.
+          var org = data.organizations[0];
+          $button.text('CONNECTED');
+          settings.save(org.api_key, org.analytics_key, org.name);
+        } else {
+          $which.show();
+
+          var selected = function (org) {
+            return function () {
+              $button.text('CONNECTED');
+              settings.save(org.api_key, org.analytics_key, org.name);
+              // clear html after selection in case of reselection
+              $which.hide();
+              $list.empty();
+            };
+          };
+
+          data.organizations.forEach(function(org){
+            var $li = $('<li></li>'),
+              $a = $('<a>'+org.name.toUpperCase()+'</a>');
+
+            $a.on('click', selected(org));
+            $li.append($a);
+            $list.append($li);
+          });
+        }
+      } else {
+        // user is not currently logged in
+        if (callback){
+          callback({error: true});
+        } else {
+          window.alert("Please log in to your Embedly account first");
+        }
+      }
+    });
+  };
+
+  settings.init = function(){
+    Object.keys(preview_map).forEach(function(key) {
+      // current card is set globally server side.
+      // contains a map of "card_chrome" => "1" for all set options
+      // if set, update the template for the initial card.
+      if(EMBEDLY_CONFIG.current[key]) {
+        settings.preview(preview_map[key], EMBEDLY_CONFIG.current[key]);
+      }
+    });
+
+    settings.card();
+  };
+
+  $(document).ready(function($) {
+    // Set up the iframe;
+    app.init();
+
+    // Set up the analytics.
+    analytics.init();
+
+    // Set up the settings.
+    settings.init();
+
+    // All the code to deal with the advanced options.
+    $(".embedly-align-select-container  a").click(function(){
+      $(this).parent().addClass("selected").siblings().removeClass("selected");
+    });
+
+    // When the alignment is selected, unselect other alignments
+    $('.align-icon').mousedown(function() {
+      $(this).children()[0].value = 'checked';
+      $(this).addClass('selected-align-select');
+
+      $.each($(this).parent().siblings(), function(name, obj) {
+        var span = $(obj).children()[0];
+        var hidden = $(span).children()[0];
+        hidden.value = 'unchecked';
+        $(span).removeClass('selected-align-select');
+      });
+
+      var align = $(this).attr('align-value');
+      settings.update('card_align', align);
+    });
+
+    // minimal checkbox at the moment
+    $('.chrome-card-checkbox').click(function() {
+      settings.update('card_chrome', $(this).is(':checked') ? 0 : 1);
+    });
+
+    $('.embedly-social-checkbox').click(function() {
+      settings.update('card_controls', $(this).is(':checked') ? 1 : 0);
+    });
+
+    $('.embedly-dark-checkbox').click(function() {
+      var checked = $(this).is(':checked'),
+        value = checked ? 'dark' : 'light';
+
+      settings.update('card_theme', value);
+
+      var $preview = $('.card-preview-container');
+      if(checked) {
+        $preview.addClass('dark-theme');
+      } else {
+        $preview.removeClass('dark-theme');
+      }
+    });
+
+    $('#embedly-max-width').focusout(function() {
+      settings.update('card_width', $(this).val());
+    });
+
+    $('#embedly-max-width').keypress(function(e) {
+      if(e.which === 13) {
+        settings.update('card_width', $(this).val());
+        return false;
+      }
+    });
+
+    // toggles dropdowns
+    $('.dropdown-wrapper .dropdown-header a').click(function(){
+      var $wrapper = $(this).parents('.dropdown-wrapper'),
+        $body = $wrapper.find('.dropdown-body'),
+        $arrow = $wrapper.find('.dropdown-header a span');
+
+      if($body.is(":visible")) {
+        $body.hide();
+        $arrow.removeClass('dashicons-arrow-down-alt2').addClass('dashicons-arrow-right-alt2');
+      } else {
+        $body.show();
+        $arrow.removeClass('dashicons-arrow-right-alt2').addClass('dashicons-arrow-down-alt2');
+      }
+      return false;
+    });
+
+    // sets the back direct link on the create account button
+    $('#create-account-btn').attr("href", "https://app.embed.ly/signup/wordpress?back=" + encodeURIComponent(window.location.toString()));
 
 
+    // sets the back direct link for pre-existing users
+    $('#preexisting-user').attr('href',
+      'https://app.embed.ly/wordpress?back=' +
+      encodeURIComponent(window.location.toString()));
 
+
+    $('#connect-button').click(function() {
+      // First try to see if we are logged in, then move away from the plugin.
+      settings.connect(function(){
+        $('#connect-button').html("VISITING APP.EMBED.LY...");
+        window.location = [
+          'https://app.embed.ly/wordpress?back=',
+          encodeURIComponent(window.location.toString())
+        ].join('');
+      });
+      return false;
+    });
+
+    // checks if page was loaded after signing in from app.embed.ly/wordpress/*
+    if(utils.unparam('embedly') === 'back') {
+      $('#embedly-connect-failed-refresh').show();
+      $('.embedly-create-account-btn-wrap').hide();
+      settings.connect(function(){
+        //I'm pretty sure this should fail silently.
+      });
+    }
+  });
+})(jQuery);

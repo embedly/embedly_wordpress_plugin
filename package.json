@@ -1,0 +1,19 @@
+{
+  "name": "embedly-wordpress",
+  "version": "4.0.0",
+  "description": "Embedly Worpress Plugin",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/embedly/embedly_wordpress_plugin.git"
+  },
+  "author": "Embedly",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/embedly/embedly_wordpress_plugin/issues"
+  },
+  "homepage": "https://github.com/embedly/embedly_wordpress_plugin#readme",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.11.3"
+  }
+}
