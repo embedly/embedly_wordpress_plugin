@@ -172,7 +172,7 @@
   clear: both;
 }
 .embedly-create-account-btn-wrap {
-  page-break-inside: '';
+  /*page-break-inside: '';*/
 }
 .embedly-create-account-btn-wrap a {
   color: #4CC6E6;
@@ -182,6 +182,9 @@
 }
 #create-account-btn {
   font-size: 20px;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;         /* Opera/IE 8+ */
 }
 .emb-button {
   -webkit-appearance: none;
