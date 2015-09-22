@@ -562,7 +562,7 @@ class WP_Embedly
         if($this->valid_key()) {
           $config_script .= 'key: "' . $this->embedly_options['analytics_key'] . '",';
         } else {
-          $config_script .= 'key: "null",';
+          $config_script .= 'key: null,';
         }
 
         $config_script .= 'ajaxurl: "' . admin_url( 'admin-ajax.php', 'relative' ) . '",';
