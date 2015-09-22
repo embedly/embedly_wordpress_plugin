@@ -138,7 +138,7 @@
   margin-bottom: 30px;
 }
 .max-width-input-container p {
-  margin: 0;
+  margin-top: 12px;
 }
 .card-preview-container {
   padding-top: 30px;
@@ -348,18 +348,18 @@ span.selected-align-select:hover {
   border: 1px solid #36495e;
 }
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-  color:    #36495e;
+  color:    #808080;
 }
 :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-  color:    #36495e;
+  color:    #808080;
   opacity:  1;
 }
 ::-moz-placeholder { /* Mozilla Firefox 19+ */
-  color:    #36495e;
+  color:    #808080;
   opacity:  1;
 }
 :-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color:    #36495e;
+  color:    #808080;
 }
 
 .embedly-default-card-settings {

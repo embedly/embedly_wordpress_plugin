@@ -702,47 +702,48 @@ class WP_Embedly
 
                         <div class="advanced-wrapper dropdown-wrapper">
                           <div class="advanced-header dropdown-header">
-                            <a href="#"><h3>ADVANCED EMBED SETTINGS
+                            <a href="#"><h3><?php _e('ADVANCED EMBED SETTINGS', 'embedly'); ?>
                             <span id="advanced-arrow" class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
                           </div>
                           <div class = "advanced-body dropdown-body">
-                            <p>Changing these settings will change how your future embeds appear.
+                            <p><?php _e('Changing these settings will change how your future embeds appear.', 'embedly');?>
                            </p></div>
                           <div class="advanced-body dropdown-body">
                             <div class="advanced-selections">
                               <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
                               <ul>
                                 <li>
-                                  <h3>DESIGN</h3>
+                                  <h3><?php _e('DESIGN', 'embedly');?></h3>
                                   <input class='chrome-card-checkbox' type='checkbox' value='checked' name='minimal' <?php
                                     // checked( $this->embedly_options['card_chrome'], !1); // ¯\_(ツ)_/¯ -php
                                   checked( @$this->embedly_options["card_chrome"] ?: false, false);
-                                    ?> /> MINIMAL
+                                    ?> /> <?php _e('MINIMAL', 'embedly'); ?>
                                 </li>
                                 <li>
-                                  <h3>TEXT</h3>
+                                  <h3><?php _e('TEXT', 'embedly'); ?></h3>
                                   <input class='embedly-dark-checkbox' type='checkbox' value='checked' name='card_dark' <?php
                                     checked( $this->embedly_options['card_theme'], 'dark');
-                                    ?> /> LIGHT TEXT
+                                    ?> /> <?php _e('LIGHT TEXT', 'embedly'); ?>
                                 </li>
                                 <li>
-                                  <h3>BUTTONS</h3>
+                                  <h3><?php _e('BUTTONS', 'embedly'); ?></h3>
                                   <input class='embedly-social-checkbox' type='checkbox' value='checked' name='card_controls' <?php
                                     checked( $this->embedly_options['card_controls'], 1);
-                                    ?> /> SHARING BUTTONS
+                                    ?> /> <?php _e('SHARING BUTTONS', 'embedly'); ?>
                                 </li>
 
                                 <li><!-- Width Input Area -->
                                   <div class="max-width-input-container">
-                                    <h3>WIDTH</h3>
-                                    <input id='embedly-max-width' type="text" name="card_width" placeholder="example: 400px"
+                                    <h3><?php _e('WIDTH', 'embedly'); ?></h3>
+                                    <input id='embedly-max-width' type="text" name="card_width" placeholder="<?php _e('Responive if left blank', 'embedly'); ?>"
                                       <?php $this->get_value_embedly_max_width(); ?>/>
-                                    <p><i>Responsive if left blank</i></p>
+                                      <p><i><?php _e('Example: 400px or 80%.', 'embedly'); ?></i></p>
+                                      <!-- <p><i><?php _e('Responsive if left blank', 'embedly'); ?></i></p> -->
                                   </div>
                                 </li>
                                 <li>
                                   <!-- Card Alignment Options -->
-                                  <h3>ALIGNMENT</h3>
+                                  <h3><?php _e('ALIGNMENT', 'embedly'); ?></h3>
                                   <div class="embedly-align-select-container embedly-di">
                                     <ul class="align-select">
                                       <?php
@@ -774,7 +775,7 @@ class WP_Embedly
                             </div>
                             <!-- preview card.. work in progress -->
                             <div <?php $this->get_class_card_preview_container(); ?>>
-                              <h3>CARD PREVIEW
+                              <h3><?php _e('CARD PREVIEW', 'embedly'); ?>
                                 <span id="embedly-settings-saved"><i><?php _e('settings saved', 'embedly'); ?> </i></span>
                               </h3>
                               <a class="embedly-card-template"
@@ -788,7 +789,7 @@ class WP_Embedly
                         <!-- BEGIN TUTORIAL EXPANDER -->
                         <div class="tutorial-wrapper dropdown-wrapper">
                           <div class="tutorial-header dropdown-header">
-                            <a href="#"><h3>TUTORIAL
+                            <a href="#"><h3><?php _e('TUTORIAL', 'embedly'); ?>
                             <span id="tutorial-arrow" class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
                           </div>
                           <div class="tutorial-body dropdown-body">
@@ -821,7 +822,7 @@ class WP_Embedly
                     <div class="embedly_key_form embedly-ui-key-form">
                       <div class="welcome-page-body">
                         <!-- HERO TEXT -->
-                        <h1>Embed content from any site!</h1>
+                        <h1><?php _e('Embed content from any site!', 'embedly'); ?></h1>
                         <section>
                           <!-- Tutorial Video -->
                           <div class="embedly-tutorial-container">
@@ -839,7 +840,7 @@ class WP_Embedly
                             <p>
                               <span id="twitter-icon" class="dashicons dashicons-twitter"></span>
                               Now with Twitter support! In addition to the default Wordpress embedding,
-                              you get embedding for any article, gfycat, storify, and twitch.  See our growing
+                              you get embedding for any article, gfycat, storify, and twitch.  See our
                               <a href="http://embed.ly/providers" target="_blank"><strong>growing list of embed providers</strong>.</a>
                             </p>
                               <p>Getting started? <strong>Learn more above</strong> about embedly cards for Wordpress.</p>
