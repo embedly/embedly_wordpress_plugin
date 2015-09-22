@@ -797,7 +797,7 @@ class WP_Embedly
                               <a id="embedly-tutorial-card" class="embedly-card"
                                 href="https://vimeo.com/62648882"
                                 data-card-controls="0" data-card-chrome="0"
-                                data-card-width="65%">
+                                data-card-width="65%" data-card-key="5ea8d38b0bc6495d8906e33dde92fe48">
                               </a>
                             </div>
                           </div>
@@ -829,7 +829,7 @@ class WP_Embedly
                             <a id="embedly-tutorial-card" class="embedly-card"
                               href="https://vimeo.com/62648882"
                               data-card-controls="0" data-card-chrome="0"
-                              data-card-width="65%">
+                              data-card-width="65%" data-card-key="5ea8d38b0bc6495d8906e33dde92fe48">
                             </a>
                           </div>
                         </section>
