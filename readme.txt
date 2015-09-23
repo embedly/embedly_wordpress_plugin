@@ -9,22 +9,22 @@ Stable tag: 4.0.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-The Embedly Plugin extends Wordpress's automatic embed feature to give your blog more media types, video analytics, and style options.
+The Embedly Plugin extends Wordpress's automatic embed feature to give your blog more media types, video analytics, recommendation, and style options.
 
 == Description ==
 
-In addition to the default Wordpress embedding, you get previews for any article,
+Enhance the default Wordpress embedding to get previews for any article,
 including your own blog posts. You also get embeds for Gfycat, Twitch, Google
 Maps, and Embedly’s growing list of [300+ supported
 providers](http://embed.ly/providers).
 
-You can customize the style of the embeds to optimize for darker WP themes,
-change alignment, and set the width. Social buttons can be added around the embeds
-to make it easier to share the embeds from your blog posts.
+You can customize the style of the embeds, to optimize for darker WP themes,
+alignment, and width. In addition, social buttons can be added around the embeds
+to make it easier to share content from your blog posts.
 
-For most music and video player embeds (YouTube, Vimeo, Instagram, SoundCloud)
-you can receive analytics on viewer behaviors. See which videos are actually
-watched and how far your readers watch them.
+For most music and video players embeds (YouTube, Vimeo, Instagram, SoundCloud)
+you can receive analytics on viewer behaviors. See which videos are being
+watched and for how long.
 
 
 Using it is as simple as the default Wordpress embedding. Embed media by pasting its URL in a single line when writing a post:
@@ -50,17 +50,24 @@ editor.
 Using the Plugin Manager
 
 1.
-Click Plugins
+Click Plugins in the Wordpress Dashboard sidebar.
 1.
-Click Add New
+Click Add New.
 1.
-Search for Embedly
+Search for Embedly.
 1.
 Click Install
 1.
 Click Install Now
 1.
 Click Activate Plugin
+1.
+Go through the sign up flow. Either sign in with Embedly or sign up for an
+account. If you have an account, you’re set to start embedding. If you’re new,
+you’ll be taken through a quick sign up session and redirected back to the
+plugin.
+1.
+Create a new post and paste a URL. It will automatically turn into an embed.
 
 
 
@@ -70,6 +77,8 @@ Manually
 Upload `embedly` to the `/wp-content/plugins/` directory
 1.
 Activate the plugin through the 'Plugins' menu in WordPress
+1.
+Go through the sign up flow as described above.
 
 
 
@@ -81,6 +90,8 @@ Navigate to My Sites -> Network Admin
 Follow Steps 1-5 in Using the Plugin Manager setup above, `Do not Network Activate`
 1.
 Go to each site's dashboard and activate Embedly in Plugins section
+1.
+Go through the sign up flow as described above.
 
 
 
@@ -93,35 +104,26 @@ Is this plugin for me?
 Yes
 
 =
-
 Where do I get a key?
 =
 
-You can sign up for a free or paid plan by clicking [here](https://app.embed.ly).
+You can obtain a key when sign up for an Embedly account through the plugin. You
+can also get your key anytime by going to your [Embedly
+account](http://app.embed.ly).
 
 =
-
 How do I embed "any" URL?
 =
 
-In the post editor click the Embedly icon and add your URL.
+In the post editor, once the plugin is installed, paste in the URL you are
+trying to embed.
 
 =
-
 Do I need a key?
 =
 
-You need a key to embed "any" url, otherwise the plugin will
-only be available for these [providers](http://embed.ly/providers).
-
-=
-
-What does a paid product give me?
-=
-
-We will be providing analytics on how your embeds are doing
-including plays, duration watched, hovers, and other engagement
-metrics. This is currently not available in the plugin.
+Yes you will need a key, which can be found in your Embedly account under API
+and then Key.
 
 =
 What is your support email?
@@ -136,15 +138,52 @@ Do you support multi-site?
 Yes, see steps above to install for multi-site.
 Note: You will need to activate Embedly for each site.
 
+=
+Can the width and alignment be changed?
+=
+Yes! Both the width and alignment can be changed for embeds that use the plugin.
+You can make these adjustments under Advanced Embed Settings in the Embedly
+plugin settings in your Wordpress Dashboard.
+
+=
+Can I change the CSS of the embeds?
+=
+
+No, but you have a few options in styling under the Advanced Embed Settings section of
+the Embedly plugin dashboard.
+
+=
+What options are there for styling the embeds?
+=
+
+You can change the width, alignment, and adjust the cards to work better for
+darker themes.
+
+=
+How do I find more analytics?
+=
+
+You can view the full set of analytics on your embed by going to your account
+dashboard.
+
+=
+How does this affect my SEO?
+=
+
+The embeds from the Embedly Wordpress plugin include title and description meta
+information that can provide relevant information to search engines about the
+embeds to boost SEO.
 
 == Screenshots ==
 
 
 1. Admin Console.
 
-2. Embedly Post Editor.
+2. Advanced Embed Settings.
 
-3. Sample Post.
+3. Writing a post and embedding.
+
+4. Sample Post.
 
 
 
