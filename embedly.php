@@ -727,7 +727,7 @@ class WP_Embedly
                           <div class="tutorial-body dropdown-body">
                             <div class="embedly-tutorial-container">
                               <a id="embedly-tutorial-card" class="embedly-card"
-                                href="https://vimeo.com/62648882"
+                                href="https://vimeo.com/140323372"
                                 data-card-controls="0" data-card-chrome="0"
                                 data-card-width="65%" data-card-key="5ea8d38b0bc6495d8906e33dde92fe48">
                               </a>
@@ -759,7 +759,7 @@ class WP_Embedly
                           <!-- Tutorial Video -->
                           <div class="embedly-tutorial-container">
                             <a id="embedly-tutorial-card" class="embedly-card"
-                              href="https://vimeo.com/62648882"
+                              href="https://vimeo.com/140323372"
                               data-card-controls="0" data-card-chrome="0"
                               data-card-width="65%" data-card-key="5ea8d38b0bc6495d8906e33dde92fe48">
                             </a>
