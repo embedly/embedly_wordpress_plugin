@@ -667,7 +667,7 @@ class WP_Embedly
                                 <li><!-- Width Input Area -->
                                   <div class="max-width-input-container">
                                     <h3><?php _e('WIDTH', 'embedly'); ?></h3>
-                                    <input id='embedly-max-width' type="text" name="card_width" placeholder="<?php _e('Responive if left blank', 'embedly'); ?>"
+                                    <input id='embedly-max-width' type="text" name="card_width" placeholder="<?php _e('Responsive if left blank', 'embedly'); ?>"
                                       <?php $this->get_value_embedly_max_width(); ?>/>
                                       <p><i><?php _e('Example: 400px or 80%.', 'embedly'); ?></i></p>
                                       <!-- <p><i><?php _e('Responsive if left blank', 'embedly'); ?></i></p> -->
