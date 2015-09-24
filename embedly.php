@@ -358,7 +358,7 @@ class WP_Embedly
             add_filter('oembed_providers', create_function('', 'return array();'));
             // add embedly provider
             $provider_uri = $this->build_uri_with_options();
-            wp_oembed_add_provider('#.*#i', $provider_uri, true);
+            wp_oembed_add_provider('#https?://[^\s]+#i', $provider_uri, true);
         }
     }
 
