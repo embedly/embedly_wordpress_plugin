@@ -121,15 +121,7 @@ class WP_Embedly
             $this,
             'embedly_notify_user_icon'
         ));
-        // ajax requests
-        add_action('wp_ajax_embedly_analytics_active_viewers', array(
-            $this,
-            'embedly_ajax_get_active_viewers'
-        ));
-        add_action('wp_ajax_embedly_analytics_historical_viewers', array(
-            $this,
-            'embedly_ajax_get_historical_viewers'
-        ));
+
         add_action('wp_ajax_embedly_update_option', array(
             $this,
             'embedly_ajax_update_option'
@@ -208,66 +200,6 @@ class WP_Embedly
         }
 
         wp_die();
-    }
-
-    /**
-    * retrieves the historical viewership numbers with narrate
-    **/
-    function embedly_ajax_get_historical_viewers()
-    {
-        if ($this->valid_key()) {
-            $end = date("Ymd");
-            $lastweek = time() - (7 * 24 * 60 * 60);
-            $start = date("Ymd", $lastweek);
-            $analytics_key = $this->embedly_options['analytics_key'];
-
-            $historical_url =
-                "https://t.embed.ly/2/analytics/stats?".
-                "start=" . $start .
-                "&end=" . $end .
-                "&key=" . $analytics_key;
-
-            $response = wp_remote_get($historical_url);
-            if( is_array($response) ) {
-                $header = $response['headers'];
-                $body = $response['body'];
-                if(empty($body)) {
-                    echo '{"err": true}';
-                } else {
-                    echo $body;
-                }
-                wp_die();
-            }
-        }
-        echo '{"err": true}';
-        wp_die();
-    }
-
-    /**
-    * Makes a call for realtime analytics, and returns data to front end
-    **/
-    function embedly_ajax_get_active_viewers()
-    {
-        if ($this->valid_key()) {
-            $narrate_url = "https://narrate.embed.ly/1/series?key=" .
-                $this->embedly_options['analytics_key'];
-
-            $response = wp_remote_get($narrate_url);
-            if( is_array($response) ) {
-                $header = $response['headers'];
-                $body = $response['body'];
-                if(empty($body)) {
-                    echo '{"active": "-"}';
-                } else {
-                    echo $body;
-                }
-            }
-            wp_die();
-        } else {
-            // invalid key, should never get here.
-            echo '{"active": "-"}';
-            wp_die();
-        }
     }
 
     /**
@@ -560,9 +492,9 @@ class WP_Embedly
         global $settings_map;
         $config_script = '<script> var EMBEDLY_CONFIG = {';
         if($this->valid_key()) {
-          $config_script .= 'key: "' . $this->embedly_options['analytics_key'] . '",';
+          $config_script .= 'analyticsKey: "' . $this->embedly_options['analytics_key'] . '",';
         } else {
-          $config_script .= 'key: null,';
+          $config_script .= 'analyticsKey: null,';
         }
 
         $config_script .= 'ajaxurl: "' . admin_url( 'admin-ajax.php', 'relative' ) . '",';

@@ -51,6 +51,25 @@
     return query;
   };
 
+
+  // Returns 'YYYYMMDD' for now, or and offset in days.
+  utils.date = function(days){
+    var now = new Date(),
+      utc = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+
+    if (days){
+      utc.setDate(utc.getDate() + days);
+    }
+
+    var str = utc.getFullYear().toString();
+
+    return str + $.map([utc.getMonth(), utc.getDate()], function(v){
+      return ("00" + v).slice(-2);
+    }).join('');
+  };
+
+  window.utils = utils;
+
   /*
   * APP
   * Connect button integration
@@ -127,34 +146,38 @@
   */
   var analytics = {};
 
-  // loads the analytics from narrate immediately,
-  // and then every N milliseconds
+  // loads the analytics from narrate.
   analytics.actives = function() {
-    $.post(
-      EMBEDLY_CONFIG.ajaxurl,
-      {'action': 'embedly_analytics_active_viewers'},
-      function(response) {
-        response = window.JSON.parse(response);
+    if (EMBEDLY_CONFIG.analyticsKey){
+      $.getJSON('https://narrate.embed.ly/1/key?' + $.param({
+        key: EMBEDLY_CONFIG.analyticsKey
+      })).then(function(response){
         $(".embedly-analytics .active-viewers .active-count").html(response.active);
-    });
+      });
+    }
   };
 
+  // Number of impressions in the last week.
   analytics.historical = function() {
-    $.post(
-      EMBEDLY_CONFIG.ajaxurl,
-      {'action': 'embedly_analytics_historical_viewers'},
-      function(response) {
-        var times = window.JSON.parse(response), impr;
-        if(times["err"]) {
-          impr = "No Analytics";
-        } else {
-          impr = 0;
-          times.forEach(function(item) {
-            impr += item.actions.load;
-          });
+    if (EMBEDLY_CONFIG.analyticsKey){
+      var start = utils.date(-7),
+        end = utils.date(1);
+
+      $.getJSON('https://api.embed.ly/2/analytics/stats?' + $.param({
+        key: EMBEDLY_CONFIG.analyticsKey,
+        start: start,
+        end: end
+      })).then(function(response){
+        var value = '-';
+        if (response){
+          value = response.reduce(function(sum, entry){
+            return sum + entry.actions.load;
+          }, 0);
+          value = utils.comma(value);
         }
-        $(".embedly-analytics .historical-viewers .weekly-count").html(utils.comma(impr));
+         $(".embedly-analytics .historical-viewers .weekly-count").html(value);
       });
+    }
   };
 
   // Start everything.
