@@ -9,7 +9,7 @@ Stable tag: 4.0.0
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-The Embedly Plugin extends Wordpress's automatic embed feature to give your blog more media types, video analytics, recommendation, and style options.
+The Embedly Plugin extends Wordpress's auto embed feature to give your blog more media types, video analytics, recommendation, and style options.
 
 == Description ==
 
@@ -40,8 +40,7 @@ Using it is as simple as the default Wordpress embedding. Embed media by pasting
     http://azizisbored.tumblr.com/post/558456193/mtv-movie-awards-promo-who-is-aziz-ansari
 
 The plugin automatically displays an embed of the media in the Wordpress post
-editor.
-
+editor (for WP 4.0+).
 
 
 == Installation ==
@@ -186,15 +185,20 @@ embeds to boost SEO.
 4. Sample Post.
 
 
-
 == Changelog ==
+
+= 4.0 =
+
+* Removed Embedly TinyMCE Button.
+* Added Editor Preview URL functionality for all URLS (WP v4.0+)
+* Redesigned Embedly Admin page
+* All embeds will be generated as Embedly Cards
 
 = 3.2 =
 
 * Embedly TinyMCE dialog and dependencies managed server side.
 * Refactor code to use class structure.
 * Clean up deprecated SQL generation to make compliant with WP3.6 and above.
-
 
 = 3.1.3 =
 
