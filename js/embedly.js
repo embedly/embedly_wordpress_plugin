@@ -442,7 +442,7 @@
     });
 
     // checks if page was loaded after signing in from app.embed.ly/wordpress/*
-    if(utils.unparam('embedly') === 'back') {
+    if(utils.unparam('embedly') === 'back' && !EMBEDLY_CONFIG.analyticsKey) {
       $('#embedly-connect-failed-refresh').show();
       $('.embedly-create-account-btn-wrap').hide();
       settings.connect(function(){
