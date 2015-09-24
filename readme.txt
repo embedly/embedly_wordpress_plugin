@@ -48,49 +48,46 @@ editor (for WP 4.0+).
 
 Using the Plugin Manager
 
-1.
-Click Plugins in the Wordpress Dashboard sidebar.
-1.
-Click Add New.
-1.
-Search for Embedly.
-1.
-Click Install
-1.
-Click Install Now
-1.
-Click Activate Plugin
-1.
-Go through the sign up flow. Either sign in with Embedly or sign up for an
+1. Click Plugins in the Wordpress Dashboard sidebar.
+
+1. Click Add New.
+
+1. Search for Embedly.
+
+1. Click Install
+
+1. Click Install Now
+
+1. Click Activate Plugin
+
+1. Go through the sign up flow. Either sign in with Embedly or sign up for an
 account. If you have an account, you’re set to start embedding. If you’re new,
 you’ll be taken through a quick sign up session and redirected back to the
 plugin.
-1.
-Create a new post and paste a URL. It will automatically turn into an embed.
+
+1. Create a new post and paste a URL. It will automatically turn into an embed.
 
 
 
 Manually
 
-1.
-Upload `embedly` to the `/wp-content/plugins/` directory
-1.
-Activate the plugin through the 'Plugins' menu in WordPress
-1.
-Go through the sign up flow as described above.
+1. Upload `embedly` to the `/wp-content/plugins/` directory
+
+1. Activate the plugin through the 'Plugins' menu in WordPress
+
+1. Go through the sign up flow as described above.
 
 
 
 Multi-Site
 
-1.
-Navigate to My Sites -> Network Admin
-1.
-Follow Steps 1-5 in Using the Plugin Manager setup above, `Do not Network Activate`
-1.
-Go to each site's dashboard and activate Embedly in Plugins section
-1.
-Go through the sign up flow as described above.
+1. Navigate to My Sites -> Network Admin
+
+1. Follow Steps 1-5 in Using the Plugin Manager setup above, `Do not Network Activate`
+
+1. Go to each site's dashboard and activate Embedly in Plugins section
+
+1. Go through the sign up flow as described above.
 
 
 
