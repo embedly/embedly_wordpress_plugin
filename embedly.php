@@ -4,7 +4,7 @@ Plugin Name: Embedly
 Plugin URI: http://embed.ly/wordpress
 Description: The Embedly Plugin extends Wordpress's automatic embed feature, allowing bloggers to Embed from 300+ services and counting.
 Author: Embed.ly Inc
-Version: 4.0.1
+Version: 4.0.2
 Author URI: http://embed.ly
 License: GPL2
 
@@ -647,8 +647,8 @@ class WP_Embedly
                                 <li>
                                   <h3><?php _e('DESIGN', 'embedly');?></h3>
                                   <input class='chrome-card-checkbox' type='checkbox' value='checked' name='minimal' <?php
-                                    // checked( $this->embedly_options['card_chrome'], !1); // ¯\_(ツ)_/¯ -php
-                                  checked( @$this->embedly_options["card_chrome"] ?: false, false);
+                                    checked( $this->embedly_options['card_chrome'], !1); // ¯\_(ツ)_/¯ -php
+                                    // checked( @$this->embedly_options["card_chrome"] ?: false, false); does not work below PHP v5.3
                                     ?> /> <?php _e('MINIMAL', 'embedly'); ?>
                                 </li>
                                 <li>
@@ -728,7 +728,7 @@ class WP_Embedly
                             <div class="embedly-tutorial-container">
                               <a id="embedly-tutorial-card" class="embedly-card"
                                 href="https://vimeo.com/140323372"
-                                data-card-controls="0" data-card-chrome="0"
+                                data-card-controls="0" data-card-chrome="0" data-card-recommend="0"
                                 data-card-width="65%" data-card-key="5ea8d38b0bc6495d8906e33dde92fe48">
                               </a>
                             </div>
@@ -760,7 +760,7 @@ class WP_Embedly
                           <div class="embedly-tutorial-container">
                             <a id="embedly-tutorial-card" class="embedly-card"
                               href="https://vimeo.com/140323372"
-                              data-card-controls="0" data-card-chrome="0"
+                              data-card-controls="0" data-card-chrome="0" data-card-recommend="0"
                               data-card-width="65%" data-card-key="5ea8d38b0bc6495d8906e33dde92fe48">
                             </a>
                           </div>
