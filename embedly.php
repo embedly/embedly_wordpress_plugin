@@ -142,6 +142,12 @@ class WP_Embedly
             $this,
             'add_embedly_providers'
         ));
+
+        // throws platform.js and options into the head of the document.
+        add_action('wp_head',  array(
+            $this,
+            'add_frontend_embedly_config'
+        ));
     }
 
     /**
@@ -513,6 +519,30 @@ class WP_Embedly
         }
         $config_script .= '}}</script>';
         echo $config_script;
+    }
+
+    function add_frontend_embedly_config(){
+      global $settings_map;
+      $overrides = '';
+      foreach ($settings_map as $setting => $api_param) {
+        if(isset($this->embedly_options[$setting])) {
+          $value= '';
+          if( is_bool($this->embedly_options[$setting]) ) {
+            $value = $this->embedly_options[$setting] ? '1': '0';
+          } else {
+            $value = $this->embedly_options[$setting];
+          }
+          $overrides .= explode('_', $setting)[1] . ": '" . $value . "',";
+        }
+      }
+
+      echo '<script src="//cdn.embedly.com/widgets/platform.js"></script>
+        <script>
+          embedly("defaults", {cards: {
+              override: true,
+              '.$overrides.'
+          }});
+        </script>';
     }
 
     /**
