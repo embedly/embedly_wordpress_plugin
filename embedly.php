@@ -532,7 +532,8 @@ class WP_Embedly
           } else {
             $value = $this->embedly_options[$setting];
           }
-          $overrides .= explode('_', $setting)[1] . ": '" . $value . "',";
+          $parts = explode('_', $setting);
+          $overrides .= $parts[1] . ": '" . $value . "',";
         }
       }
 
