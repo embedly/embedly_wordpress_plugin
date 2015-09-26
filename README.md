@@ -4,7 +4,7 @@ Updating the plugin:
 
 1. Ensure the github repo readme.txt and embedly.php are showing the correct version of the plugin (i.e. from 4.0.1 -> 4.0.2, this version needs to be reflected in these two files)
 
-2 in the svn repo, `svn up` to update, if necessary
+2. in the svn repo, `svn up` to update, if necessary
 
 3. `cp github_repo_dir/* svn_repo_dir/trunk/` (remove any .git or other unnecessary files)
 
