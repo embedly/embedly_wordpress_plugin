@@ -22,4 +22,4 @@ Updating the plugin:
 
 10. Check changes again with `svn stat` and `svn diff` if necessary
 
-11. `svn ci -m "tagging version X.Y.Z" --username USERNAME --author AUTHOR`
+11. `svn ci -m "tagging version X.Y.Z" --username USERNAME --password PASSWORD`
