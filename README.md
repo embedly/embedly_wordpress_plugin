@@ -6,7 +6,7 @@ Updating the plugin:
 
 2. in the svn repo, `svn up` to update, if necessary
 
-3. `cp github_repo_dir/* svn_repo_dir/trunk/` (remove any .git or other unnecessary files)
+3. `cp github_repo_dir/* svn_repo_dir/trunk/` (remove any .git or other unnecessary files (like this 'README.md' file!))
 
 4. `cd svn_repo_dir/trunk`
 
@@ -18,7 +18,7 @@ Updating the plugin:
 
 8. make a new tag `mkdir tags/X.Y.Z && svn add tags/X.Y.Z`
 
-9. svn-copy the trunk files `svn cp /trunk/* tags/X.Y.Z/`
+9. svn-copy the trunk files `svn cp trunk/* tags/X.Y.Z/`
 
 10. Check changes again with `svn stat` and `svn diff` if necessary
 
