@@ -158,33 +158,33 @@
   };
 
   // Number of impressions in the last week.
-  analytics.historical = function() {
-    if (EMBEDLY_CONFIG.analyticsKey){
-      var start = utils.date(-7),
-        end = utils.date(1);
+  // analytics.historical = function() {
+  //   if (EMBEDLY_CONFIG.analyticsKey){
+  //     var start = utils.date(-7),
+  //       end = utils.date(1);
 
-      $.getJSON('https://api.embed.ly/2/analytics/stats?' + $.param({
-        key: EMBEDLY_CONFIG.analyticsKey,
-        start: start,
-        end: end
-      })).then(function(response){
-        var value = '-';
-        if (response){
-          value = response.reduce(function(sum, entry){
-            return sum + entry.actions.load;
-          }, 0);
-          value = utils.comma(value);
-        }
-         $(".embedly-analytics .historical-viewers .weekly-count").html(value);
-      });
-    }
-  };
+  //     $.getJSON('https://api.embed.ly/2/analytics/stats?' + $.param({
+  //       key: EMBEDLY_CONFIG.analyticsKey,
+  //       start: start,
+  //       end: end
+  //     })).then(function(response){
+  //       var value = '-';
+  //       if (response){
+  //         value = response.reduce(function(sum, entry){
+  //           return sum + entry.actions.load;
+  //         }, 0);
+  //         value = utils.comma(value);
+  //       }
+  //        $(".embedly-analytics .historical-viewers .weekly-count").html(value);
+  //     });
+  //   }
+  // };
 
   // Start everything.
   analytics.init = function(){
     analytics.actives();
     setInterval(analytics.actives, 10000);
-    analytics.historical();
+    // analytics.historical();
   };
 
 

@@ -630,10 +630,10 @@ class WP_Embedly
                             <br/> <!-- is this acceptable? need to format my h tags for this page.-->
                             <a class="emb-button" target="_blank" <?php $this->get_onclick_analytics_button(); ?>><?php _e('Realtime Analytics', 'embedly')?></a>
                           </div>
-                          <div class="historical-viewers">
+						  <!-- <div class="historical-viewers">
                             <h1 class="weekly-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
                             <p>People have <strong>viewed</strong> an embed in the <strong>last week</strong>.</p>
-                          </div>
+                          </div> -->
                         </div>
 
                         <!-- Begin 'Advanced Options' Section -->
@@ -712,7 +712,7 @@ class WP_Embedly
                                 </li>
                               </ul>
                             </div>
-                            <!-- preview card.. work in progress -->
+                            <!-- preview card -->
                             <div <?php $this->get_class_card_preview_container(); ?>>
                               <h3><?php _e('CARD PREVIEW', 'embedly'); ?>
                                 <span id="embedly-settings-saved"><i><?php _e('settings saved', 'embedly'); ?> </i></span>
