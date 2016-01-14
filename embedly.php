@@ -111,9 +111,15 @@ class WP_Embedly
             $this,
             'embedly_add_settings_page'
         ));
+
         add_action('admin_print_styles', array(
             $this,
             'embedly_enqueue_admin'
+        ));
+
+        add_action('admin_enqueue_scripts', array(
+            $this,
+            'embedly_localize_config'
         ));
 
         // action notifies user on admin menu if they don't have a key
@@ -141,12 +147,6 @@ class WP_Embedly
         add_action('plugins_loaded', array(
             $this,
             'add_embedly_providers'
-        ));
-
-        // throws platform.js and options into the head of the document.
-        add_action('wp_head',  array(
-            $this,
-            'add_frontend_embedly_config'
         ));
     }
 
@@ -275,13 +275,50 @@ class WP_Embedly
             wp_enqueue_style('dashicons');
             wp_enqueue_style('embedly_admin_styles', EMBEDLY_URL . '/css/embedly-admin.css');
             wp_enqueue_style('embedly-fonts', $protocol . '://embed.ly/static/styles/fontspring-stylesheet.css');
-            // controls some of the functionality of the settings page, will need to go through embedly.js at some point
-            wp_enqueue_script('embedly_admin_scripts', EMBEDLY_URL . '/js/embedly.js', array(
-                'jquery'
-            ), '1.0', true);
+            wp_enqueue_script('platform', '//cdn.embedly.com/widgets/platform.js', array(), '1.0', true);
         }
         return;
     }
+
+    /**
+    *  Localizes the configuration settings for the user, making EMBEDLY_CONFIG available
+    * prior to loading embedly.js
+    **/
+    function embedly_localize_config()
+    {
+        global $settings_map;
+        if($this->valid_key()) {
+            $analytics_key = $this->embedly_options['analytics_key'];
+        } else {
+            $analytics_key = 'null';
+        }
+
+        $ajax_url = admin_url( 'admin-ajax.php', 'relative' );
+
+        $current = array();
+        foreach ($settings_map as $setting => $api_param) {
+            if(isset($this->embedly_options[$setting])) {
+                if( is_bool($this->embedly_options[$setting])) {
+                    $current[$setting] = $this->embedly_options[$setting] ? '1' : '0';
+                } else {
+                    $current[$setting] = $this->embedly_options[$setting];
+                }
+            }
+        }
+
+        $embedly_config = array(
+            'analyticsKey' => $analytics_key,
+            'ajaxurl' => $ajax_url,
+            'current' => $current,
+        );
+
+        wp_register_script('embedly_admin_scripts', EMBEDLY_URL . '/js/embedly.js', array(
+                'jquery'
+            ), '1.0', true);
+        wp_localize_script('embedly_admin_scripts', 'EMBEDLY_CONFIG', $embedly_config);
+        wp_enqueue_script('embedly_admin_scripts');
+    }
+
 
     /**
      * Does the work of adding the Embedly providers to wp_oembed
@@ -490,61 +527,6 @@ class WP_Embedly
     }
 
     /**
-    * builds a <script> tag that globalizes the current card settings for preview init
-    **/
-    function get_script_embedly_config() {
-        global $settings_map;
-        $config_script = '<script> var EMBEDLY_CONFIG = {';
-        if($this->valid_key()) {
-          $config_script .= 'analyticsKey: "' . $this->embedly_options['analytics_key'] . '",';
-        } else {
-          $config_script .= 'analyticsKey: null,';
-        }
-
-        $config_script .= 'ajaxurl: "' . admin_url( 'admin-ajax.php', 'relative' ) . '",';
-
-        $config_script .= 'current: {';
-        foreach ($settings_map as $setting => $api_param) {
-          if(isset($this->embedly_options[$setting])) {
-            $value= '';
-            if( is_bool($this->embedly_options[$setting]) ) {
-              $value = $this->embedly_options[$setting] ? '1': '0';
-            } else {
-              $value = $this->embedly_options[$setting];
-            }
-            $config_script .= "'" . $setting . "': '" . $value . "',";
-          }
-        }
-        $config_script .= '}}</script>';
-        echo $config_script;
-    }
-
-    function add_frontend_embedly_config(){
-      global $settings_map;
-      $overrides = '';
-      foreach ($settings_map as $setting => $api_param) {
-        if(isset($this->embedly_options[$setting])) {
-          $value= '';
-          if( is_bool($this->embedly_options[$setting]) ) {
-            $value = $this->embedly_options[$setting] ? '1': '0';
-          } else {
-            $value = $this->embedly_options[$setting];
-          }
-          $parts = explode('_', $setting);
-          $overrides .= $parts[1] . ": '" . $value . "',";
-        }
-      }
-
-      echo '<script src="//cdn.embedly.com/widgets/platform.js"></script>
-        <script>
-          embedly("defaults", {cards: {
-              override: true,
-              '.$overrides.'
-          }});
-        </script>';
-    }
-
-    /**
     * Builds an href for the Realtime Analytics button
     */
     function get_onclick_analytics_button() {
@@ -616,10 +598,6 @@ class WP_Embedly
         global $wpdb;
         ######## BEGIN FORM HTML #########
         ?>
-        <div>
-          <?php $this->get_script_embedly_config(); ?>
-          <script async src="//cdn.embedly.com/widgets/platform.js" charset="UTF-8"></script>
-        </div>
           <div class="embedly-wrap">
             <div class="embedly-ui">
               <div class="embedly-input-wrapper">
