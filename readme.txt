@@ -184,6 +184,11 @@ embeds to boost SEO.
 
 == Changelog ==
 
+= 4.0.6 =
+
+* Embedly is not currently supporting historical analytics for embeds, but you can still see realtime views.
+* Improves the implementation of javascript dependencies via the wp_enqueue_script api.
+
 = 4.0 =
 
 * Removed Embedly TinyMCE Button.
