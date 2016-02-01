@@ -27,23 +27,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 /**
  * Define Constants
  */
-if (!defined('WP_CONTENT_URL')) {
-    define('WP_CONTENT_URL', WP_SITEURL . '/wp-content');
-}
-if (!defined('WP_CONTENT_DIR')) {
-    define('WP_CONTENT_DIR', ABSPATH . 'wp-content');
-}
-if (!defined('WP_PLUGIN_URL')) {
-    define('WP_PLUGIN_URL', WP_CONTENT_URL . '/plugins');
-}
-if (!defined('WP_PLUGIN_DIR')) {
-    define('WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins');
-}
-if (!defined('EMBEDLY_DIR')) {
-    define('EMBEDLY_DIR', WP_PLUGIN_DIR . '/embedly');
-}
 if (!defined('EMBEDLY_URL')) {
-    define('EMBEDLY_URL', WP_PLUGIN_URL . '/embedly');
+    define('EMBEDLY_URL', plugins_url('/embedly'));
 }
 if (!defined('EMBEDLY_BASE_URI')) {
     define('EMBEDLY_BASE_URI', 'https://api.embedly.com/1/card?');
