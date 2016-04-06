@@ -310,10 +310,10 @@ class WP_Embedly
      **/
     function add_embedly_providers()
     {
-        # if user entered valid key, override providers, else, do nothing
+        // if user entered valid key, override providers, else, do nothing
         if ($this->valid_key()) {
             // delete all current oembed providers
-            add_filter('oembed_providers', create_function('', 'return array();'));
+            add_filter('oembed_providers', '__return_empty_array');
             // add embedly provider
             $provider_uri = $this->build_uri_with_options();
             wp_oembed_add_provider('#https?://[^\s]+#i', $provider_uri, true);
