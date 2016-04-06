@@ -395,6 +395,12 @@ class WP_Embedly
     **/
     function embedly_save_option($key, $value)
     {
+        // Ideally we should run this through sanitize_key
+        // But some options keys have "?" in them which sanitize_key strips out
+        // Resort to sanitize_text_field instead
+       $key = sanitize_text_field( $key );
+       $value = sanitize_text_field( $value );
+
        $this->embedly_options[$key] = $value;
        update_option('embedly_settings', $this->embedly_options);
        $this->embedly_options = get_option('embedly_settings');
