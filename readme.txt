@@ -5,7 +5,7 @@ Tags: embed, oembed, video, image, pdf, card
 
 Requires at least: 3.8
 Tested up to: 4.5
-Stable tag: 4.0.8
+Stable tag: 4.0.9
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -183,6 +183,10 @@ embeds to boost SEO.
 
 
 == Changelog ==
+
+= 4.0.9 =
+
+* Improved plugin security.
 
 = 4.0.6 =
 
