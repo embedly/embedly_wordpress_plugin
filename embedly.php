@@ -644,8 +644,8 @@ class WP_Embedly
                               <ul>
                                 <li>
                                   <h3><?php _e('DESIGN', 'embedly');?></h3>
-                                  <input class='chrome-card-checkbox' type='checkbox' value='checked' name='minimal' <?php
-                                    checked( $this->embedly_options['card_chrome'], !1); // ¯\_(ツ)_/¯ -php
+                                  <input class='chrome-card-checkbox' type='checkbox' name='minimal'
+                                    <?php checked( $this->embedly_options['card_chrome'], 0);
                                     // checked( @$this->embedly_options["card_chrome"] ?: false, false); does not work below PHP v5.3
                                     ?> /> <?php _e('MINIMAL', 'embedly'); ?>
                                 </li>
