@@ -69,6 +69,7 @@ class WP_Embedly
             'card_chrome' => 0,
             'card_controls' => true,
             'card_align' => 'center',
+            'card_width' => '',
             'card_theme' => 'light',
             'is_key_valid' => false,
             'is_welcomed' => false,
@@ -627,6 +628,7 @@ class WP_Embedly
             <div class="embedly-ui">
               <div class="embedly-input-wrapper">
                 <?php
+                // echo print_r($this->embedly_options);
                 // Decide which modal to display.
                 if( $this->valid_key() ) { ?>
 
