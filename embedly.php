@@ -66,12 +66,12 @@ class WP_Embedly
             'active' => true,
             'key' => '',
             'analytics_key' => '',
-            'card_chrome' => false,
+            'card_chrome' => 0,
             'card_controls' => true,
             'card_align' => 'center',
             'card_theme' => 'light',
-            'key_valid?' => false,
-            'welcomed?' => false,
+            'is_key_valid' => false,
+            'is_welcomed' => false,
         );
 
         //i18n
@@ -141,9 +141,9 @@ class WP_Embedly
     function validate_api_key()
     {
         if($this->embedly_acct_has_feature('oembed', $this->embedly_options['key'])) {
-            $this->embedly_save_option('key_valid?', true);
+            $this->embedly_save_option('is_key_valid', true);
         } else {
-            $this->embedly_save_option('key_valid?', false);
+            $this->embedly_save_option('is_key_valid', false);
         }
     }
 
@@ -152,6 +152,18 @@ class WP_Embedly
     **/
     function embedly_save_account()
     {
+        // check nonce
+        if( ! wp_verify_nonce($_POST['security'], "embedly_save_account_nonce") ) {
+            echo "security exception";
+            wp_die("security_exception");
+        }
+
+        // verify permission to save account info on 'connect' click
+        if(!current_user_can('manage_options')) {
+            echo "invalid permissions";
+            wp_die("permission_exception");
+        }
+
         // not validating the analytics_key for security.
         // analytics calls will just fail if it's invalid.
         if(isset($_POST) && !empty($_POST)) {
@@ -174,9 +186,21 @@ class WP_Embedly
     **/
     function embedly_ajax_update_option()
     {
+        // verify nonce
+        if( ! wp_verify_nonce($_POST['security'], "embedly_update_option_nonce") ) {
+            echo "security exception";
+            wp_die("security_exception");
+        }
+
+        // verify permissions
+        if(!current_user_can('manage_options')) {
+            echo "invalid permissions";
+            wp_die("permission_exception");
+        }
+
         if(!isset($_POST) || empty($_POST)) {
           echo 'ajax-error';
-          wp_die();
+          wp_die("invalid_post");
         }
 
         // access to the $_POST from the ajax call data object
@@ -233,19 +257,22 @@ class WP_Embedly
     }
 
     /**
-     * Adds toplevel Embedly settings page
+     * Adds top level Embedly settings page
      **/
     function embedly_add_settings_page()
     {
-        $icon = 'dashicons-admin-generic';
-        if( version_compare( $GLOBALS['wp_version'], '4.1', '>' ) ) {
-           $icon = 'dashicons-align-center';
+        if(current_user_can('manage_options')) {
+            $icon = 'dashicons-admin-generic';
+            if( version_compare( $GLOBALS['wp_version'], '4.1', '>' ) ) {
+               $icon = 'dashicons-align-center';
+            }
+
+            $this->embedly_settings_page = add_menu_page('Embedly', 'Embedly', 'activate_plugins', 'embedly', array(
+                    $this,
+                    'embedly_settings_page'
+                ), $icon);
         }
 
-        $this->embedly_settings_page = add_menu_page('Embedly', 'Embedly', 'activate_plugins', 'embedly', array(
-                $this,
-                'embedly_settings_page'
-            ), $icon);
     }
 
 
@@ -292,6 +319,8 @@ class WP_Embedly
         }
 
         $embedly_config = array(
+            'updateOptionNonce' => wp_create_nonce("embedly_update_option_nonce"),
+            'saveAccountNonce' => wp_create_nonce("embedly_save_account_nonce"),
             'analyticsKey' => $analytics_key,
             'ajaxurl' => $ajax_url,
             'current' => $current,
@@ -395,15 +424,18 @@ class WP_Embedly
     **/
     function embedly_save_option($key, $value)
     {
-        // Ideally we should run this through sanitize_key
-        // But some options keys have "?" in them which sanitize_key strips out
-        // Resort to sanitize_text_field instead
-       $key = sanitize_text_field( $key );
-       $value = sanitize_text_field( $value );
+        if(current_user_can('manage_options')) {
+            $key = sanitize_key( $key );
+            $value = sanitize_text_field( $value );
 
-       $this->embedly_options[$key] = $value;
-       update_option('embedly_settings', $this->embedly_options);
-       $this->embedly_options = get_option('embedly_settings');
+            // validate the options being saved.
+            if( array_key_exists($key, $this->embedly_options) ) {
+                $this->embedly_options[$key] = $value;
+                update_option('embedly_settings', $this->embedly_options);
+                $this->embedly_options = get_option('embedly_settings');
+            }
+
+       }
     }
 
     /**
@@ -411,9 +443,11 @@ class WP_Embedly
     **/
     function embedly_delete_option($key)
     {
-        unset($this->embedly_options[$key]);
-        update_option('embedly_settings', $this->embedly_options);
-        $this->embedly_options = get_option('embedly_settings');
+        if(current_user_can('manage_options')) {
+            unset($this->embedly_options[$key]);
+            update_option('embedly_settings', $this->embedly_options);
+            $this->embedly_options = get_option('embedly_settings');
+        }
     }
 
 
@@ -473,10 +507,10 @@ class WP_Embedly
         if (empty($this->embedly_options['key'])) {
           return false;
         }
-        if(!isset($this->embedly_options['key_valid?'])) {
+        if(!isset($this->embedly_options['is_key_valid'])) {
           return false;
         }
-        if (!$this->embedly_options['key_valid?']) {
+        if (!$this->embedly_options['is_key_valid']) {
           return false;
         }
 
@@ -572,8 +606,8 @@ class WP_Embedly
     * Welcome the user one time.
     **/
     function get_welcome_message() {
-        if (isset($this->embedly_options['welcomed?']) && !$this->embedly_options['welcomed?']) {
-            $this->embedly_save_option('welcomed?', true);
+        if (isset($this->embedly_options['is_welcomed']) && !$this->embedly_options['is_welcomed']) {
+            $this->embedly_save_option('is_welcomed', true);
             echo "<h3>You're ready to start embedding.</h3>".
                  "<h2>Paste a URL in a new post and it will automatically embed and measure analytics.</h2>".
                  "<h2>For more on getting started, check out the tutorial below.</h2>";

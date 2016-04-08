@@ -201,6 +201,7 @@
       EMBEDLY_CONFIG.ajaxurl,
       {
         'action': 'embedly_update_option',
+        'security': EMBEDLY_CONFIG.updateOptionNonce,
         'key': key,
         'value': value
       }, function(response) {
@@ -254,6 +255,7 @@
       EMBEDLY_CONFIG.ajaxurl,
       {
         'action': 'embedly_save_account',
+        'security': EMBEDLY_CONFIG.saveAccountNonce,
         'api_key': api_key,
         'analytics_key': analytics_key,
         'org_name': name
