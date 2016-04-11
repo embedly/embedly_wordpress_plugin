@@ -429,12 +429,9 @@ class WP_Embedly
             $key = sanitize_key( $key );
             $value = sanitize_text_field( $value );
 
-            // validate the options being saved.
-            if( array_key_exists($key, $this->embedly_options) ) {
-                $this->embedly_options[$key] = $value;
-                update_option('embedly_settings', $this->embedly_options);
-                $this->embedly_options = get_option('embedly_settings');
-            }
+            $this->embedly_options[$key] = $value;
+            update_option('embedly_settings', $this->embedly_options);
+            $this->embedly_options = get_option('embedly_settings');
 
        }
     }
