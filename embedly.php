@@ -625,7 +625,6 @@ class WP_Embedly
             <div class="embedly-ui">
               <div class="embedly-input-wrapper">
                 <?php
-                // echo print_r($this->embedly_options);
                 // Decide which modal to display.
                 if( $this->valid_key() ) { ?>
 
@@ -635,7 +634,7 @@ class WP_Embedly
                     <div class="embedly-ui-header-wrapper">
                       <div class="embedly-ui-header">
                         <a class="embedly-ui-logo" href="http://embed.ly" target="_blank"><?php
-                          _e('Embedly', 'embedly');
+                          esc_html_e('Embedly', 'embedly');
                           ?></a>
                       </div>
                     </div>
@@ -652,7 +651,7 @@ class WP_Embedly
                             <h1 class="active-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
                             <p>People are <strong>actively viewing</strong> your embeds!</p>
                             <br/> <!-- is this acceptable? need to format my h tags for this page.-->
-                            <a class="emb-button" target="_blank" <?php $this->get_onclick_analytics_button(); ?>><?php _e('Realtime Analytics', 'embedly')?></a>
+                            <a class="emb-button" target="_blank" <?php $this->get_onclick_analytics_button(); ?>><?php esc_html_e('Realtime Analytics', 'embedly')?></a>
                           </div>
 						  <!-- <div class="historical-viewers">
                             <h1 class="weekly-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
@@ -665,48 +664,48 @@ class WP_Embedly
 
                         <div class="advanced-wrapper dropdown-wrapper">
                           <div class="advanced-header dropdown-header">
-                            <a href="#"><h3><?php _e('ADVANCED EMBED SETTINGS', 'embedly'); ?>
+                            <a href="#"><h3><?php esc_html_e('ADVANCED EMBED SETTINGS', 'embedly'); ?>
                             <span id="advanced-arrow" class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
                           </div>
                           <div class = "advanced-body dropdown-body">
-                            <p><?php _e('Changing these settings will change how your future embeds appear.', 'embedly');?>
+                            <p><?php esc_html_e('Changing these settings will change how your future embeds appear.', 'embedly');?>
                            </p></div>
                           <div class="advanced-body dropdown-body">
                             <div class="advanced-selections">
                               <!-- Boolean Attributes (ie. Chromeless, Card Theme, etc) -->
                               <ul>
                                 <li>
-                                  <h3><?php _e('DESIGN', 'embedly');?></h3>
+                                  <h3><?php esc_html_e('DESIGN', 'embedly');?></h3>
                                   <input class='chrome-card-checkbox' type='checkbox' name='minimal'
                                     <?php checked( $this->embedly_options['card_chrome'], 0);
                                     // checked( @$this->embedly_options["card_chrome"] ?: false, false); does not work below PHP v5.3
-                                    ?> /> <?php _e('MINIMAL', 'embedly'); ?>
+                                    ?> /> <?php esc_html_e('MINIMAL', 'embedly'); ?>
                                 </li>
                                 <li>
-                                  <h3><?php _e('TEXT', 'embedly'); ?></h3>
+                                  <h3><?php esc_html_e('TEXT', 'embedly'); ?></h3>
                                   <input class='embedly-dark-checkbox' type='checkbox' value='checked' name='card_dark' <?php
                                     checked( $this->embedly_options['card_theme'], 'dark');
-                                    ?> /> <?php _e('LIGHT TEXT', 'embedly'); ?>
+                                    ?> /> <?php esc_html_e('LIGHT TEXT', 'embedly'); ?>
                                 </li>
                                 <li>
-                                  <h3><?php _e('BUTTONS', 'embedly'); ?></h3>
+                                  <h3><?php esc_html_e('BUTTONS', 'embedly'); ?></h3>
                                   <input class='embedly-social-checkbox' type='checkbox' value='checked' name='card_controls' <?php
                                     checked( $this->embedly_options['card_controls'], 1);
-                                    ?> /> <?php _e('SHARING BUTTONS', 'embedly'); ?>
+                                    ?> /> <?php esc_html_e('SHARING BUTTONS', 'embedly'); ?>
                                 </li>
 
                                 <li><!-- Width Input Area -->
                                   <div class="max-width-input-container">
-                                    <h3><?php _e('WIDTH', 'embedly'); ?></h3>
-                                    <input id='embedly-max-width' type="text" name="card_width" placeholder="<?php _e('Responsive if left blank', 'embedly'); ?>"
+                                    <h3><?php esc_html_e('WIDTH', 'embedly'); ?></h3>
+                                    <input id='embedly-max-width' type="text" name="card_width" placeholder="<?php esc_attr_e('Responsive if left blank', 'embedly'); ?>"
                                       <?php $this->get_value_embedly_max_width(); ?>/>
-                                      <p><i><?php _e('Example: 400px or 80%.', 'embedly'); ?></i></p>
-                                      <!-- <p><i><?php _e('Responsive if left blank', 'embedly'); ?></i></p> -->
+                                      <p><i><?php esc_html_e('Example: 400px or 80%.', 'embedly'); ?></i></p>
+                                      <!-- <p><i><?php esc_html_e('Responsive if left blank', 'embedly'); ?></i></p> -->
                                   </div>
                                 </li>
                                 <li>
                                   <!-- Card Alignment Options -->
-                                  <h3><?php _e('ALIGNMENT', 'embedly'); ?></h3>
+                                  <h3><?php esc_html_e('ALIGNMENT', 'embedly'); ?></h3>
                                   <div class="embedly-align-select-container embedly-di">
                                     <ul class="align-select">
                                       <?php
@@ -738,8 +737,8 @@ class WP_Embedly
                             </div>
                             <!-- preview card -->
                             <div <?php $this->get_class_card_preview_container(); ?>>
-                              <h3><?php _e('CARD PREVIEW', 'embedly'); ?>
-                                <span id="embedly-settings-saved"><i><?php _e('settings saved', 'embedly'); ?> </i></span>
+                              <h3><?php esc_html_e('CARD PREVIEW', 'embedly'); ?>
+                                <span id="embedly-settings-saved"><i><?php esc_html_e('settings saved', 'embedly'); ?> </i></span>
                               </h3>
                               <a class="embedly-card-template"
                                 href="https://vimeo.com/80836225">
@@ -752,7 +751,7 @@ class WP_Embedly
                         <!-- BEGIN TUTORIAL EXPANDER -->
                         <div class="tutorial-wrapper dropdown-wrapper">
                           <div class="tutorial-header dropdown-header">
-                            <a href="#"><h3><?php _e('TUTORIAL', 'embedly'); ?>
+                            <a href="#"><h3><?php esc_html_e('TUTORIAL', 'embedly'); ?>
                             <span id="tutorial-arrow" class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
                           </div>
                           <div class="tutorial-body dropdown-body">
@@ -776,7 +775,7 @@ class WP_Embedly
                     <div class="embedly-ui-header-wrapper">
                       <div class="embedly-ui-header">
                         <a class="embedly-ui-logo" href="http://embed.ly" target="_blank">
-                        <?php _e('Embedly', 'embedly'); ?>
+                        <?php esc_html_e('Embedly', 'embedly'); ?>
                         </a>
                       </div>
                     </div>
@@ -785,7 +784,7 @@ class WP_Embedly
                     <div class="embedly_key_form embedly-ui-key-form">
                       <div class="welcome-page-body">
                         <!-- HERO TEXT -->
-                        <h1><?php _e('Embed content from any site!', 'embedly'); ?></h1>
+                        <h1><?php esc_html_e('Embed content from any site!', 'embedly'); ?></h1>
                         <section>
                           <!-- Tutorial Video -->
                           <div class="embedly-tutorial-container">
@@ -813,11 +812,11 @@ class WP_Embedly
                         <section>
                           <!-- Create an embed.ly account button -->
                           <div class="embedly-create-account-btn-wrap">
-                            <p><?php _e("Don't Have An Account?", "embedly"); ?></p>
-                            <a id='create-account-btn' class="emb-button emb-button-long" target="_blank"><?php _e('GET STARTED HERE!', 'embedly')?></a>
+                            <p><?php esc_html_e("Don't Have An Account?", 'embedly'); ?></p>
+                            <a id='create-account-btn' class="emb-button emb-button-long" target="_blank"><?php esc_html_e('GET STARTED HERE!', 'embedly')?></a>
                             <p>&nbsp;</p>
-                            <p><?php _e("Already have an Embedly account?", "embedly"); ?>
-                                <strong><a id="preexisting-user" href="https://app.embed.ly" target="_blank"><?php _e('Login', 'embedly'); ?></a></strong>
+                            <p><?php esc_html_e("Already have an Embedly account?", 'embedly'); ?>
+                                <strong><a id="preexisting-user" href="https://app.embed.ly" target="_blank"><?php esc_html_e('Login', 'embedly'); ?></a></strong>
                             </p>
                           </div>
                           <button id="connect-button" class="emb-button emb-button-long">
@@ -852,7 +851,7 @@ class WP_Embedly
               ?>
                 <div id="footer">
                   <footer class="embedly-footer">
-                    &copy; <?php _e(date('Y') . ' All Rights Reserved ', 'embedly'); ?>
+                    &copy; <?php echo date('Y') . __( ' All Rights Reserved ', 'embedly'); ?>
                     <span class="dashicons dashicons-heart"></span>
                     Built in Boston
                   </footer>
