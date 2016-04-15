@@ -309,7 +309,8 @@
 
           data.organizations.forEach(function(org){
             var $li = $('<li></li>'),
-              $a = $('<a>'+org.name.toUpperCase()+'</a>');
+              $a = $('<a></a>');
+              $a.text(org.name.toUpperCase());
 
             $a.on('click', selected(org));
             $li.append($a);
