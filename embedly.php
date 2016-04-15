@@ -284,10 +284,9 @@ class WP_Embedly
     {
         $screen = get_current_screen();
         if ($screen->id == $this->embedly_settings_page) {
-            $protocol = is_ssl() ? 'https' : 'http';
             wp_enqueue_style('dashicons');
             wp_enqueue_style('embedly_admin_styles', EMBEDLY_URL . '/css/embedly-admin.css');
-            wp_enqueue_style('embedly-fonts', $protocol . '://embed.ly/static/styles/fontspring-stylesheet.css');
+            wp_enqueue_style('embedly-fonts', 'https://cdn.embed.ly/wordpress/static/styles/fontspring-stylesheet.css');
             wp_enqueue_script('platform', '//cdn.embedly.com/widgets/platform.js', array(), '1.0', true);
         }
         return;
