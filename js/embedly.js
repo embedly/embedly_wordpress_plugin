@@ -152,7 +152,7 @@
       $.getJSON('https://narrate.embed.ly/1/keys?' + $.param({
         key: EMBEDLY_CONFIG.analyticsKey
       })).then(function(response){
-        $(".embedly-analytics .active-viewers .active-count").html(response.active);
+        $(".embedly-analytics .active-viewers .active-count").text(response.active);
       });
     }
   };
