@@ -92,6 +92,18 @@ class WP_Embedly
             'embedly_deactivate'
         ));
 
+
+        /**
+         * We have to check if a user's embedly api key is valid once in a while for
+         * security. If their API key was compromised, or if their acct.
+         * was deleted. This ensures plugin functionality, and proper analytics.
+         *
+         * But we don't need to do it every time the load the page.
+         */
+        if( !wp_next_scheduled( 'embedly_revalidate_account' ) ) {
+            wp_schedule_event( time(), 'hourly', 'embedly_revalidate_account' );
+        }
+
         //Admin settings page actions
         add_action('admin_menu', array(
             $this,
@@ -123,10 +135,14 @@ class WP_Embedly
             'embedly_save_account',
         ));
 
-        // validates api key on load
-        add_action('plugins_loaded', array(
-          $this,
-          'validate_api_key'
+        // Instead of checking for admin_init action
+        // we created a custom cron action on plugin activation.
+        // it will revalidate the acct every hour.
+        // worst case if a user wants to revalidate immediately
+        // just deactivate and reactivate the plugin
+        add_action('embedly_revalidate_account', array(
+            $this,
+            'validate_api_key'
         ));
 
         // action establishes embed.ly the provider of embeds
@@ -135,6 +151,7 @@ class WP_Embedly
             'add_embedly_providers'
         ));
     }
+
 
     /**
     * makes sure the key is always valid (in case user, say, deletes their app acct)
@@ -173,6 +190,8 @@ class WP_Embedly
 
             $this->embedly_save_option('key', $api_key);
             $this->embedly_save_option('analytics_key', $analytics_key);
+            // need to validate the API key after signup since no longer plugin_load hook.
+            $this->validate_api_key();
 
             // better than returning some ambiguous boolean type
             echo 'true';
@@ -229,6 +248,7 @@ class WP_Embedly
      **/
     function embedly_deactivate()
     {
+        wp_clear_scheduled_hook('embedly_revalidate_account');
         delete_option('embedly_settings');
     }
 
@@ -499,20 +519,21 @@ class WP_Embedly
     function valid_key()
     {
         if (!isset($this->embedly_options['key'])) {
-          return false;
+            return false;
         }
         if (empty($this->embedly_options['key'])) {
-          return false;
+            return false;
         }
         if(!isset($this->embedly_options['is_key_valid'])) {
-          return false;
+            return false;
         }
         if (!$this->embedly_options['is_key_valid']) {
-          return false;
+            return false;
         }
 
         return true;
     }
+
 
     /////////////////////////// BEGIN TEMPLATE FUNCTIONS FOR FORM LOGIC
 
