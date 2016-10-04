@@ -4,8 +4,8 @@ Contributors: Embedly
 Tags: embed, oembed, video, image, pdf, card
 
 Requires at least: 3.8
-Tested up to: 4.4
-Stable tag: 4.0.5
+Tested up to: 4.5
+Stable tag: 4.0.12
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -115,6 +115,21 @@ In the post editor, once the plugin is installed, paste in the URL you are
 trying to embed.
 
 =
+What happens after I deactivate the plugin or delete my Embedly account?
+=
+
+Cards will remain active even if you delete the plugin and/or delete your Embedly account.  This happens
+because after we generate a card for your post, it is converted into static HTML.  This HTML gets saved
+to the post.  Removing the plugin has no effect on posts that were created in the past.
+
+=
+I updated a setting for an embed but the embed didn't reflect the change?
+=
+
+Advanced Settings only affect newly generated cards.  If you wish to change the appearance of a pre-existing
+card, you will have to recreate the card in the post editor after making any settings changes.
+
+=
 Do I need a key?
 =
 
@@ -183,6 +198,15 @@ embeds to boost SEO.
 
 
 == Changelog ==
+
+= 4.0.9 =
+
+* Improved plugin security.
+
+= 4.0.6 =
+
+* Embedly is not currently supporting historical analytics for embeds, but you can still see realtime views.
+* Improves the implementation of javascript dependencies via the wp_enqueue_script api.
 
 = 4.0 =
 
