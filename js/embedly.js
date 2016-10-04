@@ -149,42 +149,42 @@
   // loads the analytics from narrate.
   analytics.actives = function() {
     if (EMBEDLY_CONFIG.analyticsKey){
-      $.getJSON('https://narrate.embed.ly/1/key?' + $.param({
+      $.getJSON('https://narrate.embed.ly/1/keys?' + $.param({
         key: EMBEDLY_CONFIG.analyticsKey
       })).then(function(response){
-        $(".embedly-analytics .active-viewers .active-count").html(response.active);
+        $(".embedly-analytics .active-viewers .active-count").text(response.active);
       });
     }
   };
 
   // Number of impressions in the last week.
-  analytics.historical = function() {
-    if (EMBEDLY_CONFIG.analyticsKey){
-      var start = utils.date(-7),
-        end = utils.date(1);
+  // analytics.historical = function() {
+  //   if (EMBEDLY_CONFIG.analyticsKey){
+  //     var start = utils.date(-7),
+  //       end = utils.date(1);
 
-      $.getJSON('https://api.embed.ly/2/analytics/stats?' + $.param({
-        key: EMBEDLY_CONFIG.analyticsKey,
-        start: start,
-        end: end
-      })).then(function(response){
-        var value = '-';
-        if (response){
-          value = response.reduce(function(sum, entry){
-            return sum + entry.actions.load;
-          }, 0);
-          value = utils.comma(value);
-        }
-         $(".embedly-analytics .historical-viewers .weekly-count").html(value);
-      });
-    }
-  };
+  //     $.getJSON('https://api.embed.ly/2/analytics/stats?' + $.param({
+  //       key: EMBEDLY_CONFIG.analyticsKey,
+  //       start: start,
+  //       end: end
+  //     })).then(function(response){
+  //       var value = '-';
+  //       if (response){
+  //         value = response.reduce(function(sum, entry){
+  //           return sum + entry.actions.load;
+  //         }, 0);
+  //         value = utils.comma(value);
+  //       }
+  //        $(".embedly-analytics .historical-viewers .weekly-count").html(value);
+  //     });
+  //   }
+  // };
 
   // Start everything.
   analytics.init = function(){
     analytics.actives();
     setInterval(analytics.actives, 10000);
-    analytics.historical();
+    // analytics.historical();
   };
 
 
@@ -201,6 +201,7 @@
       EMBEDLY_CONFIG.ajaxurl,
       {
         'action': 'embedly_update_option',
+        'security': EMBEDLY_CONFIG.updateOptionNonce,
         'key': key,
         'value': value
       }, function(response) {
@@ -254,6 +255,7 @@
       EMBEDLY_CONFIG.ajaxurl,
       {
         'action': 'embedly_save_account',
+        'security': EMBEDLY_CONFIG.saveAccountNonce,
         'api_key': api_key,
         'analytics_key': analytics_key,
         'org_name': name
@@ -307,7 +309,8 @@
 
           data.organizations.forEach(function(org){
             var $li = $('<li></li>'),
-              $a = $('<a>'+org.name.toUpperCase()+'</a>');
+              $a = $('<a></a>');
+              $a.text(org.name.toUpperCase());
 
             $a.on('click', selected(org));
             $li.append($a);
