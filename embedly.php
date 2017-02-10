@@ -28,7 +28,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * Define Constants
  */
 if (!defined('EMBEDLY_URL')) {
-    define('EMBEDLY_URL', plugins_url('/embedly'));
+    define( 'EMBEDLY_URL', plugin_dir_url( __FILE__ ) );
 }
 if (!defined('EMBEDLY_BASE_URI')) {
     define('EMBEDLY_BASE_URI', 'https://api.embedly.com/1/card?');
@@ -146,10 +146,10 @@ class WP_Embedly
         ));
 
         // action establishes embed.ly the provider of embeds
-        add_action('plugins_loaded', array(
+        add_action('init', array(
             $this,
             'add_embedly_providers'
-        ));
+        ), 20 );
     }
 
 
@@ -288,7 +288,7 @@ class WP_Embedly
                $icon = 'dashicons-align-center';
             }
 
-            $this->embedly_settings_page = add_menu_page('Embedly', 'Embedly', 'activate_plugins', 'embedly', array(
+            $this->embedly_settings_page = add_menu_page('Embedly', 'Embedly', 'manage_options', 'embedly', array(
                     $this,
                     'embedly_settings_page'
                 ), $icon);
@@ -363,12 +363,27 @@ class WP_Embedly
         if ($this->valid_key()) {
             // delete all current oembed providers
             add_filter('oembed_providers', '__return_empty_array');
+            $oembed = _wp_oembed_get_object();
+            $oembed->providers = [];
+            // Also clear Jetpack social embed providers
+            $this->jetpack_compat();
+
             // add embedly provider
             $provider_uri = $this->build_uri_with_options();
             wp_oembed_add_provider('#https?://[^\s]+#i', $provider_uri, true);
         }
     }
 
+    function jetpack_compat()
+    {
+        remove_shortcode( 'instagram', 'jetpack_shortcode_instagram' );
+        remove_filter( 'pre_kses', 'jetpack_instagram_embed_reversal' );
+        remove_filter( 'pre_kses', 'youtube_embed_to_short_code' );
+        remove_shortcode( 'youtube', 'youtube_shortcode' );
+        remove_filter( 'the_content', 'jetpack_fix_youtube_shortcode_display_filter', 7 );
+        wp_embed_unregister_handler( 'wpcom_youtube_embed_crazy_url' );
+        wp_embed_unregister_handler( 'jetpack_instagram' );
+    }
 
     /**
     * construct's a oembed endpoint for cards using embedly_options settings
