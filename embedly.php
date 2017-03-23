@@ -4,7 +4,7 @@ Plugin Name: Embedly
 Plugin URI: http://embed.ly/wordpress
 Description: The Embedly Plugin extends Wordpress's automatic embed feature, allowing bloggers to Embed from 300+ services and counting.
 Author: Embed.ly Inc
-Version: 4.0.12
+Version: 4.0.13
 Author URI: http://embed.ly
 License: GPL2
 
@@ -158,7 +158,7 @@ class WP_Embedly
     **/
     function validate_api_key()
     {
-        if($this->embedly_acct_has_feature('oembed', $this->embedly_options['key'])) {
+        if($this->embedly_acct_has_feature('card_details', $this->embedly_options['key'])) {
             $this->embedly_save_option('is_key_valid', true);
         } else {
             $this->embedly_save_option('is_key_valid', false);

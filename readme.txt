@@ -4,8 +4,8 @@ Contributors: Embedly
 Tags: embed, oembed, video, image, pdf, card
 
 Requires at least: 3.8
-Tested up to: 4.5
-Stable tag: 4.0.12
+Tested up to: 4.7
+Stable tag: 4.0.13
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,10 @@ Using it is as simple as the default Wordpress embedding. Embed media by pasting
 
 The plugin automatically displays an embed of the media in the Wordpress post
 editor (for WP 4.0+).
+
+Fair Warning: This plugin generates static HTML content for your posts.  After you deactivate
+the plugin, that HTML will still remain behind in all posts where the plugin was used to create
+embeds.
 
 
 == Installation ==
