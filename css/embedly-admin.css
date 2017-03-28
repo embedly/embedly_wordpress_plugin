@@ -122,7 +122,6 @@
   display: none;
 }
 .advanced-body {
-  display: none;
   padding: 5px;
 }
 .advanced-body p {
@@ -162,6 +161,13 @@
   margin-top: 0px;
 }
 /* end styles for advanced dropdown menu*/
+
+/* styles for api key dropdown */
+.api-key-body {
+  display: none;
+  padding: 5px;
+  padding-bottom: 50px;
+}
 
 /* styles for tutorial dropdown */
 .tutorial-body {
@@ -347,6 +353,13 @@ span.selected-align-select:hover {
   height: 40px;
   border: 1px solid #36495e;
 }
+
+#embedly-api-key {
+  width: 80%;
+  height: 40px;
+  border: 1px solid #36495e;
+}
+
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
   color:    #808080;
 }

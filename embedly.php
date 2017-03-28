@@ -4,7 +4,7 @@ Plugin Name: Embedly
 Plugin URI: http://embed.ly/wordpress
 Description: The Embedly Plugin extends Wordpress's automatic embed feature, allowing bloggers to Embed from 300+ services and counting.
 Author: Embed.ly Inc
-Version: 4.0.13
+Version: 4.0.14
 Author URI: http://embed.ly
 License: GPL2
 
@@ -140,10 +140,10 @@ class WP_Embedly
         // it will revalidate the acct every hour.
         // worst case if a user wants to revalidate immediately
         // just deactivate and reactivate the plugin
-        add_action('embedly_revalidate_account', array(
-            $this,
-            'validate_api_key'
-        ));
+        //add_action('embedly_revalidate_account', array(
+        //    $this,
+        //    'validate_api_key'
+        //));
 
         // action establishes embed.ly the provider of embeds
         add_action('plugins_loaded', array(
@@ -388,7 +388,7 @@ class WP_Embedly
 
         // option params is a list of url_param => value
         // for the url string
-        $first = true
+        $first = true;
         $option_params = array(); # example: '&card_theme' => 'dark'
         foreach ($set_options as $option => $api_param) {
             $value = $this->embedly_options[$option];
@@ -572,6 +572,18 @@ class WP_Embedly
     }
 
     /**
+    * returns embedly api_key if it's set
+    **/
+    function get_value_embedly_api_key()
+    {
+        if(isset($this->embedly_options['key'])) {
+          $value = 'value="';
+          $width = $this->embedly_options['key'];
+          echo $value . '" ';
+        }
+    }
+
+    /**
     * returns current card_align value
     **/
     function get_current_align()
@@ -680,18 +692,20 @@ class WP_Embedly
                         <div id="welcome-blurb">
                           <?php $this->get_welcome_message();  ?>
                         </div>
+
+                        <!--
                         <div class="embedly-analytics">
                           <div class="active-viewers">
                             <h1 class="active-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
                             <p>People are <strong>actively viewing</strong> your embeds!</p>
-                            <br/> <!-- is this acceptable? need to format my h tags for this page.-->
+                            <br/>
                             <a class="emb-button" target="_blank" <?php $this->get_onclick_analytics_button(); ?>><?php esc_html_e('Realtime Analytics', 'embedly')?></a>
                           </div>
-						  <!-- <div class="historical-viewers">
+						  <div class="historical-viewers">
                             <h1 class="weekly-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
                             <p>People have <strong>viewed</strong> an embed in the <strong>last week</strong>.</p>
-                          </div> -->
-                        </div>
+                          </div>
+                        </div> -->
 
                         <!-- Begin 'Advanced Options' Section -->
                         <hr>
@@ -781,7 +795,6 @@ class WP_Embedly
                           </div>
                         </div> <!-- END 'Options' Section -->
 
-
                         <!-- BEGIN TUTORIAL EXPANDER -->
                         <div class="tutorial-wrapper dropdown-wrapper">
                           <div class="tutorial-header dropdown-header">
@@ -798,6 +811,25 @@ class WP_Embedly
                             </div>
                           </div>
                         </div> <!-- END 'Tutorial' Section -->
+
+                        <!-- BEGIN API KEY EXPANDER -->
+                        <div class="tutorial-wrapper dropdown-wrapper">
+                          <div class="tutorial-header dropdown-header">
+                            <a href="#"><h3><?php esc_html_e('API KEY', 'embedly'); ?>
+                            <span id="tutorial-arrow" class="dashicons dashicons-arrow-right-alt2 embedly-dropdown"></span></h3></a>
+                          </div>
+                          <div class="api-key-body dropdown-body">
+                              <div class="api-key-input-container">
+                                <p><?php esc_html_e('Have an API key? Enter it here to utilize analytics and remove branding', 'embedly'); ?></p>
+                                <input id='embedly-api-key' type="text" name="api_key" placeholder="<?php esc_attr_e('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'embedly'); ?>"
+                                    <?php $this->get_value_embedly_api_key(); ?>/>
+                                <p><?php esc_html_e('You can create an account and/or manage your api key and view analytics', 'embedly'); ?> 
+                                    <strong><a href="https://app.embed.ly" target="_blank"><?php esc_html_e('here', 'embedly') ?></strong></a></p>
+                              </div>
+                          </div>
+                        </div> <!-- END 'API KEY' Section -->
+
+
                       </div>
                     </div>
                   </form>
