@@ -262,7 +262,31 @@
       },
       function(response) {
         if(response === 'true') {
+          input = $('#embedly-api-key')
           location.reload();
+        } else {
+          window.alert([
+            'We were unable to save your Embedly information your Wordpress ',
+            'install. Please email support@embed.ly and we will try to help.'].join(''));
+        }
+
+    });
+  };
+
+  // Save the account.
+  settings.save_api_key = function(api_key) {
+    $.post(
+      EMBEDLY_CONFIG.ajaxurl,
+      {
+        'action': 'embedly_save_api_key',
+        'security': EMBEDLY_CONFIG.saveAccountNonce,
+        'api_key': api_key,
+      },
+      function(response) {
+        if(response === 'true') {
+          console.log("successfully saved API key")
+          $('#embedly-api-key').addClass('success-input').removeClass('default-input')
+          //location.reload();
         } else {
           window.alert([
             'We were unable to save your Embedly information your Wordpress ',
@@ -402,6 +426,21 @@
     $('#embedly-max-width').keypress(function(e) {
       if(e.which === 13) {
         settings.update('card_width', $(this).val());
+        return false;
+      }
+    });
+
+    $('#embedly-api-key').focusout(function() {
+      console.log("api key changed")
+      console.log($(this).val());
+      settings.save_api_key($(this).val());
+    });
+
+    $('#embedly-api-key').keypress(function(e) {
+      if(e.which === 13) {
+        console.log("api key changed")
+        console.log($(this).val());
+        settings.save_api_key($(this).val());
         return false;
       }
     });

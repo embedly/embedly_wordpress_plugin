@@ -357,8 +357,16 @@ span.selected-align-select:hover {
 #embedly-api-key {
   width: 80%;
   height: 40px;
+}
+
+input.default-input {
   border: 1px solid #36495e;
 }
+
+input.success-input {
+  border: 1px solid #6bbd5b;
+}
+
 
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
   color:    #808080;

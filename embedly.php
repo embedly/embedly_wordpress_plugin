@@ -134,6 +134,10 @@ class WP_Embedly
             $this,
             'embedly_save_account',
         ));
+        add_action('wp_ajax_embedly_save_api_key', array(
+            $this,
+            'embedly_save_api_key',
+        ));
 
         // Instead of checking for admin_init action
         // we created a custom cron action on plugin activation.
@@ -190,6 +194,40 @@ class WP_Embedly
 
             $this->embedly_save_option('key', $api_key);
             $this->embedly_save_option('analytics_key', $analytics_key);
+            // need to validate the API key after signup since no longer plugin_load hook.
+            $this->validate_api_key();
+
+            // better than returning some ambiguous boolean type
+            echo 'true';
+            wp_die();
+        }
+        echo 'false';
+        wp_die();
+    }
+
+    /**
+    * receives embedly api_key from plugin api key input, validates and saves it.
+    **/
+    function embedly_save_api_key()
+    {
+        // check nonce
+        if( ! wp_verify_nonce($_POST['security'], "embedly_save_account_nonce") ) {
+            echo "security exception";
+            wp_die("security_exception");
+        }
+
+        // verify permission to save account info on 'connect' click
+        if(!current_user_can('manage_options')) {
+            echo "invalid permissions";
+            wp_die("permission_exception");
+        }
+
+        // not validating the analytics_key for security.
+        // analytics calls will just fail if it's invalid.
+        if(isset($_POST) && !empty($_POST)) {
+            $api_key = $_POST['api_key'];
+
+            $this->embedly_save_option('key', $api_key);
             // need to validate the API key after signup since no longer plugin_load hook.
             $this->validate_api_key();
 
@@ -578,7 +616,8 @@ class WP_Embedly
     {
         if(isset($this->embedly_options['key'])) {
           $value = 'value="';
-          $width = $this->embedly_options['key'];
+          $key = $this->embedly_options['key'];
+          $value = $value . $key;
           echo $value . '" ';
         }
     }
@@ -821,7 +860,7 @@ class WP_Embedly
                           <div class="api-key-body dropdown-body">
                               <div class="api-key-input-container">
                                 <p><?php esc_html_e('Have an API key? Enter it here to utilize analytics and remove branding', 'embedly'); ?></p>
-                                <input id='embedly-api-key' type="text" name="api_key" placeholder="<?php esc_attr_e('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'embedly'); ?>"
+                                <input id='embedly-api-key' class='default-input' type="text" name="api_key" placeholder="<?php esc_attr_e('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx', 'embedly'); ?>"
                                     <?php $this->get_value_embedly_api_key(); ?>/>
                                 <p><?php esc_html_e('You can create an account and/or manage your api key and view analytics', 'embedly'); ?> 
                                     <strong><a href="https://app.embed.ly" target="_blank"><?php esc_html_e('here', 'embedly') ?></strong></a></p>
