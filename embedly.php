@@ -372,6 +372,8 @@ class WP_Embedly
 
     /**
     * construct's a oembed endpoint for cards using embedly_options settings
+    *
+    * If key is defined, use it. Else, don't.
     **/
     function build_uri_with_options()
     {
@@ -386,24 +388,36 @@ class WP_Embedly
 
         // option params is a list of url_param => value
         // for the url string
+        $first = true
         $option_params = array(); # example: '&card_theme' => 'dark'
         foreach ($set_options as $option => $api_param) {
             $value = $this->embedly_options[$option];
+
+            $delimiter = '&';
+            if ( $first ) {
+                $delimiter = '?';
+                $first = false;
+            }
+
             if ( is_bool($value) ) {
-                $whole_param = '&' . $api_param . '=' . ($value ? '1' : '0');
+                $whole_param = $delimiter . $api_param . '=' . ($value ? '1' : '0');
                 $option_params[$option] = $whole_param;
             }
             else {
-                $whole_param = '&' . $api_param . '=' . $value;
+                $whole_param = $delimiter . $api_param . '=' . $value;
                 $option_params[$option] = $whole_param;
             }
         }
 
-        $base = EMBEDLY_BASE_URI;
-        $key = 'key=' . $this->embedly_options['key']; // first param
-        $uri = $base . $key;
+        $base = EMBEDLY_BASE_URI; #'https://api.embedly.com/1/card?'
+
         foreach($option_params as $key => $value) {
             $uri .= $value; # value is the actual uri parameter, at this point
+        }
+
+        if ($this->embedly_options['key']) {
+            $key = '&key=' . $this->embedly_options['key']; // first param
+            $uri = $base . $key;
         }
 
         return $uri;
