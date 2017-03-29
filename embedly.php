@@ -31,7 +31,7 @@ if (!defined('EMBEDLY_URL')) {
     define('EMBEDLY_URL', plugins_url('/embedly'));
 }
 if (!defined('EMBEDLY_BASE_URI')) {
-    define('EMBEDLY_BASE_URI', 'https://api.embedly.com/1/card?');
+    define('EMBEDLY_BASE_URI', 'https://api.embedly.com/1/card');
 }
 
 // maps local settings key => api param name
@@ -459,15 +459,15 @@ class WP_Embedly
         $base = EMBEDLY_BASE_URI; #'https://api.embedly.com/1/card?'
 
         foreach($option_params as $key => $value) {
-            $uri .= $value; # value is the actual uri parameter, at this point
+            $param_str .= $value; # value is the actual uri parameter, at this point
         }
 
         if ($this->embedly_options['key']) {
-            $key = '&key=' . $this->embedly_options['key']; // first param
-            $uri = $base . $key;
+            $key_param = '&key=' . $this->embedly_options['key']; // first param
+            $param_str .= $key_param;
         }
 
-        return $uri;
+        return $base . $param_str;
     }
 
 
@@ -715,6 +715,9 @@ class WP_Embedly
     {
         global $wpdb;
         ######## BEGIN FORM HTML #########
+        #debugging:
+        #echo $this->build_uri_with_options();
+
         ?>
           <div class="embedly-wrap">
             <div class="embedly-ui">
