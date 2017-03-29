@@ -262,7 +262,6 @@
       },
       function(response) {
         if(response === 'true') {
-          input = $('#embedly-api-key')
           location.reload();
         } else {
           window.alert([
@@ -275,6 +274,10 @@
 
   // Save the account.
   settings.save_api_key = function(api_key) {
+    if (api_key.length < 1) {
+      return
+    }
+
     $.post(
       EMBEDLY_CONFIG.ajaxurl,
       {
@@ -283,11 +286,14 @@
         'api_key': api_key,
       },
       function(response) {
+        input = $('#embedly-api-key')
         if(response === 'true') {
+          console.log(response)
           console.log("successfully saved API key")
-          $('#embedly-api-key').addClass('success-input').removeClass('default-input')
+          input.addClass('success-input').removeClass('default-input')
           //location.reload();
         } else {
+          input.val('')
           window.alert([
             'We were unable to save your Embedly information your Wordpress ',
             'install. Please email support@embed.ly and we will try to help.'].join(''));

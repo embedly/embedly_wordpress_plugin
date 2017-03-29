@@ -121,10 +121,10 @@ class WP_Embedly
         ));
 
         // action notifies user on admin menu if they don't have a key
-        add_action( 'admin_menu', array(
-            $this,
-            'embedly_notify_user_icon'
-        ));
+        //add_action( 'admin_menu', array(
+        //    $this,
+        //    'embedly_notify_user_icon'
+        //));
 
         add_action('wp_ajax_embedly_update_option', array(
             $this,
@@ -222,18 +222,24 @@ class WP_Embedly
             wp_die("permission_exception");
         }
 
-        // not validating the analytics_key for security.
-        // analytics calls will just fail if it's invalid.
         if(isset($_POST) && !empty($_POST)) {
             $api_key = $_POST['api_key'];
+            $valid = $this->embedly_acct_has_feature('card_details', $api_key);
+            if($valid) {
+                $this->embedly_save_option('key', $api_key);
+                // better than returning some ambiguous boolean type
+                echo 'true';
+                wp_die();
+            } else {
+                echo 'false';
+                wp_die();
+            }
 
-            $this->embedly_save_option('key', $api_key);
+
             // need to validate the API key after signup since no longer plugin_load hook.
             $this->validate_api_key();
 
-            // better than returning some ambiguous boolean type
-            echo 'true';
-            wp_die();
+
         }
         echo 'false';
         wp_die();
@@ -293,6 +299,7 @@ class WP_Embedly
 
     /**
     * warns user if their key is not set in the settings
+    * DEPRECATED
     **/
     function embedly_notify_user_icon()
     {
@@ -357,11 +364,13 @@ class WP_Embedly
     function embedly_localize_config()
     {
         global $settings_map;
-        if($this->valid_key()) {
-            $analytics_key = $this->embedly_options['analytics_key'];
-        } else {
-            $analytics_key = 'null';
-        }
+
+        // DEPRECATED
+        //if($this->valid_key()) {
+        //    $analytics_key = $this->embedly_options['analytics_key'];
+        //} else {
+        //    $analytics_key = 'null';
+       // }
 
         $ajax_url = admin_url( 'admin-ajax.php', 'relative' );
 
@@ -398,13 +407,13 @@ class WP_Embedly
     function add_embedly_providers()
     {
         // if user entered valid key, override providers, else, do nothing
-        if ($this->valid_key()) {
-            // delete all current oembed providers
-            add_filter('oembed_providers', '__return_empty_array');
-            // add embedly provider
-            $provider_uri = $this->build_uri_with_options();
-            wp_oembed_add_provider('#https?://[^\s]+#i', $provider_uri, true);
-        }
+        //if ($this->valid_key()) {
+        // delete all current oembed providers
+        add_filter('oembed_providers', '__return_empty_array');
+        // add embedly provider
+        $provider_uri = $this->build_uri_with_options();
+        wp_oembed_add_provider('#https?://[^\s]+#i', $provider_uri, true);
+        //}
     }
 
 
@@ -636,6 +645,7 @@ class WP_Embedly
 
     /**
     * Builds an href for the Realtime Analytics button
+    * DEPRECATED
     */
     function get_onclick_analytics_button() {
         if($this->valid_key()) {
@@ -709,9 +719,6 @@ class WP_Embedly
           <div class="embedly-wrap">
             <div class="embedly-ui">
               <div class="embedly-input-wrapper">
-                <?php
-                // Decide which modal to display.
-                if( $this->valid_key() ) { ?>
 
                 <!-- EXISTING USER MODAL -->
                 <form id="embedly_key_form" method="POST" action="">
@@ -872,88 +879,6 @@ class WP_Embedly
                       </div>
                     </div>
                   </form>
-                <?php  // ELSE: Key is not entered
-              } else {  ?>
-                  <!-- MODAL FOR NEW ACCOUNTS -->
-                <div class="embedly-ui">
-                  <div class="embedly-ui-header-outer-wrapper">
-                    <div class="embedly-ui-header-wrapper">
-                      <div class="embedly-ui-header">
-                        <a class="embedly-ui-logo" href="http://embed.ly" target="_blank">
-                        <?php esc_html_e('Embedly', 'embedly'); ?>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="embedly-ui-key-wrap embedly-new-user-modal">
-                    <div class="embedly_key_form embedly-ui-key-form">
-                      <div class="welcome-page-body">
-                        <!-- HERO TEXT -->
-                        <h1><?php esc_html_e('Embed content from any site!', 'embedly'); ?></h1>
-                        <section>
-                          <!-- Tutorial Video -->
-                          <div class="embedly-tutorial-container">
-                            <a id="embedly-tutorial-card" class="embedly-card"
-                              href="https://vimeo.com/140323372"
-                              data-card-controls="0" data-card-chrome="0" data-card-recommend="0"
-                              data-card-width="65%" data-card-key="5ea8d38b0bc6495d8906e33dde92fe48">
-                            </a>
-                          </div>
-                        </section>
-
-                        <section>
-                          <!-- Blurb -->
-                          <div id="embedly-welcome-blurb">
-                            <p>
-                              <span id="twitter-icon" class="dashicons dashicons-twitter"></span>
-                              Now with Twitter support! In addition to the default Wordpress embedding,
-                              you get embedding for any article, gfycat, storify, and twitch.  See our
-                              <a href="http://embed.ly/providers" target="_blank"><strong>growing list of embed providers</strong>.</a>
-                            </p>
-                              <p>Getting started? <strong>Learn more above</strong> about embedly cards for Wordpress.</p>
-                          </div>
-                        </section>
-
-                        <section>
-                          <!-- Create an embed.ly account button -->
-                          <div class="embedly-create-account-btn-wrap">
-                            <p><?php esc_html_e("Don't Have An Account?", 'embedly'); ?></p>
-                            <a id='create-account-btn' class="emb-button emb-button-long" target="_blank"><?php esc_html_e('GET STARTED HERE!', 'embedly')?></a>
-                            <p>&nbsp;</p>
-                            <p><?php esc_html_e("Already have an Embedly account?", 'embedly'); ?>
-                                <strong><a id="preexisting-user" href="https://app.embed.ly" target="_blank"><?php esc_html_e('Login', 'embedly'); ?></a></strong>
-                            </p>
-                          </div>
-                          <button id="connect-button" class="emb-button emb-button-long">
-                            <div class="inner-connect-button">
-                              <span class="inner-button-span">
-                                <img id="connect-btn-img" src=<?php echo EMBEDLY_URL . "/img/embedly-white-70-40.svg" ?>>
-                              </span>
-                              <span class="inner-button-span">
-                                ACTIVATE WITH EMBEDLY ACCOUNT
-                              </span>
-                            </div>
-                          </button>
-
-
-                          <!-- dropdown for selecting a project -->
-                          <div id="embedly-which">
-                            <p><strong>Which Project Would you Like to Connect?</strong></p>
-                            <h4>&nbsp;</h4>
-                            <ul id="embedly-which-list"></ul>
-                          </div>
-                        </section>
-                        <section>
-                          <div id="embedly-connect-failed-refresh">
-                          <p>You may need to refresh the page after connecting</p>
-                          </div>
-                        </section>
-                       </div>
-                     </div>
-                   </div>
-                </div>
-              <?php } // END if/else for new/existing account
-              ?>
                 <div id="footer">
                   <footer class="embedly-footer">
                     &copy; <?php echo date('Y') . __( ' All Rights Reserved ', 'embedly'); ?>
