@@ -848,7 +848,7 @@ class WP_Embedly
                                 <span id="embedly-settings-saved"><i><?php esc_html_e('settings saved', 'embedly'); ?> </i></span>
                               </h3>
                               <a class="embedly-card-template"
-                                href="https://vimeo.com/80836225#t=40s">
+                                href="https://vimeo.com/80836225">
                               </a>
                             </div>
                           </div>
