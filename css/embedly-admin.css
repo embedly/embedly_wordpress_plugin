@@ -169,10 +169,17 @@
   padding-bottom: 50px;
 }
 
+.api-key-body p {
+    font-size: 16px;
+}
+
 /* styles for tutorial dropdown */
 .tutorial-body {
   display: none;
   padding: 5px;
+}
+.tutorial-body p {
+    font-size: 16px;
 }
 .tutorial-wrapper {
   clear: both;
@@ -367,6 +374,9 @@ input.success-input {
   border: 1px solid #6bbd5b;
 }
 
+input.error-input{
+    border: 1px solid #ff0033;
+{
 
 ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
   color:    #808080;

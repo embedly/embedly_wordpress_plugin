@@ -203,6 +203,12 @@ embeds to boost SEO.
 
 == Changelog ==
 
+= 4.7.0 =
+
+* Having an active app.embed.ly account is now optional to use the plugin! Users who want access to unbranded
+card embeds and/or analytics can elect to input their Embedly API key in the plugin settings, but users who just want
+to get started embedding no longer need to create an embedly account and activate the plugin.
+
 = 4.0.9 =
 
 * Improved plugin security.

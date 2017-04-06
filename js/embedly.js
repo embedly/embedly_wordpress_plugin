@@ -274,10 +274,6 @@
 
   // Save the account.
   settings.save_api_key = function(api_key) {
-    if (api_key.length < 1) {
-      return
-    }
-
     $.post(
       EMBEDLY_CONFIG.ajaxurl,
       {
@@ -287,18 +283,18 @@
       },
       function(response) {
         input = $('#embedly-api-key')
-        if(response === 'true') {
-          console.log(response)
+
+        if(response === 'removed') {
+          console.log("Successfully removed Embedly API key")
+          input.attr('class', 'default-input')
+        } else if(response === 'true') {
           console.log("successfully saved API key")
-          input.addClass('success-input').removeClass('default-input')
-          //location.reload();
+          input.attr('class', 'success-input')
         } else {
           input.val('')
-          window.alert([
-            'We were unable to save your Embedly information your Wordpress ',
-            'install. Please email support@embed.ly and we will try to help.'].join(''));
+          console.log("Invalid Embedly API Key")
+          input.attr('class', 'error-input')
         }
-
     });
   };
 
@@ -437,14 +433,12 @@
     });
 
     $('#embedly-api-key').focusout(function() {
-      console.log("api key changed")
       console.log($(this).val());
       settings.save_api_key($(this).val());
     });
 
     $('#embedly-api-key').keypress(function(e) {
       if(e.which === 13) {
-        console.log("api key changed")
         console.log($(this).val());
         settings.save_api_key($(this).val());
         return false;
