@@ -4,8 +4,8 @@ Contributors: Embedly
 Tags: embed, oembed, video, image, pdf, card
 
 Requires at least: 3.8
-Tested up to: 4.7
-Stable tag: 4.7.10
+Tested up to: 4.8
+Stable tag: 4.8.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 

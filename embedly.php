@@ -2,9 +2,9 @@
 /*
 Plugin Name: Embedly
 Plugin URI: http://embed.ly/wordpress
-Description: The Embedly Plugin extends Wordpress's automatic embed feature, allowing bloggers to Embed from 400+ services and counting.
+Description: The Embedly Plugin extends Wordpress's automatic embed feature, allowing bloggers to Embed from 500+ services and counting.
 Author: Embed.ly Inc
-Version: 4.7.10
+Version: 4.8.1
 Author URI: http://embed.ly
 License: GPL2
 
@@ -436,9 +436,11 @@ class WP_Embedly
         global $settings_map;
         // gets the subset of settings that are actually set in plugin
         $set_options = array();
-        foreach ($settings_map as $setting => $api_param) {
-            if(isset($this->embedly_options[$setting])) {
-                $set_options[$setting] = $api_param;
+        if(!empty($settings_map)) {
+            foreach ($settings_map as $setting => $api_param) {
+                if(isset($this->embedly_options[$setting])) {
+                    $set_options[$setting] = $api_param;
+                }
             }
         }
 
