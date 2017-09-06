@@ -867,7 +867,7 @@ class WP_Embedly
                             <div class="embedly-tutorial-container">
                                 <p>Using the plugin is now as easy as pasting a URL into the post editor.
                                 We then do our best to find the right embed for that URL, especially if it's one of our
-                                    <strong><a href="https://embed.ly/providers" target="_blank"><?php esc_html_e('400+ providers', 'embedly'); ?></a></strong></p>
+                                    <strong><a href="https://embed.ly/providers" target="_blank"><?php esc_html_e('500+ providers', 'embedly'); ?></a></strong></p>
                                 <p>To learn more about how the plugin works, please visit
                                     <strong><a href="https://wordpress.org/plugins/embedly" target="_blank">
                                         <?php esc_html_e('our plugin page', 'embedly'); ?></a></strong></p>

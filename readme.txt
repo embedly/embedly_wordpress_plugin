@@ -15,7 +15,7 @@ The Embedly Plugin extends Wordpress's auto-embed feature to give your blog more
 
 Enhance the default Wordpress embedding to get previews for any article,
 including your own blog posts. You also get embeds for Gfycat, Twitch, Google
-Maps, and Embedly’s growing list of [400+ supported
+Maps, and Embedly’s growing list of [500+ supported
 providers](http://embed.ly/providers).
 
 You can customize the style of the embeds, to optimize for darker WP themes,
