@@ -143,10 +143,12 @@
   /*
   * ANALYTICS
   * Everything that has to do with getting information from Embedly's Analytics Engines.
+  * Disabled after GDPR
   */
-  var analytics = {};
+  //var analytics = {};
 
   // loads the analytics from narrate.
+  /**
   analytics.actives = function() {
     if (EMBEDLY_CONFIG.analyticsKey){
       $.getJSON('https://narrate.embed.ly/1/keys?' + $.param({
@@ -156,6 +158,7 @@
       });
     }
   };
+  **/
 
   // Number of impressions in the last week.
   // analytics.historical = function() {
@@ -181,11 +184,13 @@
   // };
 
   // Start everything.
+  /**
   analytics.init = function(){
     analytics.actives();
     setInterval(analytics.actives, 10000);
-    // analytics.historical();
+    analytics.historical();
   };
+  **/
 
 
   /*
@@ -372,7 +377,7 @@
     app.init();
 
     // Set up the analytics.
-    analytics.init();
+    //analytics.init();
 
     // Set up the settings.
     settings.init();
