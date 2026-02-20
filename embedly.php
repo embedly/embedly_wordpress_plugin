@@ -1,12 +1,15 @@
 <?php
 /*
 Plugin Name: Embedly
-Plugin URI: http://embed.ly/wordpress
-Description: The Embedly Plugin extends Wordpress's automatic embed feature, allowing bloggers to Embed from 500+ services and counting.
+Plugin URI: https://embed.ly/wordpress
+Description: The Embedly Plugin extends WordPress's automatic embed feature, allowing bloggers to embed from 1000+ services and counting.
 Author: Embed.ly Inc
-Version: 4.9.2
-Author URI: http://embed.ly
+Version: 4.9.3
+Author URI: https://embed.ly
 License: GPL2
+Requires at least: 5.0
+Tested up to: 6.9.1
+Requires PHP: 7.4
 
 Copyright 2015 Embedly  (email : developer@embed.ly)
 
@@ -28,7 +31,7 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  * Define Constants
  */
 if (!defined('EMBEDLY_URL')) {
-    define('EMBEDLY_URL', plugins_url('/embedly'));
+    define('EMBEDLY_URL', untrailingslashit(plugin_dir_url(__FILE__)));
 }
 if (!defined('EMBEDLY_BASE_URI')) {
     define('EMBEDLY_BASE_URI', 'https://api.embedly.com/2/card');
@@ -61,7 +64,6 @@ class WP_Embedly
      */
     function __construct()
     {
-        global $wpdb;
         self::$instance = $this;
 
         // init settings array
@@ -95,24 +97,13 @@ class WP_Embedly
         ));
 
 
-        /**
-         * We have to check if a user's embedly api key is valid once in a while for
-         * security. If their API key was compromised, or if their acct.
-         * was deleted. This ensures plugin functionality, and proper analytics.
-         *
-         * But we don't need to do it every time the load the page.
-         */
-        if( !wp_next_scheduled( 'embedly_revalidate_account' ) ) {
-            wp_schedule_event( time(), 'hourly', 'embedly_revalidate_account' );
-        }
-
         //Admin settings page actions
         add_action('admin_menu', array(
             $this,
             'embedly_add_settings_page'
         ));
 
-        add_action('admin_print_styles', array(
+        add_action('admin_enqueue_scripts', array(
             $this,
             'embedly_enqueue_admin'
         ));
@@ -336,18 +327,16 @@ class WP_Embedly
      **/
     function embedly_add_settings_page()
     {
-        if(current_user_can('manage_options')) {
-            $icon = 'dashicons-admin-generic';
-            if( version_compare( $GLOBALS['wp_version'], '4.1', '>' ) ) {
-               $icon = 'dashicons-align-center';
-            }
-
-            $this->embedly_settings_page = add_menu_page('Embedly', 'Embedly', 'activate_plugins', 'embedly', array(
-                    $this,
-                    'embedly_settings_page'
-                ), $icon);
+        if (current_user_can('manage_options')) {
+            $this->embedly_settings_page = add_menu_page(
+                'Embedly',
+                'Embedly',
+                'manage_options',
+                'embedly',
+                array($this, 'embedly_settings_page'),
+                'dashicons-align-center'
+            );
         }
-
     }
 
 
@@ -357,7 +346,7 @@ class WP_Embedly
     function embedly_enqueue_admin()
     {
         $screen = get_current_screen();
-        if ($screen->id == $this->embedly_settings_page) {
+        if ($screen && $screen->id === $this->embedly_settings_page) {
             wp_enqueue_style('dashicons');
             wp_enqueue_style('embedly_admin_styles', EMBEDLY_URL . '/css/embedly-admin.css');
             wp_enqueue_style('embedly-fonts', 'https://cdn.embed.ly/wordpress/static/styles/fontspring-stylesheet.css');
@@ -499,7 +488,7 @@ class WP_Embedly
    {
         if ($key) {
            $result = wp_remote_retrieve_body(wp_remote_get(
-            'http://api.embed.ly/1/feature?feature=' .
+            'https://api.embed.ly/1/feature?feature=' .
             $feature .
             '&key=' .
             $key));
@@ -693,26 +682,14 @@ class WP_Embedly
     **/
     function get_compatible_dashicon($align)
     {
-      $base = '"dashicons align-icon ';
-      // WP 4.1 has the "new" align icon, else, use old one (until 3.8)
-      if( version_compare( $GLOBALS['wp_version'], '4.1', '<' ) ) {
-        if($align == 'left') {
-          // left is being reversed  to support di-none in 4.1+
-          echo $base . 'dashicons-editor-alignleft';
-        } else if($align == 'right') {
-          echo $base . 'dashicons-editor-alignleft di-reverse';
+        $base = '"dashicons align-icon ';
+        if ($align == 'left') {
+            echo $base . 'di-none';
+        } elseif ($align == 'right') {
+            echo $base . 'di-none di-reverse';
         } else {
-          echo $base . 'dashicons-editor-aligncenter';
+            echo $base . 'di-center';
         }
-      } else {
-        if($align == 'left') {
-          echo $base . 'di-none';
-        } else if($align == 'right'){
-          echo $base . 'di-none di-reverse';
-        } else {
-          echo $base . 'di-center';
-        }
-      }
     }
 
     /**
@@ -733,22 +710,19 @@ class WP_Embedly
      **/
     function embedly_settings_page()
     {
-        global $wpdb;
-        ######## BEGIN FORM HTML #########
-        #debugging:
-        #echo $this->build_uri_with_options();
-
         ?>
+        <div class="wrap">
+          <h1 class="wp-heading-inline"><?php esc_html_e('Embedly Settings', 'embedly'); ?></h1>
+
           <div class="embedly-wrap">
             <div class="embedly-ui">
               <div class="embedly-input-wrapper">
 
-                <!-- EXISTING USER MODAL -->
                 <form id="embedly_key_form" method="POST" action="">
                   <div class="embedly-ui-header-outer-wrapper">
                     <div class="embedly-ui-header-wrapper">
                       <div class="embedly-ui-header">
-                        <a class="embedly-ui-logo" href="http://embed.ly" target="_blank"><?php
+                        <a class="embedly-ui-logo" href="https://embed.ly" target="_blank"><?php
                           esc_html_e('Embedly', 'embedly');
                           ?></a>
                       </div>
@@ -759,22 +733,8 @@ class WP_Embedly
                       <div class="embedly_key_form embedly-ui-key-form">
 
                         <div id="welcome-blurb">
-                          <?php $this->get_welcome_message();  ?>
+                          <?php $this->get_welcome_message(); ?>
                         </div>
-
-                        <!--
-                        <div class="embedly-analytics">
-                          <div class="active-viewers">
-                            <h1 class="active-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
-                            <p>People are <strong>actively viewing</strong> your embeds!</p>
-                            <br/>
-                            <a class="emb-button" target="_blank" <?php $this->get_onclick_analytics_button(); ?>><?php esc_html_e('Realtime Analytics', 'embedly')?></a>
-                          </div>
-						  <div class="historical-viewers">
-                            <h1 class="weekly-count"><img src=<?php echo EMBEDLY_URL . "/img/ajax-loader.gif" ?>></h1>
-                            <p>People have <strong>viewed</strong> an embed in the <strong>last week</strong>.</p>
-                          </div>
-                        </div> -->
 
                         <!-- Begin 'Advanced Options' Section -->
                         <hr>
@@ -867,7 +827,7 @@ class WP_Embedly
                             <div class="embedly-tutorial-container">
                                 <p>Using the plugin is now as easy as pasting a URL into the post editor.
                                 We then do our best to find the right embed for that URL, especially if it's one of our
-                                    <strong><a href="https://embed.ly/providers" target="_blank"><?php esc_html_e('500+ providers', 'embedly'); ?></a></strong></p>
+                                    <strong><a href="https://embed.ly/providers" target="_blank"><?php esc_html_e('1000+ providers', 'embedly'); ?></a></strong></p>
                                 <p>To learn more about how the plugin works, please visit
                                     <strong><a href="https://wordpress.org/plugins/embedly" target="_blank">
                                         <?php esc_html_e('our plugin page', 'embedly'); ?></a></strong></p>
@@ -902,11 +862,15 @@ class WP_Embedly
                   </form>
                 <div id="footer">
                   <footer class="embedly-footer">
-                    &copy; <?php echo date('Y') . __( ' All Rights Reserved ', 'embedly'); ?>
+                    &copy; <?php echo esc_html( date('Y') . __( ' All Rights Reserved ', 'embedly') ); ?>
                     <span class="dashicons dashicons-heart"></span>
                     Built in Boston
                   </footer>
-                </div> <?php
+                </div>
+            </div><!-- /.embedly-ui -->
+          </div><!-- /.embedly-wrap -->
+        </div><!-- /.wrap -->
+        <?php
     } // END settings page function
 } // END WP_Embedly class
 
