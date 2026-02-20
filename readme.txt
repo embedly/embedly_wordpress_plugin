@@ -1,7 +1,7 @@
 === Embedly ===
 
 Contributors: Embedly
-Tags: embed, oembed, video, image, pdf, card
+Tags: embed, oembed, video, image, pdf
 Requires at least: 5.0
 Requires PHP: 7.4
 Tested up to: 6.9.1
