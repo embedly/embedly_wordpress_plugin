@@ -2,31 +2,31 @@
 
 Contributors: Embedly
 Tags: embed, oembed, video, image, pdf, card
-Requires at least: 3.8
-Tested up to: 4.9.4
-Stable tag: 4.9.2
+Requires at least: 5.0
+Requires PHP: 7.4
+Tested up to: 6.9.1
+Stable tag: 4.9.3
 License: GPLv2
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The Embedly Plugin extends Wordpress's auto-embed feature to give your blog more media types and style optons.
+The Embedly Plugin extends WordPress's auto-embed feature to give your blog more media types and style options.
 
 == Description ==
 
-Enhance the default Wordpress embedding to get previews for any article,
-including your own blog posts. You also get embeds for Gfycat, Twitch, Google
-Maps, and Embedly’s growing list of [500+ supported
-providers](http://embed.ly/providers).
+Enhance the default WordPress embedding to get previews for any article,
+including your own blog posts. You also get embeds for YouTube, Vimeo, Twitch,
+Google Maps, and Embedly’s growing list of [1000+ supported
+providers](https://embed.ly/providers).
 
 You can customize the style of the embeds, to optimize for darker WP themes,
 alignment, and width. In addition, social buttons can be added around the embeds
 to make it easier to share content from your blog posts.
 
-If you have an Embedly Cards account, you can link it to the plugin with your Embedly API key.  Not only does this remove branding from the cards, it also gives you access to analytics and viewer behaviors for most popular music and video player embeds (YouTube, Vimeo, Instagram, SoundCloud).  Find out how many people viewed your embeds for how long. To learn more about Embedly Cards please visit [our website](http://embed.ly/cards).
+If you have an Embedly Cards account, you can link it to the plugin with your Embedly API key. Not only does this remove branding from the cards, it also gives you access to analytics and viewer behaviors for most popular music and video player embeds (YouTube, Vimeo, Instagram, SoundCloud). Find out how many people viewed your embeds for how long. To learn more about Embedly Cards please visit [our website](https://embed.ly/cards).
 
-Using it is as simple as the default Wordpress embedding. Embed media by pasting its URL in a single line when writing a post
+Using it is as simple as the default WordPress embedding. Embed media by pasting its URL in a single line when writing a post.
 
-The plugin automatically displays an embed of the media in the Wordpress post
-editor (for WP 4.0+).
+The plugin automatically displays an embed of the media in the WordPress post editor.
 
 Fair Warning: This plugin generates static HTML content for your posts.  After you deactivate
 the plugin, that HTML will still remain behind in all posts where the plugin was used to create
@@ -38,7 +38,7 @@ embeds.
 
 Using the Plugin Manager
 
-1. Click Plugins in the Wordpress Dashboard sidebar.
+1. Click Plugins in the WordPress Dashboard sidebar.
 
 1. Click Add New.
 
@@ -89,9 +89,9 @@ Yes
 Where do I get a key?
 =
 
-You can obtain a key when sign up for an Embedly account. You
+You can obtain a key when you sign up for an Embedly account. You
 can also get your key anytime by going to your [Embedly
-account](http://app.embed.ly).
+account](https://app.embed.ly).
 
 =
 How do I embed "any" URL?
@@ -181,6 +181,16 @@ embeds to boost SEO.
 
 
 == Changelog ==
+
+= 4.9.3 =
+
+* Tested and confirmed compatible with WordPress 6.9.1.
+* Fixed settings page capability check (manage_options instead of activate_plugins).
+* Fixed potential fatal error when get_current_screen() returns null during AJAX requests.
+* Moved admin stylesheet enqueue from deprecated admin_print_styles to admin_enqueue_scripts.
+* Fixed API key validation call to use HTTPS.
+* Updated minimum requirements: WordPress 5.0+, PHP 7.4+.
+* Removed leftover WP 3.x compatibility code.
 
 = 4.7.0 =
 
@@ -320,6 +330,10 @@ Initial Version
 
 
 == Upgrade Notice ==
+
+= 4.9.3 =
+
+Maintenance update: fixes capability check, null-safety on admin screens, HTTPS API calls, and deprecated hook. Requires WordPress 5.0+ and PHP 7.4+.
 
 = 2.0 =
 
